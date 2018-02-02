@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Welcome to playphraseme</title>
+  </head>
+  <body>
+    <div id="app"> </div>
+
+    <!-- scripts and styles -->
+    {% style "/assets/bootstrap/css/bootstrap.min.css" %}
+    {% style "/assets/font-awesome/web-fonts-with-css/css/fontawesome-all.min.css" %}
+    {% style "/css/screen.css" %}
+
+    <script type="text/javascript">
+        var context = "{{servlet-context}}";
+        var csrfToken = "{{csrf-token}}";
+    </script>
+    {% script "/js/app.js" %}
+  </body>
+</html>

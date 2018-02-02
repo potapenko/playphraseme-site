@@ -1,0 +1,40 @@
+(ns playphraseme.api.routes.auth
+  (:require [playphraseme.api.middleware.basic-auth :refer [basic-auth-mw]]
+            [playphraseme.api.middleware.authenticated :refer [authenticated-mw]]
+            [playphraseme.api.middleware.cors :refer [cors-mw]]
+            [playphraseme.api.route-functions.auth.get-auth-credentials :refer [auth-credentials-response]]
+            [playphraseme.api.route-functions.auth.link-auth-tokens :refer :all]
+            [schema.core :as s]
+            [compojure.api.sweet :refer :all]))
+
+(def auth-routes
+  "Specify routes for Authentication functions"
+  (context "/api/v1/auth" []
+
+     (GET "/"             {:as request}
+           :tags          ["Auth"]
+           :return        {:id String :username String :permissions [String] :token String :refresh-token String}
+           :header-params [authorization :- String]
+           :middleware    [basic-auth-mw cors-mw authenticated-mw]
+           :summary       "Returns auth info given a username and password in the '`Authorization`' header."
+           :description   "Authorization header expects '`Basic username:password`' where `username:password`
+                           is base64 encoded. To adhere to basic auth standards we have to use a field called
+                           `username` however we will accept a valid username or email as a value for this key."
+           (auth-credentials-response request))
+
+     (GET "/link"        []
+           :tags         ["Auth"]
+           :query-params [email :- s/Str]
+           :middleware   [cors-mw]
+           :return       {:link-token String}
+           :summary      "Returns a token to be used for authorization via an emailed link, associated with the given email"
+           (link-token-generate-response email))
+
+     (GET "/verify-email/:link-token" []
+           :tags        ["Auth"]
+           :path-params [link-token :- String]
+           :middleware  [cors-mw]
+           :return      {:id String :username String :permissions [String] :token String :refresh-token String}
+           :summary     "Authorizes and returns auth info given a temporary link token."
+           (verify-email-response link-token)
+       )))
