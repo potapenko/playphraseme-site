@@ -1,3 +1,3 @@
 # playphrase.me
 
-Playphrase.me front.  
+Playphrase.me website.  
