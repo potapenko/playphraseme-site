@@ -1,4 +1,4 @@
-(defproject playphraseme "0.1.0-SNAPSHOT"
+(defproject playphraseme-site "0.1.0-SNAPSHOT"
 
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
@@ -37,10 +37,6 @@
                  [secretary "1.2.3"]
                  [selmer "1.11.1"]
                  [clj-oauth "1.5.5"]
-
-                 [org.clojure/java.jdbc "0.6.1"]
-                 [postgresql/postgresql "9.3-1102.jdbc41"]
-                 [com.layerware/hugsql  "0.4.7"]
 
                  ;; custom clj
 

@@ -14,13 +14,16 @@
 
 (defn page []
   [:div
-   [(pages (or @(rf/subscribe [:page]) :search))]])
+   [(pages @(rf/subscribe [:page]))]])
 
 ;; -------------------------
 ;; Routes
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
+  (rf/dispatch [:set-active-page :search]))
+
+(secretary/defroute "/search" []
   (rf/dispatch [:set-active-page :search]))
 
 (secretary/defroute "*" []
