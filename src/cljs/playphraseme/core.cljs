@@ -4,6 +4,7 @@
             [secretary.core :as secretary]
             [goog.events :as events]
             [goog.history.EventType :as HistoryEventType]
+            [playphraseme.common.route :as route]
             [markdown.core :refer [md->html]]
             [playphraseme.views.search.view :as search-page]
             [playphraseme.model])
@@ -14,20 +15,32 @@
 
 (defn page []
   [:div
-   [(pages @(rf/subscribe [:page]))]])
+   [@(pages @(rf/subscribe [:page]))]])
 
 ;; -------------------------
 ;; Routes
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (rf/dispatch [:set-active-page :search]))
+  (route/goto-page! :search))
 
 (secretary/defroute "/search" []
-  (rf/dispatch [:set-active-page :search]))
+  (route/goto-page! :search))
+
+(secretary/defroute "/phrase" []
+  (route/goto-page! :phrase))
+
+(secretary/defroute "/register" []
+  (route/goto-page! :register))
+
+(secretary/defroute "/login" []
+  (route/goto-page! :login))
 
 (secretary/defroute "*" []
-  (rf/dispatch [:set-active-page :not-found]))
+  (route/goto-page! :not-found))
+
+(secretary/defroute "/article" []
+  (route/goto-page! :article))
 
 ;; -------------------------
 ;; History
