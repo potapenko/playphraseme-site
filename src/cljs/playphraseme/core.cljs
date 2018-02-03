@@ -5,6 +5,7 @@
             [goog.events :as events]
             [goog.history.EventType :as HistoryEventType]
             [playphraseme.common.route :as route]
+            [playphraseme.common.util :as util]
             [markdown.core :refer [md->html]]
             [playphraseme.views.search.view :as search-page]
             [playphraseme.model])
@@ -22,7 +23,7 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (route/goto-page! :search))
+  (util/go-url! "/#/search"))
 
 (secretary/defroute "/search" []
   (route/goto-page! :search))

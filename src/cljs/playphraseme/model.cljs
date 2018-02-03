@@ -6,7 +6,7 @@
 (reg-event-db
   :initialize-db
   (fn [_ _]
-    {}))
+    {:page :search}))
 
 (reg-event-db
   :set-active-page
