@@ -7,16 +7,15 @@
             [playphraseme.common.localization :refer [ls]]
             [playphraseme.model]))
 
-(defn header-button [label]
-  [:a.header-button {:href ""} label])
+(defn header-button [label href]
+  [:a.header-button {:href href} label])
 
 (defn header []
   [:div.header
    [:div.top
-    [header-button (ls :navigation.login.register)]
-    [header-button (ls :navigation.guest.tour)]
-    [ui/grow]
-    [header-button (ls :navigation.support)]
+    [header-button (ls :navigation.login.register) "/#/register"]
+    [header-button (ls :navigation.guest.tour) "/#/guest-tour"]
+    [header-button (ls :navigation.support) "/#/support"]
     [ui/grow]
     [header-button "Facebook"]
     [header-button "Like!"]]
@@ -28,16 +27,17 @@
     [:div.statistic
      [:span.count "254,000"]
      [:span.info (ls :statistic.phrases)]]
-    [:div.statistic
+    #_[:div.statistic
      [:span.count "311"]
      [:span.info (ls :statistic.movies)]]
-    [:div.translate-direction "EN>EN"]]])
+    [:div.translate-direction
+     [:span.select-button "En"] [:span.arrow ">"] [:span.select-button "En"]]]])
 
 (defn left-column []
-  [:div.left-column "left-column"])
+  [:div.left-column ""])
 
 (defn right-column []
-  [:div.right-column "right column"])
+  [:div.right-column ""])
 
 (defn root [current-page]
   [:div.layout-container
