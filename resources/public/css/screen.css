@@ -77,6 +77,18 @@ body{
 .header {
   height: 100px;
   background-color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.header .top {
+  background-color: red;
+  height: 35px;
+}
+
+.header .bottom {
+  background-color: gray;
+  flex-grow: 1;
 }
 
 .current-page-container {

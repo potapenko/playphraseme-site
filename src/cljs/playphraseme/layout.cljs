@@ -6,7 +6,10 @@
             [playphraseme.model]))
 
 (defn header []
-  [:div.header "header"])
+  [:div.header
+   [:div.top "top"]
+   [:div.bottom "bottom"]
+   ])
 
 (defn left-column []
   [:div.left-column "left-column"])
