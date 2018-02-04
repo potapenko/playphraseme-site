@@ -5,3 +5,6 @@
     [:div {:style (merge {}
                          (when w {:widht w})
                          (when h {:height h}))}]))
+
+(defn grow []
+  [:div.grow ""])

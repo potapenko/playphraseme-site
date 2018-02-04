@@ -2,14 +2,32 @@
   (:require [reagent.core :as r]
             [re-frame.core :as rf]
             [markdown.core :refer [md->html]]
+            [playphraseme.common.ui :as ui]
             [playphraseme.views.search.view :as search-page]
             [playphraseme.model]))
 
+(defn header-button [label]
+  [:a.header-button {:href ""} label])
+
 (defn header []
   [:div.header
-   [:div.top "top"]
-   [:div.bottom "bottom"]
-   ])
+   [:div.top
+    [header-button "Login/Register"]
+    [header-button "Guest Tour"]
+    [ui/grow]
+    [header-button "Support"]
+    [ui/grow]
+    [header-button "Facebook"]
+    [header-button "Like!"]]
+   [:div.bottom
+    [:div.logo
+     [:span "Play"]
+     [:span "Phrase"]
+     [:span ".me"]]
+    [:div.phrases-statistic
+     [:span.count "2540000"]
+     [:span.info "phrases"]]
+    [:div.translate-direction "EN>EN"]]])
 
 (defn left-column []
   [:div.left-column "left-column"])

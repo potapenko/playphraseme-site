@@ -22,6 +22,8 @@ textarea:focus, input:focus{
   background-color: red;
 }
 
+.grow {flex-grow: 1}
+
 html, body {
   font-family: 'Roboto', sans-serif !important;
 }
@@ -82,13 +84,21 @@ body{
 }
 
 .header .top {
-  background-color: red;
-  height: 35px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .header .bottom {
   background-color: gray;
   flex-grow: 1;
+  display: flex;
+}
+
+.header-button {
+  padding: 8px 16px;
+  background-color: white;
+  /* text-decoration: underline; */
+  color: black;
 }
 
 .current-page-container {
