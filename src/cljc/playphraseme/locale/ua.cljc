@@ -1,4 +1,4 @@
-(ns playphrseme.locale.ua)
+(ns playphraseme.locale.ua)
 
 (def locale
   {:cancel                             "Відміна"

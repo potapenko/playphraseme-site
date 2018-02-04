@@ -1,4 +1,4 @@
-(ns playphrseme.locale.us)
+(ns playphraseme.locale.us)
 
 (def locale
   {:cancel                             "Cancel"

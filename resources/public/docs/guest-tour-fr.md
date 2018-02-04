@@ -14,7 +14,7 @@ Cela fonctionne exactement de la même façon qu’avec une langue étrangère. 
 
 Nous avons trié les phrases d'une manière telle que les cours vont commencer avec les phrases les plus couramment utilisés dans les émissions de télévision et de film. Voilà un début. De plus vous allez,rencontrer dles phrases et des mots moins courants ..
 
-<img src="/img/guest-tour/ru/left-column.png" alt="" width="179" height="109">
+<!-- <img src="/img/guest-tour/ru/left-column.png" alt="" width="179" height="109"> -->
 
 Au tout début, vous comprendrez que quelques-unes des parties des phrases. Puis quelques phrases en totalité. Et puis les phrases et les mots manquants à partir du contexte.
 
@@ -22,7 +22,7 @@ Après être  entrer dans le système, vous verrez la première phrase proposée
 
 Pour changer la langue de la traduction, cliquez sur le bouton gris dans le coin supérieur droit. Nous soutenons plus de 15 langues.
 
-<img src="/img/guest-tour/ru/language-select.png" alt="" width="98" height="37">
+<!-- <img src="/img/guest-tour/ru/language-select.png" alt="" width="98" height="37"> -->
 
 Les phrases ou les mots que vous n’avez pas encore recherchés seront marqués avec un soulignement en gras. Cliquez sur le lien, et vous vous retrouvez avec une vidéo-fragment contenant cette phrase. Lorsque vous avez terminé, le trait de soulignement disparaît.
 
@@ -31,13 +31,13 @@ Ne pas essayer d'obtenir  la phrase de la vidéo dans le début du cours, ceci e
 
 Lorsque le trait de soulignement en gras pour tous les mots disponibles est parti, vous pouvez passer à la suivante, en cliquant sur la flèche blanche à droite.
 
-<img src="/img/guest-tour/ru/next-phrase.png" alt="" width="180" height="140">
+<!-- <img src="/img/guest-tour/ru/next-phrase.png" alt="" width="180" height="140"> -->
 
 Les phrases que vous avez étudié à ce jour apparaissent dans la liste ci-dessous avec la phrase actuelle.
 
 Pour faire apprendre l'anglais en s’ amusant, nous avons intégré le processus d'apprentissage et des statistiques dans un jeu appelé Phrase Mining. Vous gagnerez en «expérience» pour apprendre de nouvelles expressions et  débloquer de nouveaux niveaux.
 
-<img src="/img/guest-tour/ru/game.png" alt="" width="180" height="130">
+<!-- <img src="/img/guest-tour/ru/game.png" alt="" width="180" height="130"> -->
 
 Notre base de données contient déjà 250.000 fragments de vidéo et plus de 100.000 pour la phrase minière avec des traductions en 15 langues.
 

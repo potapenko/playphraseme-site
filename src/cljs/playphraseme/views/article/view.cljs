@@ -12,4 +12,4 @@
         [:div
          @(rf/subscribe [:docs])]))))
 
-(def guest-tour (article  "guest-tour"))
+(def guest-tour (article  "guest-tour-ru"))

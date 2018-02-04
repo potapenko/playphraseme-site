@@ -1,4 +1,4 @@
-(ns playphrseme.locale.fr)
+(ns playphraseme.locale.fr)
 
 (def locale
   {:cancel                             "Annuler"

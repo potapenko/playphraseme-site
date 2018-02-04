@@ -5,7 +5,7 @@ Our service will teach you to understand spoken English.
 The purpose of *PlayPhrase.me* service is to learn english using TV series. We create video sequence from scenes that contain the word you search for.
 As soon as you submit your search query, the phrase list is returned and phrase list are played automatically. 
 
-<img src="/img/guest-tour/ru/search.png" alt="" width="250" height="253" style="margin-bottom:52px">
+<!-- <img src="/img/guest-tour/ru/search.png" alt="" width="250" height="253" style="margin-bottom:52px"> -->
 
 When we write correctly, we don't recall all the grammer and spelling rules, we just feel what's right. We've heard, read and seen a huge amount of examples of that phrase usages, and "feel" how it should be written and pronounced.
 
@@ -18,11 +18,11 @@ At the very beginning, you'll understand only some of the sentences' parts. Then
 
 After you log into the system, you'll see the first phrase offered for learning in the left column. Phrase has word/phrases links (underscored) and a translation to the language of your choice. 
 
-<img src="/img/guest-tour/ru/left-column.png" alt="" width="179" height="109">
+<!-- <img src="/img/guest-tour/ru/left-column.png" alt="" width="179" height="109"> -->
 
 To change the translation language, click on the gray button in the upper-right corner. We support more than 15 languages. 
 
-<img src="/img/guest-tour/ru/language-select.png" alt="" width="98" height="37">
+<!-- <img src="/img/guest-tour/ru/language-select.png" alt="" width="98" height="37"> -->
 
 The phrases or words you haven't searched for yet are marked with bold underscore. Click on the link, and you'll be presented with a video-fragment containing that phrase. When you're done, the underscore will disappear.
 
@@ -30,7 +30,7 @@ Don't try to get the whose phrase from the video in the beginning of the course,
 
 When the bold underscore for all the words available is gone, you can proceed to the next one, clicking the white right arrow.
 
-<img src="/img/guest-tour/ru/next-phrase.png" alt="" width="180" height="140">
+<!-- <img src="/img/guest-tour/ru/next-phrase.png" alt="" width="180" height="140"> -->
 
 The phrases you've studied so far will appear in the list below the current phrase. 
 
