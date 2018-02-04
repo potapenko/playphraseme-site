@@ -12,24 +12,26 @@
             [playphraseme.views.register.view :as register-page]
             [playphraseme.views.phrase.view :as phrase-page]
             [playphraseme.views.article.view :as articles]
-            [playphraseme.views.support.view :as support]
-            [playphraseme.views.history.view :as history]
-            [playphraseme.model])
+            [playphraseme.views.support.view :as support-page]
+            [playphraseme.views.history.view :as history-page]
+            [playphraseme.layout :as layout]
+            [playphraseme.model]
+            [playphraseme.common.responsive :as responsive])
   (:import goog.History))
 
 (def pages
   {:search     #'search-page/page
-   :login      #'login/page
+   :login      #'login-page/page
    :not-found  #'not-found-page/page
    :guest-tour #'articles/guest-tour
-   :register   #'register/page
-   :phrase     #'phrase/page
-   :article    #'article/page
-   :support    #'support/page
-   :history    #'history/page})
+   :register   #'register-page/page
+   :phrase     #'phrase-page/page
+   :support    #'support-page/page
+   :history    #'history-page/page
+   })
 
 (defn page []
-  [:div
+  [layout/root
    [(pages @(rf/subscribe [:page]))]])
 
 ;; -------------------------
@@ -80,4 +82,5 @@
 (defn init! []
   (rf/dispatch-sync [:initialize-db])
   (hook-browser-navigation!)
+  (responsive/start)
   (mount-components))

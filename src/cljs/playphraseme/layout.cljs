@@ -5,5 +5,19 @@
             [playphraseme.views.search.view :as search-page]
             [playphraseme.model]))
 
-(defn page []
-  [:div "site layout"])
+(defn header []
+  [:div.header "header"])
+
+(defn left-column []
+  [:div.left-column "left-column"])
+
+(defn right-column []
+  [:div.right-column "right column"])
+
+(defn root [current-page]
+  [:div.layout-container
+   [left-column]
+   [:div.layout-main
+    [header]
+    [:div.current-page-container current-page]]
+   [right-column]])
