@@ -13,14 +13,20 @@
             [playphraseme.views.phrase.view :as phrase-page]
             [playphraseme.views.article.view :as articles]
             [playphraseme.views.support.view :as support]
+            [playphraseme.views.history.view :as history]
             [playphraseme.model])
   (:import goog.History))
 
 (def pages
   {:search     #'search-page/page
-   :guest-tour #'articles/guest-tour
+   :login      #'login/page
    :not-found  #'not-found-page/page
-   })
+   :guest-tour #'articles/guest-tour
+   :register   #'register/page
+   :phrase     #'phrase/page
+   :article    #'article/page
+   :support    #'support/page
+   :history    #'history/page})
 
 (defn page []
   [:div
@@ -54,16 +60,15 @@
 (secretary/defroute "*" []
   (route/goto-page! :not-found))
 
-
 ;; -------------------------
 ;; History
 ;; must be called after routes have been defined
 (defn hook-browser-navigation! []
   (doto (History.)
     (events/listen
-      HistoryEventType/NAVIGATE
-      (fn [event]
-        (secretary/dispatch! (.-token event))))
+     HistoryEventType/NAVIGATE
+     (fn [event]
+       (secretary/dispatch! (.-token event))))
     (.setEnabled true)))
 
 ;; -------------------------
