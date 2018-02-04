@@ -2,7 +2,7 @@
 
 Our service will teach you to understand spoken English.
 
-The purpose of *PlayPhrase.me* service is to learn english using TV series. We create video sequence from scenes that contain the word you search for.
+The purpose of **PlayPhrase.me** service is to learn english using TV series. We create video sequence from scenes that contain the word you search for.
 As soon as you submit your search query, the phrase list is returned and phrase list are played automatically. 
 
 <img src="/img/guest-tour/ru/search.png" alt="" width="250" height="253" style="margin-bottom:52px">

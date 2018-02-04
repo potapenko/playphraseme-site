@@ -2,7 +2,7 @@
 
 Notre service vous apprendra à comprendre l'anglais parlé.
 
-Le but du service  PlayPhrase.est de vous  apprendre l'anglais à partir de séries de télévision. Nous créons des séquences vidéo à partir de scènes qui contiennent le mot que vous recherchez.
+Le but du service  **PlayPhrase.me** de vous  apprendre l'anglais à partir de séries de télévision. Nous créons des séquences vidéo à partir de scènes qui contiennent le mot que vous recherchez.
 
 <img src="/img/guest-tour/ru/search.png" alt="" width="250" height="253" style="margin-bottom:52px">
 
