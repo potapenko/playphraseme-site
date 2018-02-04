@@ -12,10 +12,6 @@ textarea:focus, input:focus{
                                   supported by Chrome and Opera */
 }
 
-.red {background-color: red;}
-.blue {background-color: blue;}
-.green {background-color: green;}
-
 .box {
   position: absolute;
   left: 0px; right: 0px; bottom: 0px; top: 0px;
@@ -89,9 +85,26 @@ body{
 }
 
 .header .bottom {
-  background-color: gray;
   flex-grow: 1;
   display: flex;
+  justify-content: space-between;
+}
+
+.header .logo {
+  font-size: 44px;
+	font-family: 'Gloria Hallelujah';
+  overflow: hidden;
+  margin-left: 16px;
+}
+
+.header .logo .red {color: red}
+.header .logo .black {color: black}
+.header .logo .gray {color: gray}
+
+.header .phrases-statistic {
+}
+
+.header .translate-direction {
 }
 
 .header-button {

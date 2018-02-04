@@ -1,4 +1,4 @@
-(ns playphraseme.locale.fr)
+(ns playphraseme.locale.ru)
 
 (def locale
   {:cancel                             "Отмена"

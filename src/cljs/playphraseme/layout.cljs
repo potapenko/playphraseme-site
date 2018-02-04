@@ -22,9 +22,9 @@
     [header-button "Like!"]]
    [:div.bottom
     [:div.logo
-     [:span "Play"]
-     [:span "Phrase"]
-     [:span ".me"]]
+     [:span.red "Play"]
+     [:span.black "Phrase"]
+     [:span.gray ".me"]]
     [:div.phrases-statistic
      [:span.count "254,000"]
      [:span.info (ls :statistic.phrases)]]
