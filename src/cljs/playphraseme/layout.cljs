@@ -17,8 +17,8 @@
     [header-button (ls :navigation.guest.tour) "/#/guest-tour"]
     [header-button (ls :navigation.support) "/#/support"]
     [ui/grow]
-    [header-button "Facebook"]
-    [header-button "Like!"]]
+    [header-button "Facebook" ""]
+    [header-button "Like!" ""]]
    [:div.bottom
     [:div.logo
      [:span.red "Play"]
@@ -27,9 +27,6 @@
     [:div.statistic
      [:span.count "254,000"]
      [:span.info (ls :statistic.phrases)]]
-    #_[:div.statistic
-     [:span.count "311"]
-     [:span.info (ls :statistic.movies)]]
     [:div.translate-direction
      [:span.select-button "En"] [:span.arrow ">"] [:span.select-button "En"]]]])
 

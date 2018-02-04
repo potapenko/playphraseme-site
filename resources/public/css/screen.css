@@ -55,12 +55,12 @@ body{
 
 .left-column {
   background-color: rgba(0,0,0,0.3);
-  flex-grow: 0.25;
+  flex-grow: 1;
 }
 
 .right-column {
   background-color: rgba(0,0,0,0.3);
-  flex-grow: 0.25;
+  flex-grow: 1;
 }
 
 .layout-main {
@@ -72,7 +72,7 @@ body{
 }
 
 .header {
-  height: 100px;
+  height: 95px;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -87,8 +87,8 @@ body{
   padding: 8px 16px;
   background-color: white;
   color: gray;
+  text-decoration: underline;
 }
-
 
 .header .bottom {
   flex-grow: 1;
