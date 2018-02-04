@@ -1,5 +1,6 @@
 (ns playphraseme.views.article.view
   (:require [playphraseme.common.docs :as docs]
+            [playphraseme.common.util :as util]
             [re-frame.core :as rf]
             [cljs.core.async :refer [<! put! chan] :as async])
   (:require-macros [cljs.core.async.macros :refer [go go-loop]]))
@@ -7,9 +8,12 @@
 (defn article [doc-name]
   (fn[]
     (let [res (atom nil)]
-      (go (rf/dispatch [:set-docs (<! (docs/load-md-doc doc-name))]))
+      (go (rf/dispatch
+           [:set-docs (<! (docs/load-md-doc (str  doc-name "-" (util/locale-name))))]))
       (fn []
         [:div
          @(rf/subscribe [:docs])]))))
 
-(def guest-tour (article  "guest-tour-ru"))
+(defn guest-tour []
+  ^{:key (str "ques-tour-" (util/locale-name))}
+  [(article  "guest-tour")])

@@ -31,6 +31,9 @@
      (aset js/window.location "href" url))
    url))
 
+(defn locale-name []
+  (some-> @(rf/subscribe [:locale]) name))
+
 (defn transform-keys [m f]
   (let [f (fn [[k v]] [(f k) v])]
     (walk/postwalk (fn [x] (if (map? x) (into {} (map f x)) x)) m)))
