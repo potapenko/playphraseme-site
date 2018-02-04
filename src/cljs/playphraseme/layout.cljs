@@ -4,6 +4,7 @@
             [markdown.core :refer [md->html]]
             [playphraseme.common.ui :as ui]
             [playphraseme.views.search.view :as search-page]
+            [playphraseme.common.localization :refer [ls]]
             [playphraseme.model]))
 
 (defn header-button [label]
@@ -12,10 +13,10 @@
 (defn header []
   [:div.header
    [:div.top
-    [header-button "Login/Register"]
-    [header-button "Guest Tour"]
+    [header-button (ls :navigation.login.register)]
+    [header-button (ls :navigation.guest.tour)]
     [ui/grow]
-    [header-button "Support"]
+    [header-button (ls :navigation.support)]
     [ui/grow]
     [header-button "Facebook"]
     [header-button "Like!"]]
@@ -25,8 +26,8 @@
      [:span "Phrase"]
      [:span ".me"]]
     [:div.phrases-statistic
-     [:span.count "2540000"]
-     [:span.info "phrases"]]
+     [:span.count "254,000"]
+     [:span.info (ls :statistic.phrases)]]
     [:div.translate-direction "EN>EN"]]])
 
 (defn left-column []
