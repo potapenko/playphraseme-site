@@ -88,6 +88,7 @@ body{
   flex-grow: 1;
   display: flex;
   justify-content: space-between;
+  align-items: flex-end;
 }
 
 .header .logo {
@@ -101,10 +102,23 @@ body{
 .header .logo .black {color: black}
 .header .logo .gray {color: gray}
 
-.header .phrases-statistic {
+.header .statistic {
+  overflow: hidden;
+  margin-bottom: -4px;
+}
+
+.header .statistic .count{
+  font-size: 38px;
+}
+
+.header .statistic .info{
+  padding-left: 8px;
+  font-size: 18px;
+  color: gray;
 }
 
 .header .translate-direction {
+  background-color: blue;
 }
 
 .header-button {

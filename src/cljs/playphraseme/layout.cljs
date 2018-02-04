@@ -25,9 +25,12 @@
      [:span.red "Play"]
      [:span.black "Phrase"]
      [:span.gray ".me"]]
-    [:div.phrases-statistic
+    [:div.statistic
      [:span.count "254,000"]
      [:span.info (ls :statistic.phrases)]]
+    [:div.statistic
+     [:span.count "311"]
+     [:span.info (ls :statistic.movies)]]
     [:div.translate-direction "EN>EN"]]])
 
 (defn left-column []
