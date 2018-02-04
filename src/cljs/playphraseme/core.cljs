@@ -6,17 +6,25 @@
             [goog.history.EventType :as HistoryEventType]
             [playphraseme.common.route :as route]
             [playphraseme.common.util :as util]
-            [markdown.core :refer [md->html]]
             [playphraseme.views.search.view :as search-page]
+            [playphraseme.views.login.view :as login-page]
+            [playphraseme.views.not-found.view :as not-found-page]
+            [playphraseme.views.register.view :as register-page]
+            [playphraseme.views.phrase.view :as phrase-page]
+            [playphraseme.views.article.view :as articles]
+            [playphraseme.views.support.view :as support]
             [playphraseme.model])
   (:import goog.History))
 
 (def pages
-  {:search  #'search-page/page})
+  {:search     #'search-page/page
+   :guest-tour #'articles/guest-tour
+   :not-found  #'not-found-page/page
+   })
 
 (defn page []
   [:div
-   [@(pages @(rf/subscribe [:page]))]])
+   [(pages @(rf/subscribe [:page]))]])
 
 ;; -------------------------
 ;; Routes
@@ -37,11 +45,15 @@
 (secretary/defroute "/login" []
   (route/goto-page! :login))
 
+(secretary/defroute "/article" []
+  (route/goto-page! :article))
+
+(secretary/defroute "/guest-tour" []
+  (route/goto-page! :guest-tour))
+
 (secretary/defroute "*" []
   (route/goto-page! :not-found))
 
-(secretary/defroute "/article" []
-  (route/goto-page! :article))
 
 ;; -------------------------
 ;; History

@@ -1,5 +1,7 @@
+;; TODO - move to api endpoint
+
 (ns playphraseme.oauth
-  (:require [playphraseme.config :refer [env]]
+  (:require [playphraseme.app.config :refer [env]]
             [oauth.client :as oauth]
             [mount.core :refer [defstate]]
             [clojure.tools.logging :as log]))
