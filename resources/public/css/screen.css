@@ -176,14 +176,9 @@ body{
 
 .search-results-container {
   position: absolute;
-  background-color: green;
   left: 0px; right: 0px; bottom: 0px; top: 400px;
-}
-
-.search-results-results {
-  /* position: relative; height: 100%; width: 100%; */
   overflow-y: auto;
 }
 
-.search-results-results .results{}
 .search-results-results .results .one-result{}
+

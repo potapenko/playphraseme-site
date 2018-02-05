@@ -106,3 +106,23 @@
  :responsive-scale
  (fn [db [_ value]]
    (assoc db :responsive-scale value)))
+
+(reg-sub
+ :responsive-show-left-column?
+ (fn [db _]
+   (get db :responsive-show-left-column? true)))
+
+(reg-event-db
+ :responsive-show-left-column?
+ (fn [db [_ value]]
+   (assoc db :responsive-show-left-column? value)))
+
+(reg-sub
+ :responsive-show-right-column?
+ (fn [db _]
+   (get db :responsive-show-right-column? true)))
+
+(reg-event-db
+ :responsive-show-right-column?
+ (fn [db [_ value]]
+   (assoc db :responsive-show-right-column? value)))

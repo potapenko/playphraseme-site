@@ -52,21 +52,23 @@
 (defn remove-local-css [name]
   (remove-css (str "/css/" name ".css")))
 
-(defn calculate-window-scale []
+(defn calculate-window-scale [min-width min-height]
   (let [w          (window-width)
         h          (window-height)
-        min-width (cond
-                    (and (not (mobile?)) (< w 1400)) (+ 250 680)
-                    (< w 960) 680
-                    :else (+ 250 680 200))
-        min-height 800
         scale-w    (/ w min-width)
         scale-h    (/ w min-height)]
     (min scale-w scale-h)))
 
-
 (defn update-layout []
-  (dispatch [:responsive-scale (calculate-window-scale)])
+  (let [w (window-width)
+        show-left-column? (> w 960)
+        show-right-column? (> w 1400)]
+   (dispatch [:responsive-scale
+              (calculate-window-scale
+               (+ (when show-left-column? 200) 680 (when show-right-column? 200))
+               800)])
+   (dispatch [:responsive-show-left-column? show-left-column?])
+   (dispatch [:responsive-show-right-column? show-right-column?]))
   (when-not (= @(subscribe [:mobile?]) (mobile?))
     (load-local-css (if (mobile?) "mobile" "desktop"))
     (remove-local-css (if-not (mobile?) "mobile" "desktop"))
@@ -76,4 +78,3 @@
 (defn start []
   (update-layout)
   (-> js/window (.addEventListener "resize" update-layout true)))
-
