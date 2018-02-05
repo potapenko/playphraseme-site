@@ -10,7 +10,7 @@
             [compojure.api.sweet :refer :all]))
 
 (def session-routes
-  "Specify routes for User functions"
+  "Specify routes for Pharses Searching"
   (context "/api/v1/phrases" []
            :tags ["Phrases"]
 
@@ -19,5 +19,13 @@
       :return        s/Any
       :middleware    [cors-mw authenticated-mw]
       :query-params  [q :- s/Str {skip :- s/Num 0} {limit :- s/Num 10}]
-      :summary       "Return phrase search result"
-      (search-response q skip limit))))
+      :summary       "Return phrases search result"
+      (search-response q skip limit))
+
+  (GET "/count"       request
+       :tags          ["Session"]
+       :return        s/Num
+       :middleware    [cors-mw authenticated-mw]
+       :query-params  [q :- s/Str]
+       :summary       "Return phrases count result"
+       (count-response q))))
