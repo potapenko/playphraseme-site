@@ -27,5 +27,5 @@
        :return        s/Num
        :middleware    [cors-mw authenticated-mw]
        :query-params  [q :- s/Str]
-       :summary       "Return phrases count result"
+       :summary       "Return phrases count"
        (count-response q))))
