@@ -151,7 +151,6 @@ body{
   padding: 16px;
 }
 .search-container {
-  background-color: red;
   position: absolute;
   left: 0px; right: 0px; bottom: 0px; top: 0px;
 }
@@ -182,3 +181,74 @@ body{
 
 .search-results-results .results .one-result{}
 
+.phrase-text .link-word{
+  color: #333;
+  font-size: 22px;
+  padding: 3px;
+  cursor: pointer;
+  outline: none;
+}
+
+.phrase-text a.phrase-link{
+  padding: 0px;
+  margin: 0px;
+}
+
+.phrase-text .phrase-link, .phrase-text .phrase-link:visited{
+  border-bottom: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.phrase-text .phrase-higlited{
+  border-bottom: solid 4px rgba(0,0,0,0.3);
+}
+
+.phrase-text .phrase-higlited .s-word-played{
+  background-color: rgba(0,0,0,0) !important;
+  color: #333 !important;
+  text-decoration: none;
+}
+
+.phrase-text .phrase-higlited .phrase-link-selected{
+  text-decoration: none;
+}
+
+.phrase-number{
+	width:30px;
+	text-align:right;
+	min-width: 30px;
+  color: #ccc;
+}
+
+.translate-icons{
+	white-space: nowrap;
+}
+
+.translate-icons a{
+
+	/*padding-left: 5px;*/
+}
+
+.lang-in-circle{
+	display: inline-block;
+	width:18px;
+	height:18px;
+	border-radius:9px;
+	font-size:12px;
+	color:#ccc;
+	font-weight: bold;
+	line-height:18px;
+	text-align:center;
+	text-transform: lowercase;
+	background:rgba(0,0,0,0.03);
+}
+
+.lang-in-circle:hover{
+	background:rgba(0,0,0,0.2);
+	color: white;
+	text-decoration: none;
+}
+.lang-in-circle:focus{
+	color: white;
+}
