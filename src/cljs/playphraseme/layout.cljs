@@ -40,8 +40,10 @@
 (defn root [current-page]
   [:div.layout-container
    {:style {:zoom @(rf/subscribe [:responsive-scale])}}
-   [left-column]
+   (when @(rf/subscribe [:responsive-show-left-column?])
+    [left-column])
    [:div.layout-main
     [header]
     [:div.current-page-container current-page]]
-   [right-column]])
+   (when @(rf/subscribe [:responsive-show-right-column?])
+     [right-column])])
