@@ -4,10 +4,11 @@
             [clojure.core.async :refer [<! >! chan close! go go-loop put! timeout]]
             [playphraseme.app.config :refer [env]]
             [cheshire.core :refer :all]
+            [playphraseme.api.queries.phrases :as db]
             [clojure.string :as string]))
 
 (defn get-phrase-data [id]
-  id)
+  (db/get-phrase-by-id id))
 
 (defn get-phrases [phrases-ids]
   (map get-phrase-data phrases-ids))
@@ -21,5 +22,7 @@
 
   (search-response "hello" 0 10)
 
+
+  (get-phrase-data "549add9136a7787a04182da8")
 
   )
