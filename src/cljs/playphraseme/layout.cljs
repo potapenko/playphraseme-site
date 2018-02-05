@@ -38,6 +38,7 @@
 
 (defn root [current-page]
   [:div.layout-container
+   {:style {:zoom @(rf/subscribe [:responsive-scale])}}
    [left-column]
    [:div.layout-main
     [header]

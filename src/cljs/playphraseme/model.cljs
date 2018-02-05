@@ -96,3 +96,13 @@
  :desktop?
  (fn [db _]
    (not (:mobile? db))))
+
+(reg-sub
+ :responsive-scale
+ (fn [db _]
+   (get db :responsive-scale 1)))
+
+(reg-event-db
+ :responsive-scale
+ (fn [db [_ value]]
+   (assoc db :responsive-scale value)))
