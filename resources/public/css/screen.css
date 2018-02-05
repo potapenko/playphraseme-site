@@ -181,6 +181,10 @@ body{
 
 .search-results-results .results .one-result{}
 
+.phrase-text {
+  width: 100%;
+}
+
 .phrase-text .link-word{
   color: #333;
   font-size: 22px;

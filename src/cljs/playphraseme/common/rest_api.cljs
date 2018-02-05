@@ -100,6 +100,11 @@
             (merge (api-headers) {:query-params {:param param}})
             login-md :body))
 
+(defn search-phrase [text]
+  (call-api http/get "/phrases/search"
+            (merge (api-headers) {:query-texts {:text text}})
+            login-md :body))
+
 (comment
   (defn api-get-example [param]
     (call-api http/get "/router-name/endpoint"
