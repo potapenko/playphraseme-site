@@ -1,7 +1,8 @@
 (ns playphraseme.api.general-functions.doc-id
   (:require [clj-time.core :as t]
             [clj-time.format :as f]
-            [clj-time.coerce :as c])
+            [clj-time.coerce :as c]
+            [clojure.walk :as walk])
   (:import org.bson.types.ObjectId))
 
 (defn id->str [object-id]
@@ -14,9 +15,12 @@
   (ObjectId. s))
 
 (defn stringify-id [obj]
-  (some-> obj
-          (dissoc :_id)
-          (assoc :id (id->str (:_id obj)))))
+  (walk/postwalk (fn [x]
+                   (cond
+                     (= x :_id) :id
+                     (instance? ObjectId x) (id->str x)
+                     :else x))
+                 obj))
 
 (defn objectify-id [obj]
   (some-> obj
