@@ -30,7 +30,6 @@ html {
 
 body{
   position: relative;
-  padding-bottom: 6rem;
   min-height: 100%;
 }
 
@@ -64,11 +63,10 @@ body{
 }
 
 .layout-main {
-  /* flex-grow: 0.5; */
   width: 680px;
   display: flex;
   flex-direction: column;
-  background-color: green;
+  box-shadow: 0 0 25px 0 rgba(0,0,0,0.1);
 }
 
 .header {
@@ -76,6 +74,8 @@ body{
   background-color: white;
   display: flex;
   flex-direction: column;
+  background-color: rgba(0,0,0,0.05);
+  border-bottom: 4px solid rgba(0,0,0,0.2);
 }
 
 .header .top {
@@ -85,9 +85,9 @@ body{
 
 .header-button {
   padding: 8px 16px;
-  background-color: white;
   color: gray;
   text-decoration: underline;
+  font-size: 10px;
 }
 
 .header .bottom {
@@ -99,8 +99,8 @@ body{
 }
 
 .header .logo {
-  font-size: 40px;
-	font-family: 'Gloria Hallelujah';
+  font-size: 38px;
+  font-family: 'Gloria Hallelujah';
   overflow: hidden;
 }
 
@@ -140,7 +140,50 @@ body{
 }
 
 .current-page-container {
+  position: relative;
+  height: 100%;
 }
 
+.article-container {
+  position: absolute;
+  left: 0px; right: 0px; bottom: 0px; top: 0px;
+  overflow-y: auto;
+  padding: 16px;
+}
+.search-container {
+  background-color: red;
+  position: absolute;
+  left: 0px; right: 0px; bottom: 0px; top: 0px;
+}
 
+.search-content {
+  position: relative; height: 100%; width: 100%;
+}
 
+.video-player-container {
+  position: absolute;
+  background-color: gray;
+  left: 0px; right: 0px; top: 0px;
+  height: 340px;
+}
+
+.search-ui-container {
+  position: absolute;
+  background-color: blue;
+  left: 0px; right: 0px; top: 340px;
+  height: 60px;
+}
+
+.search-results-container {
+  position: absolute;
+  background-color: green;
+  left: 0px; right: 0px; bottom: 0px; top: 400px;
+}
+
+.search-results-results {
+  /* position: relative; height: 100%; width: 100%; */
+  overflow-y: auto;
+}
+
+.search-results-results .results{}
+.search-results-results .results .one-result{}

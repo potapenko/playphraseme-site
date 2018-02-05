@@ -16,6 +16,7 @@
     [header-button (ls :navigation.login.register) "/#/register"]
     [header-button (ls :navigation.guest.tour) "/#/guest-tour"]
     [header-button (ls :navigation.support) "/#/support"]
+    [header-button "Public API" "/#/api"]
     [ui/grow]
     [header-button "Facebook" ""]
     [header-button "Like!" ""]]

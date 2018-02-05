@@ -11,7 +11,7 @@
       (go (rf/dispatch
            [:set-docs (<! (docs/load-md-doc (str  doc-name "-" (util/locale-name))))]))
       (fn []
-        [:div
+        [:div.article-container
          @(rf/subscribe [:docs])]))))
 
 (defn guest-tour []
