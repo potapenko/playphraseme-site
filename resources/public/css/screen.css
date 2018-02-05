@@ -132,6 +132,8 @@ body{
   padding: 2px 8px;
   color: white;
   background-color: rgba(0,0,0,0.15);
+  /* box-shadow: 0 0 5px 0 rgba(0,0,0,0.50); */
+  border-radius: 4px;
 }
 
 .header .translate-direction .arrow{
