@@ -7,9 +7,7 @@
             [playphraseme.api.routes.auth :refer :all]
             [playphraseme.api.routes.session :refer :all]
             [playphraseme.api.routes.password :refer :all]
-            [playphraseme.api.middleware.basic-auth :refer [basic-auth-mw]]
-            [playphraseme.api.middleware.token-auth :refer [token-auth-mw]]
-            [playphraseme.api.middleware.cors :refer [cors-mw]]
+            [playphraseme.api.routes.phrases :refer :all]
             [ring.util.http-response :refer :all]
             [schema.core :as s]))
 
@@ -25,11 +23,13 @@
                   {:name "Refresh-Token" :description "Get and delete refresh-tokens"}
                   {:name "Auth" :description "Get auth information for a user"}
                   {:name "Session" :description "Get session information for a user"}
+                  {:name "Phrases" :description "Search phrases"}
                   {:name "Password" :description "Request and confirm password resets"}]}}}
   preflight-route
   user-routes
   permission-routes
-  refresh-token-routes
+  ;; refresh-token-routes
   auth-routes
-  session-routes
-  password-routes)
+  ;; session-routes
+  ;; password-routes
+  phrases-routes)

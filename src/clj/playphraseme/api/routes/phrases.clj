@@ -9,23 +9,23 @@
             [ring.util.http-response :as respond]
             [compojure.api.sweet :refer :all]))
 
-(def session-routes
+(def phrases-routes
   "Specify routes for Pharses Searching"
   (context "/api/v1/phrases" []
            :tags ["Phrases"]
 
   (GET "/search"     request
-      :tags          ["Session"]
+      :tags          ["Phrases"]
       :return        s/Any
-      :middleware    [cors-mw authenticated-mw]
+      :middleware    [cors-mw]
       :query-params  [q :- s/Str {skip :- s/Num 0} {limit :- s/Num 10}]
       :summary       "Return phrases search result"
       (search-response q skip limit))
 
   (GET "/count"       request
-       :tags          ["Session"]
+       :tags          ["Phrases"]
        :return        s/Num
-       :middleware    [cors-mw authenticated-mw]
+       :middleware    [cors-mw]
        :query-params  [q :- s/Str]
        :summary       "Return phrases count"
        (count-response q))))
