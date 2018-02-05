@@ -18,3 +18,15 @@
   [data]
   (change-keys data #(-> % name (string/replace "__" ".") keyword)))
 
+(defn remove-keys
+  ([obj keys]
+   (walk/postwalk (fn [x]
+                    (if (map? x)
+                      (apply dissoc (concat [x] keys))
+                      x))
+                  obj))
+  ([obj scope keys]
+   (walk/postwalk (fn [x]
+                    (if (and (map? x) (contains? x scope))
+                      (update x :words remove-keys [:id])
+                      x)) obj)))
