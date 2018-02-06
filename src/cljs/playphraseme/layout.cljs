@@ -7,20 +7,23 @@
             [playphraseme.common.localization :refer [ls]]
             [playphraseme.model]))
 
-(defn header-button [label href]
-  [:a.header-button {:href href} label])
+(defn header-button
+  ([label href icon-class]
+   [:a.header-button {:href href} [:i {:class icon-class}] " " label])
+  ([label href]
+   [:a.header-button {:href href} label]))
 
 (defn header []
   [:div.header
    [:div.top
-    [header-button (ls :navigation.login.register) "/#/register"]
-    [header-button (ls :navigation.guest.tour) "/#/guest-tour"]
-    [header-button (ls :navigation.support) "/#/support"]
-    [header-button "Public API" "/#/api"]
+    [header-button (ls :navigation.login.register) "/#/register" "fas fa-user-circle"]
+    [header-button (ls :navigation.guest.tour) "/#/guest-tour" "far fa-question-circle"]
+    [header-button (ls :navigation.support) "/#/support" "far fa-envelope"]
+    [header-button "Public API" "/#/api" "fas fa-plug"]
     [ui/grow]
-    [header-button "Github" ""]
-    [header-button "Facebook" ""]
-    [header-button "Like!" ""]]
+    [header-button "Github" "" "fab fa-github-square"]
+    [header-button  "Facebook" "" "fab fa-facebook"]
+    [header-button "Like!" "" "far fa-thumbs-up"]]
    [:div.bottom
     [:div.logo
      [:span.red "Play"]
