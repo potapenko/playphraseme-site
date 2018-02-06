@@ -15,13 +15,19 @@
 
 (defn search-phrase [text]
   (rf/dispatch [::model/search-text text])
+  (rf/dispatch [::model/search-result []])
   (when text
     (go
       (let [res (<! (rest-api/search-phrase text))]
-        (println res)
+        (rf/dispatch [::model/search-result res])))))
 
-
-        ))))
+(defn scroll-end []
+  (let [count-all    @(rf/subscribe [::model/search-count])
+        count-loaded @(-> (rf/subscribe [::model/search-result]) :phrases count)]
+    (when (< count-loaded count-all)
+        (go
+          (let [res (<! (rest-api/search-phrase @(rf/subscribe [::model/search-text])))]
+            (rf/dispatch [::model/search-result-append res]))))))
 
 (defn favorite-current-phrase [])
 
@@ -35,7 +41,7 @@
     {:type      "text" :placeholder "Search Phrase"
      :on-change #(search-phrase (-> % .-target .-value))}]
    [:ul.filter-input-icons
-    [:li [:div.numbers #_{:ng-bind "searchCount"}]]
+    [:li [:div.numbers @(rf/subscribe [::model/search-count])]]
     [:li
      [:div.filter-input-icon
       {:on-click toggle-play}

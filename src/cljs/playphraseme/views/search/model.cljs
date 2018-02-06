@@ -34,12 +34,43 @@
  (fn [db [_ value]]
    (assoc db ::search-count value)))
 
+
+(reg-sub
+ ::phrases
+ (fn [db [_]]
+   (get db ::phrases)))
+
+(reg-event-db
+ ::phrases
+ (fn [db [_ value]]
+   (assoc db ::phrases value)))
+
+(reg-sub
+ ::suggestions
+ (fn [db [_]]
+   (get db ::suggestions)))
+
+(reg-event-db
+ ::suggestions
+ (fn [db [_ value]]
+   (assoc db ::suggestions value)))
+
+(reg-sub
+ ::search-count
+ (fn [db [_]]
+   (get db ::search-count)))
+
+(reg-event-db
+ ::search-count
+ (fn [db [_ value]]
+   (assoc db ::search-count value)))
+
 (comment
 
  (reg-sub
   ::name
-  (fn [db _]
-    (::name db)))
+  (fn [db [_]]
+    (get db ::name)))
 
  (reg-event-db
   ::name
