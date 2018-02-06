@@ -18,8 +18,8 @@
     :reagent-render
     (fn []
       (when download?
-        [:div.video-player-container
-         [:video.video-box
+        [:div.video-player-box
+         [:video.video-player
           {:src   video-path
            :id    (index->id index)
            :style (merge
