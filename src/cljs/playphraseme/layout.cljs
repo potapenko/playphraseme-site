@@ -3,6 +3,7 @@
             [re-frame.core :as rf]
             [markdown.core :refer [md->html]]
             [playphraseme.common.ui :as ui]
+            [playphraseme.common.util :as util]
             [playphraseme.views.search.view :as search-page]
             [playphraseme.common.localization :refer [ls]]
             [playphraseme.model]))
@@ -25,7 +26,7 @@
     [header-button  "Facebook" "" "fab fa-facebook"]
     [header-button "Like!" "" "far fa-thumbs-up"]]
    [:div.bottom
-    [:div.logo
+    [:div.logo {:on-click #(util/go-url! "/#/")}
      [:span.red "Play"]
      [:span.black "Phrase"]
      [:span.gray ".me"]]
