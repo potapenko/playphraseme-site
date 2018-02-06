@@ -18,8 +18,11 @@ button, input {
   -khtml-user-select: none; /* Konqueror HTML */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+input::-webkit-input-placeholder {
+  color: pink;
 }
 
 .box {
@@ -273,6 +276,11 @@ body{
 .filter-input {
 	font-size: 18px;
 	height: 46px;
+  padding-left: 12px;
+}
+
+.filter-input::placeholder {
+  color: rgba(0,0,0,0.3);
 }
 
 .filter-input:focus {
@@ -284,7 +292,8 @@ body{
 .filter-input-icons {
   position: absolute;
   right: 20px;
-  top: 16px;
+  top: 21px;
+  font-size: 12px;
   list-style-type: none;
 }
 
@@ -292,7 +301,7 @@ body{
   display: inline-block;
   vertical-align: middle;
   cursor: pointer;
-  padding-left: 5px;
+  padding-left: 12px;
 }
 
 .filter-input-icon {

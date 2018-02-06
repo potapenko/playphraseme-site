@@ -12,10 +12,14 @@
 (defn toggle-play []
   )
 
+(defn search-phrase [text]
+  (js/console.log text))
+
 (defn search-input []
   [:div.filters-container
    [:input.filter-input.form-control.input-lg
-    {:type "text" :placeholder "Search Phrase"}]
+    {:type      "text" :placeholder "Search Phrase"
+     :on-change #(search-phrase (-> % .-target .-value))}]
    [:ul.filter-input-icons
     [:li [:div.numbers #_{:ng-bind "searchCount"}]]
     [:li
