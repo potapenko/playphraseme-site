@@ -240,8 +240,6 @@ body{
 }
 
 .translate-icons a{
-
-	/*padding-left: 5px;*/
 }
 
 .lang-in-circle{
@@ -269,10 +267,10 @@ body{
 
 .filters-container {
   position: relative; height: 100%;
+  padding: 10px;
 }
 
 .filter-input {
-  margin: 10px;
 	font-size: 18px;
 	height: 46px;
 }
@@ -286,7 +284,7 @@ body{
 .filter-input-icons {
   position: absolute;
   right: 20px;
-  top: 8px;
+  top: 16px;
   list-style-type: none;
 }
 
