@@ -80,7 +80,7 @@
         [:div.search-container
          [:div.search-content
           [:div.video-player-container
-           [player/video-player]]
+           [player/video-player {:index 1 :video-path "" :download? true :hide? false :position 0}]]
           [:div.search-ui-container [search-input]]
           [:div.search-results-container
            [:table.table.table-hover.phrase-table.borderless

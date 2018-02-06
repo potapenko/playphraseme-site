@@ -9,7 +9,7 @@
 (defn index->id [index]
   (str "video-player-" index))
 
-(defn video-player [{:keys [index video-path download? hide? played position]}]
+(defn video-player [{:keys [index video-path download? hide? played? position]}]
   (r/create-class
    {:should-component-update
     (fn [])
@@ -23,6 +23,6 @@
           {:src   video-path
            :id    (index->id index)
            :style (merge
-                   (when hide? {:display :none})
+                   ;; (when hide? {:display :none})
                    {:z-index index})}]]))}))
 
