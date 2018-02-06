@@ -27,14 +27,12 @@
      [:li
       [:div.filter-input-icon
        {:ng-click "favoritePhrase(currentPhrase)"}
-       [:md-tooltip "{{'tooltip.favorite.phrase' | translate}}"]
        [:span.fa-stack.fa-1x
         [:i.fa.fa-circle.fa-stack-2x]
         [:i.fa.fa-star.fa-stack-1x.fa-inverse]]]]
      [:li
       [:div.filter-input-icon
        {:ng-click "showConfigPopup()"}
-       [:md-tooltip "{{'tooltip.show.config' | translate}}"]
        [:i.fa.fa-cog.fa-2x]]]
      [:li
       [:div.filter-input-icon
