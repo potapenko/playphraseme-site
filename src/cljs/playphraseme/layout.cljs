@@ -18,6 +18,7 @@
     [header-button (ls :navigation.support) "/#/support"]
     [header-button "Public API" "/#/api"]
     [ui/grow]
+    [header-button "Github" ""]
     [header-button "Facebook" ""]
     [header-button "Like!" ""]]
    [:div.bottom

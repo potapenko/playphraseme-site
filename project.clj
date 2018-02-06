@@ -38,7 +38,6 @@
                  [secretary "1.2.3"]
                  [selmer "1.11.1"]
                  [clj-oauth "1.5.5"]
-                 [cljsjs/react-select "1.2.1-1"]
 
                  ;; custom clj
 

@@ -9,35 +9,34 @@
    [cljs.core.async.macros :refer [go go-loop]]))
 
 (defn search-input []
-  [:div.filters-container-top
+  [:div.filters-container
    [:input.filter-input.form-control.input-lg
-    {:type "text" :placeholder "Search Text"}]
-   [:div.filters-container
-    [:ul.filter-input-icons
-     [:li [:div.numbers {:ng-bind "searchCount"}]]
-     [:li
-      [:div.filter-input-icon
-       {:ng-click "togglePlay()"}
-       [:span.fa-stack.fa-1x
-        [:i.fa.fa-circle.fa-stack-2x]
-        [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon
-         {:ng-show "!userPlayed"}]
-        [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon
-         {:ng-show "userPlayed"}]]]]
-     [:li
-      [:div.filter-input-icon
-       {:ng-click "favoritePhrase(currentPhrase)"}
-       [:span.fa-stack.fa-1x
-        [:i.fa.fa-circle.fa-stack-2x]
-        [:i.fa.fa-star.fa-stack-1x.fa-inverse]]]]
-     [:li
-      [:div.filter-input-icon
-       {:ng-click "showConfigPopup()"}
-       [:i.fa.fa-cog.fa-2x]]]
-     [:li
-      [:div.filter-input-icon
-       {:ng-mouseout "hideHelp();" :ng-mouseover "showHelp()"}
-       [:i.fa.fa-question-circle.fa-2x]]]]]]
+    {:type "text" :placeholder "Search Phrase"}]
+   [:ul.filter-input-icons
+    [:li [:div.numbers #_{:ng-bind "searchCount"}]]
+    [:li
+     [:div.filter-input-icon
+      #_{:ng-click "togglePlay()"}
+      [:span.fa-stack.fa-1x
+       [:i.fa.fa-circle.fa-stack-2x]
+       [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon
+        {:ng-show "!userPlayed"}]
+       [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon
+        #_{:ng-show "userPlayed"}]]]]
+    [:li
+     [:div.filter-input-icon
+      #_{:ng-click "favoritePhrase(currentPhrase)"}
+      [:span.fa-stack.fa-1x
+       [:i.fa.fa-circle.fa-stack-2x]
+       [:i.fa.fa-star.fa-stack-1x.fa-inverse]]]]
+    [:li
+     [:div.filter-input-icon
+      #_{:ng-click "showConfigPopup()"}
+      [:i.fa.fa-cog.fa-2x]]]
+    [:li
+     [:div.filter-input-icon
+      #_{:ng-mouseout "hideHelp();" :ng-mouseover "showHelp()"}
+      [:i.fa.fa-question-circle.fa-2x]]]]]
   )
 
 
