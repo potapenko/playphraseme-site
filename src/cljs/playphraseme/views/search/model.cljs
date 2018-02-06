@@ -67,6 +67,16 @@
  (fn [db [_ value]]
    (update db ::phrases concat (:phrases value))))
 
+(reg-sub
+ ::current-phrase
+ (fn [db [_]]
+   (get db ::current-phrase)))
+
+(reg-event-db
+ ::current-phrase
+ (fn [db [_ value]]
+   (assoc db ::current-phrase value)))
+
 (comment
  (reg-sub
   ::name
@@ -76,4 +86,7 @@
  (reg-event-db
   ::name
   (fn [db [_ value]]
-    (assoc db ::name value))))
+    (assoc db ::name value)))
+
+
+ )

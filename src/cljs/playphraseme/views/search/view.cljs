@@ -17,6 +17,7 @@
 (defn search-phrase [text]
   (rf/dispatch [::model/search-text text])
   (rf/dispatch [::model/search-result []])
+  (rf/dispatch [::model/current-phrase nil])
   (when text
     (go
       (let [res (<! (rest-api/search-phrase text))]
