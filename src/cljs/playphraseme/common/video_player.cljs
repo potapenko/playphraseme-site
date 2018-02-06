@@ -9,9 +9,20 @@
 (defn index->id [index]
   (str "video-player-" index))
 
-(defn video-player [{:keys [index video-path download? played position]}]
-  (when download?
-    [:video {:src   video-path
-             :id (index->id index)
-             :style {:z-index index}}]))
+(defn video-player [{:keys [index video-path download? hide? played position]}]
+  (r/create-class
+   {:should-component-update
+    (fn [])
+    :component-did-mount
+    (fn [])
+    :reagent-render
+    (fn []
+      (when download?
+        [:div.video-player-container
+         [:video.video-box
+          {:src   video-path
+           :id    (index->id index)
+           :style (merge
+                   (when hide? {:display :none})
+                   {:z-index index})}]]))}))
 
