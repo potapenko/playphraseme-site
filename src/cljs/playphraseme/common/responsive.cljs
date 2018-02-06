@@ -8,6 +8,26 @@
 (defn screen-height []
   (-> js/window.screen .-height))
 
+(defn document-width []
+  (let [body js/document.body
+        html js/document.documentElement]
+    (max
+     (-> body .-scrollWidth)
+     (-> body .-offsetWidth)
+     (-> html .-clientWidth)
+     (-> html .-scrollWidth)
+     (-> html .-offsetWidth))))
+
+(defn document-height []
+  (let [body js/document.body
+        html js/document.documentElement]
+    (max
+     (-> body .-scrollHeight)
+     (-> body .-offsetHeight)
+     (-> html .-clientHeight)
+     (-> html .-scrollHeight)
+     (-> html .-offsetHeight))))
+
 (defn window-width []
   (-> js/window .-inerWidth)
   (-> js/document.body .-clientWidth))
@@ -56,7 +76,7 @@
   (let [w          (window-width)
         h          (window-height)
         scale-w    (/ w min-width)
-        scale-h    (/ w min-height)]
+        scale-h    (/ h min-height)]
     (min scale-w scale-h)))
 
 (defn update-layout []
@@ -66,7 +86,7 @@
    (dispatch [:responsive-scale
               (calculate-window-scale
                (+ (when show-left-column? 200) 680 (when show-right-column? 200))
-               800)])
+               700)])
    (dispatch [:responsive-show-left-column? show-left-column?])
    (dispatch [:responsive-show-right-column? show-right-column?]))
   (when-not (= @(subscribe [:mobile?]) (mobile?))
