@@ -114,6 +114,8 @@ body{
   font-size: 38px;
   font-family: 'Gloria Hallelujah';
   overflow: hidden;
+  user-select: none;
+  cursor: pointer;
 }
 
 .header .logo .red {color: red}
@@ -138,6 +140,8 @@ body{
   font-size: 28px;
   overflow: hidden;
   margin-bottom: 8px;
+  user-select: none;
+  cursor: pointer;
 }
 
 .header .translate-direction .select-button{

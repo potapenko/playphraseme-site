@@ -13,7 +13,13 @@
   )
 
 (defn search-phrase [text]
-  (js/console.log text))
+  (rf/dispatch [::model/search-text text]))
+
+(defn favorite-current-phrase [])
+
+(defn show-config [])
+
+(defn show-search-help [])
 
 (defn search-input []
   [:div.filters-container
@@ -32,17 +38,17 @@
          [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon])]]]
     [:li
      [:div.filter-input-icon
-      #_{:ng-click "favoritePhrase(currentPhrase)"}
+      {:on-click favorite-current-phrase}
       [:span.fa-stack.fa-1x
        [:i.fa.fa-circle.fa-stack-2x]
        [:i.fa.fa-star.fa-stack-1x.fa-inverse]]]]
     [:li
      [:div.filter-input-icon
-      #_{:ng-click "showConfigPopup()"}
+      {:on-click show-config}
       [:i.fa.fa-cog.fa-2x]]]
     [:li
      [:div.filter-input-icon
-      #_{:ng-mouseout "hideHelp();" :ng-mouseover "showHelp()"}
+      {:on-click show-search-help}
       [:i.fa.fa-question-circle.fa-2x]]]]]
   )
 
