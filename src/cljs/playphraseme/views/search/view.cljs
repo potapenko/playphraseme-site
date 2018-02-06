@@ -25,9 +25,9 @@
   (let [count-all    @(rf/subscribe [::model/search-count])
         count-loaded @(-> (rf/subscribe [::model/search-result]) :phrases count)]
     (when (< count-loaded count-all)
-        (go
-          (let [res (<! (rest-api/search-phrase @(rf/subscribe [::model/search-text])))]
-            (rf/dispatch [::model/search-result-append res]))))))
+      (go
+        (let [res (<! (rest-api/search-phrase @(rf/subscribe [::model/search-text])))]
+          (rf/dispatch [::model/search-result-append res]))))))
 
 (defn favorite-current-phrase [])
 
@@ -91,8 +91,7 @@
                  [:td.phrase-text "any text"]
                  [:td.translate-icons
                   [:a.lang-in-circle
-                   {:href     ""
-                    :on-click #(favorite-phrase x)}
+                   {:href "" :on-click #(favorite-phrase x)}
                    [:i.fa.fa-star.fa-1x]]
                   [:a.lang-in-circle
                    {:href (str "https://translate.google.com/#en/" lang "/text_here") :target "_blank"} lang]

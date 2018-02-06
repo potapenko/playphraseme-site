@@ -34,7 +34,6 @@
  (fn [db [_ value]]
    (assoc db ::search-count value)))
 
-
 (reg-sub
  ::phrases
  (fn [db [_]]
@@ -54,16 +53,6 @@
  ::suggestions
  (fn [db [_ value]]
    (assoc db ::suggestions value)))
-
-(reg-sub
- ::search-count
- (fn [db [_]]
-   (get db ::search-count)))
-
-(reg-event-db
- ::search-count
- (fn [db [_ value]]
-   (assoc db ::search-count value)))
 
 (comment
 
