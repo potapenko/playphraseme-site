@@ -258,3 +258,46 @@ body{
 .lang-in-circle:focus{
 	color: white;
 }
+
+
+.filters-container-top {
+  display: flex;
+}
+
+.filter-input{
+
+}
+
+.filter-input-focus{
+	border-color: #66afe9 !important;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6) !important;
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6) !important;
+}
+
+.filter-input-icons {
+  position: absolute;
+  right: 10px;
+  top: 9px;
+  list-style-type: none;
+}
+
+.filter-input-icons > li {
+  display: inline-block;
+  vertical-align: middle;
+  cursor: pointer;
+  padding-left: 5px;
+}
+
+.filter-input-icon {
+  opacity: 0.3;
+}
+
+.filter-input-icon:hover {
+  opacity: 0.6;
+}
+
+.play-icon{
+  padding-left: 3px;
+}
+.pause-icon{
+}
