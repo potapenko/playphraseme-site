@@ -7,6 +7,7 @@
             [playphraseme.common.util :as util]
             [playphraseme.views.search.model :as model]
             [playphraseme.common.rest-api :as rest-api]
+            [playphraseme.common.video-player :as player]
             [re-frame.core :as rf])
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]))
@@ -40,7 +41,7 @@
     {:type      "text" :placeholder "Search Phrase"
      :on-change #(search-phrase (-> % .-target .-value))}]
    [:ul.filter-input-icons
-    [:li [:div.numbers @(rf/subscribe [::model/search-count])]]
+    [:li [:div.search-result-count @(rf/subscribe [::model/search-count])]]
     [:li
      [:div.filter-input-icon
       {:on-click toggle-play}
@@ -77,23 +78,24 @@
       (let [lang (util/locale-name)]
         [:div.search-container
          [:div.search-content
-          [:div.video-player-container ""]
+          [:div.video-player-container
+           [player/video-player]]
           [:div.search-ui-container [search-input]]
           [:div.search-results-container
            [:table.table.table-hover.phrase-table.borderless
             [:tbody
              (doall
-              (for [x (range 100)]
-                ^{:key (str "elem-" x)}
+              (for [x @(rf/subscribe [::model/phrases])]
+                ^{:key (str "phrase-" x)}
                 [:tr
-                 [:td.phrase-number (inc x)]
-                 [:td.phrase-text "any text"]
+                 [:td.phrase-number (:number x)]
+                 [:td.phrase-text (:text x)]
                  [:td.translate-icons
                   [:a.lang-in-circle
                    {:href "" :on-click #(favorite-phrase x)}
                    [:i.fa.fa-star.fa-1x]]
                   [:a.lang-in-circle
-                   {:href (str "https://translate.google.com/#en/" lang "/text_here") :target "_blank"} lang]
+                   {:href (str "https://translate.google.com/#en/" lang "/" (:text x)) :target "_blank"} lang]
                   [:a.lang-in-circle
                    {:href (str "/#/phrase" x)} "#"]]]))]]]]]))}))
 

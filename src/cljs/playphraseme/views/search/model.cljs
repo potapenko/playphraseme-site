@@ -58,7 +58,7 @@
  ::search-result
  (fn [db [_ value]]
    (assoc db
-          ::phrases (:phrases value)
+          ::phrases (->> value :phrases (map-indexed (fn [i e] (assoc e :number (inc i)))))
           ::search-count (:count value)
           ::suggestions (:suggestions value))))
 
