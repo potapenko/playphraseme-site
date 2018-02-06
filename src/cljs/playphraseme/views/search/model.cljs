@@ -54,8 +54,20 @@
  (fn [db [_ value]]
    (assoc db ::suggestions value)))
 
-(comment
+(reg-event-db
+ ::search-result
+ (fn [db [_ value]]
+   (assoc db
+          ::phrases (:phrases value)
+          ::search-count (:count value)
+          ::suggestions (:suggestions value))))
 
+(reg-event-db
+ ::search-result-append
+ (fn [db [_ value]]
+   (update db ::phrases concat (:phrases value))))
+
+(comment
  (reg-sub
   ::name
   (fn [db [_]]
@@ -64,6 +76,4 @@
  (reg-event-db
   ::name
   (fn [db [_ value]]
-    (assoc db ::name value)))
-
- )
+    (assoc db ::name value))))

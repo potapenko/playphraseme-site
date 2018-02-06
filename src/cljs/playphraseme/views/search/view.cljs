@@ -23,16 +23,15 @@
 
 (defn scroll-end []
   (let [count-all    @(rf/subscribe [::model/search-count])
-        count-loaded @(-> (rf/subscribe [::model/search-result]) :phrases count)]
+        count-loaded @(-> (rf/subscribe [::model/phrases]) count)]
     (when (< count-loaded count-all)
       (go
         (let [res (<! (rest-api/search-phrase @(rf/subscribe [::model/search-text])))]
           (rf/dispatch [::model/search-result-append res]))))))
 
 (defn favorite-current-phrase [])
-
 (defn show-config [])
-
+(defn download-video [])
 (defn show-search-help [])
 
 (defn search-input []
