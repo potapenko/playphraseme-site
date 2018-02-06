@@ -4,9 +4,13 @@
             [cljs.pprint :refer [pprint]]
             [goog.crypt.base64 :as base-64]
             [playphraseme.common.util :as util]
+            [playphraseme.views.search.model]
             [re-frame.core :as rf])
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]))
+
+(defn toggle-play []
+  )
 
 (defn search-input []
   [:div.filters-container
@@ -16,13 +20,12 @@
     [:li [:div.numbers #_{:ng-bind "searchCount"}]]
     [:li
      [:div.filter-input-icon
-      #_{:ng-click "togglePlay()"}
+      {:on-click toggle-play}
       [:span.fa-stack.fa-1x
        [:i.fa.fa-circle.fa-stack-2x]
-       [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon
-        {:ng-show "!userPlayed"}]
-       [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon
-        #_{:ng-show "userPlayed"}]]]]
+       (if-not @(rf/subscribe [:play])
+         [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon]
+         [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon])]]]
     [:li
      [:div.filter-input-icon
       #_{:ng-click "favoritePhrase(currentPhrase)"}
