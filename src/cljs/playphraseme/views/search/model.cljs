@@ -4,26 +4,26 @@
 
 
 (reg-sub
- :play
+ ::play
  (fn [db _]
-   (get db :play false)))
+   (get db ::play false)))
 
 (reg-event-db
- :play
+ ::play
  (fn [db [_ value]]
-   (assoc db :play value)))
+   (assoc db ::play value)))
 
 
 (comment
 
  (reg-sub
-  :name
+  ::name
   (fn [db _]
-    (:name db)))
+    (::name db)))
 
  (reg-event-db
-  :name
+  ::name
   (fn [db [_ value]]
-    (assoc db :name value)))
+    (assoc db ::name value)))
 
  )

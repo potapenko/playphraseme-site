@@ -4,7 +4,7 @@
             [cljs.pprint :refer [pprint]]
             [goog.crypt.base64 :as base-64]
             [playphraseme.common.util :as util]
-            [playphraseme.views.search.model]
+            [playphraseme.views.search.model :as model]
             [re-frame.core :as rf])
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]))
@@ -23,7 +23,7 @@
       {:on-click toggle-play}
       [:span.fa-stack.fa-1x
        [:i.fa.fa-circle.fa-stack-2x]
-       (if-not @(rf/subscribe [:play])
+       (if-not @(rf/subscribe [::model/play])
          [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon]
          [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon])]]]
     [:li
