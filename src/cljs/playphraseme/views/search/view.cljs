@@ -80,7 +80,7 @@
         [:div.search-container
          [:div.search-content
           [:div.video-player-container
-           (let [[current @(rf/subscribe [::model/current-phrase-index])]]
+           (let [current @(rf/subscribe [::model/current-phrase-index])]
              (for [x    @(rf/subscribe [::model/phrases])
                    :let [{:keys [index id]} x]]
                ^{:key (str "phrase-" index "-" id)}
