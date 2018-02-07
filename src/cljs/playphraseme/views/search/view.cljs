@@ -91,13 +91,12 @@
                 ^{:key (str "phrase-" index "-" id)}
                 [player/video-player {:phrase         x
                                       :hide?          (not= @current index)
-                                      ;; :on-pause       #(println "video pause")
-                                      ;; :on-play        #(println "video play")
-                                      ;; :on-end         #(println "video ended")
-                                      ;; :on-pos-changed #(println "video position changed to" %)
-                                      ;; :on-load        #(println "video loaded")
-                                      :stopped?       @stopped
-                                      :position       0}]))]
+                                      :on-pause       #(println "video pause")
+                                      :on-play        #(println "video play")
+                                      :on-end         #(println "video ended")
+                                      :on-pos-changed #(println "video position changed to" %)
+                                      :on-load        #(println "video loaded")
+                                      :stopped?       @stopped}]))]
             [:div.search-ui-container [search-input]]
             [:div.search-results-container
              [:table.table.table-hover.phrase-table.borderless

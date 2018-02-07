@@ -8,6 +8,8 @@
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]))
 
+(def cdn-url "https://cdn.playphrase.me/phrases/")
+
 (defn- extract-props [argv]
   #_(reagent.impl.util/extract-props argv))
 
@@ -28,30 +30,28 @@
     (when el
       (aset el "currentTime" (/ position 1000)))))
 
-(def cdn-url "https://cdn.playphrase.me/phrases/")
-
 (defn video-player []
   (r/create-class
    {:component-will-receive-props
     (fn [this]
-      (let [{:keys [hide? stopped? position phrase]}
+      (let [{:keys [hide? stopped? phrase]}
             (r/props this)
             index    (:index phrase)
             playing? (and (not hide?) (not stopped?))]
-        (println index hide? stopped?)
+        (println index playing?)
         (if playing?
           (play index)
           (stop index))))
     :component-did-mount
     (fn [this]
-      (let [{:keys [hide? stopped? position phrase]}
+      (let [{:keys [hide? stopped? phrase]}
             (r/props this)
             index (:index phrase)]
         (jump index 0)
         (when-not (or stopped? hide?)
           (play index))))
     :reagent-render
-    (fn [{:keys [phrase hide? stopped? position]}]
+    (fn [{:keys [phrase hide? stopped?]}]
       (let [index (:index phrase)]
         [:div.video-player-box
          (when hide? {:style {:display :none}})
