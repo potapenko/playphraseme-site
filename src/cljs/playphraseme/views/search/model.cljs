@@ -60,6 +60,7 @@
    (assoc db
           ::phrases (->> value :phrases (map-indexed (fn [i e] (assoc e :index i))))
           ::search-count (:count value)
+          ::current-phrase-index 0
           ::suggestions (:suggestions value))))
 
 (reg-event-db

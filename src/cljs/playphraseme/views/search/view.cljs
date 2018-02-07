@@ -17,7 +17,7 @@
 (defn search-phrase [text]
   (rf/dispatch [::model/search-text text])
   (rf/dispatch [::model/search-result []])
-  (rf/dispatch [::model/current-phrase nil])
+  (rf/dispatch [::model/current-phrase-index nil])
   (when text
     (go
       (let [res (<! (rest-api/search-phrase text))]
@@ -76,34 +76,39 @@
       (some-> "search-input" js/document.getElementById .focus))
     :reagent-render
     (fn []
-      (let [lang (util/locale-name)]
-        [:div.search-container
-         [:div.search-content
-          [:div.video-player-container
-           (let [current @(rf/subscribe [::model/current-phrase-index])]
-             (for [x    @(rf/subscribe [::model/phrases])
-                   :let [{:keys [index id]} x]]
-               ^{:key (str "phrase-" index "-" id)}
-               [player/video-player {:phrase    x
-                                     :download? (= index current)
-                                     :hide?     (not= index current)
-                                     :position  0}]))]
-          [:div.search-ui-container [search-input]]
-          [:div.search-results-container
-           [:table.table.table-hover.phrase-table.borderless
-            [:tbody
+      (let [lang    (util/locale-name)
+            current (rf/subscribe [::model/current-phrase-index])
+            phrases (rf/subscribe [::model/phrases])]
+        (fn []
+          [:div.search-container
+           [:div.search-content
+            [:div.video-player-container
              (doall
-              (for [x @(rf/subscribe [::model/phrases])]
-                ^{:key (str "phrase-" x)}
-                [:tr
-                 [:td.phrase-number (-> x :index inc)]
-                 [:td.phrase-text (:text x)]
-                 [:td.translate-icons
-                  [:a.lang-in-circle
-                   {:href "" :on-click #(favorite-phrase x)}
-                   [:i.fa.fa-star.fa-1x]]
-                  [:a.lang-in-circle
-                   {:href (str "https://translate.google.com/#en/" lang "/" (:text x)) :target "_blank"} lang]
-                  [:a.lang-in-circle
-                   {:href (str "/#/phrase" x)} "#"]]]))]]]]]))}))
+              (for [x     @phrases
+                    :let  [{:keys [index id]} x]
+                    :when (< (dec @current) index (inc @current))
+                    ]
+                ^{:key (str "phrase-" index "-" id)}
+                [player/video-player {:phrase    x
+                                      :download? (= @current index)
+                                      :hide?     (not= @current index)
+                                      :position  0}]))]
+            [:div.search-ui-container [search-input]]
+            [:div.search-results-container
+             [:table.table.table-hover.phrase-table.borderless
+              [:tbody
+               (doall
+                (for [x @phrases]
+                  ^{:key (str "phrase-" x)}
+                  [:tr {:on-click #(rf/dispatch [::model/current-phrase-index (:index x)])}
+                   [:td.phrase-number @current #_(-> x :index inc)]
+                   [:td.phrase-text (:text x)]
+                   [:td.translate-icons
+                    [:a.lang-in-circle
+                     {:href "" :on-click #(favorite-phrase x)}
+                     [:i.fa.fa-star.fa-1x]]
+                    [:a.lang-in-circle
+                     {:href (str "https://translate.google.com/#en/" lang "/" (:text x)) :target "_blank"} lang]
+                    [:a.lang-in-circle
+                     {:href (str "/#/phrase" x)} "#"]]]))]]]]])))}))
 
