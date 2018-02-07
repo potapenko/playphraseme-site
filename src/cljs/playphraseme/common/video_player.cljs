@@ -9,7 +9,9 @@
 (defn index->id [index]
   (str "video-player-" index))
 
-(defn video-player [{:keys [index video-path download? hide? played? position]}]
+(def cdn-url "https://cdn.playphrase.me/phrases/")
+
+(defn video-player [{:keys [index phrase download? hide? played? position]}]
   (r/create-class
    {:should-component-update
     (fn [])
@@ -20,9 +22,9 @@
       (when download?
         [:div.video-player-box
          [:video.video-player
-          {:src   video-path
+          {:src   (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")
            :id    (index->id index)
            :style (merge
-                   ;; (when hide? {:display :none})
+                   (when hide? {:display :none})
                    {:z-index index})}]]))}))
 
