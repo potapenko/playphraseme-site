@@ -14,37 +14,49 @@
 (defn index->id [index]
   (str "video-player-" index))
 
+(defn index->element [index]
+  (-> index index->id js/document.getElementById))
+
 (defn stop [index]
-  (println "stop")
-  )
+  (some-> index index->element .pause))
 
 (defn play [index]
-  (println "play")
-  )
+  (some-> index index->element .play))
+
+(defn jump [index position]
+  (let [el (some-> index index->element)]
+    (when el
+      (aset el "currentTime" (/ position 1000)))))
 
 (def cdn-url "https://cdn.playphrase.me/phrases/")
 
-(defn video-player [{:keys [phrase hide? stopped? position]}]
+(defn video-player []
   (r/create-class
    {:component-will-receive-props
     (fn [this]
-      (let [{:keys [hide? stopped? phrase] :as props} (r/props this)
-            {:keys [index]} phrase
-            playing?        (and (not hide?) (not stopped?))]
+      (let [{:keys [hide? stopped? position phrase]}
+            (r/props this)
+            index    (:index phrase)
+            playing? (and (not hide?) (not stopped?))]
+        (println index hide? stopped?)
         (if playing?
-          (stop index)
-          (play index))))
+          (play index)
+          (stop index))))
     :component-did-mount
     (fn [this]
-      (let [{:keys [hide? stopped? phrase] :as props} (r/props this)]
-        (when-not stopped?
+      (let [{:keys [hide? stopped? position phrase]}
+            (r/props this)
+            index (:index phrase)]
+        (jump index 0)
+        (when-not (or stopped? hide?)
           (play index))))
     :reagent-render
-    (fn []
-      [:div.video-player-box
-       (when hide? {:display :none})
-       [:video.video-player
-        {:src   (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")
-         :id    (index->id (:number phrase))
-         :style {:z-index (:index phrase)}}]])}))
+    (fn [{:keys [phrase hide? stopped? position]}]
+      (let [index (:index phrase)]
+        [:div.video-player-box
+         (when hide? {:style {:display :none}})
+         [:video.video-player
+          {:src   (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")
+           :id    (index->id index)
+           :style {:z-index index}}]]))}))
 
