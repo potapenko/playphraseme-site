@@ -78,7 +78,8 @@
     (fn []
       (let [lang    (util/locale-name)
             current (rf/subscribe [::model/current-phrase-index])
-            phrases (rf/subscribe [::model/phrases])]
+            phrases (rf/subscribe [::model/phrases])
+            stoped  (rf/subscribe [::model/stoped])]
         (fn []
           [:div.search-container
            [:div.search-content
@@ -88,10 +89,13 @@
                     :let  [{:keys [index id]} x]
                     :when (<= @current index (inc @current))]
                 ^{:key (str "phrase-" index "-" id)}
-                [player/video-player {:phrase   x
-                                      :hide?    (not= @current index)
-                                      :stoped?  true
-                                      :position 0}]))]
+                [player/video-player {:phrase         x
+                                      :hide?          (not= @current index)
+                                      :on-end         #(println "video ended")
+                                      :on-pos-changed #(println "video position changed")
+                                      :on-load        #(println "video loaded")
+                                      :stoped?        @stoped
+                                      :position       0}]))]
             [:div.search-ui-container [search-input]]
             [:div.search-results-container
              [:table.table.table-hover.phrase-table.borderless
