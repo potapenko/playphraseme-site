@@ -179,13 +179,15 @@ body{
 
 .video-player-container {
   position: absolute;
-  background-color: gray;
   left: 0px; right: 0px; top: 0px;
+  background-color: black;
   height: 340px;
 }
 
 .video-player-box {
   background-color: black;
+  position: absolute;
+  left: 0px; right: 0px; top: 0px;
   height: 340px;
   text-align: center;
   overflow: hidden;
@@ -194,7 +196,6 @@ body{
 .video-player {
   height: 320px;
   text-align: center;
-  background-color: gray;
   margin: 10px auto;
 }
 

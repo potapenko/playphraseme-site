@@ -86,13 +86,12 @@
              (doall
               (for [x     @phrases
                     :let  [{:keys [index id]} x]
-                    :when (< (dec @current) index (inc @current))
-                    ]
+                    :when (<= @current index (inc @current))]
                 ^{:key (str "phrase-" index "-" id)}
-                [player/video-player {:phrase    x
-                                      :download? (= @current index)
-                                      :hide?     (not= @current index)
-                                      :position  0}]))]
+                [player/video-player {:phrase   x
+                                      :hide?    (not= @current index)
+                                      :stoped?  true
+                                      :position 0}]))]
             [:div.search-ui-container [search-input]]
             [:div.search-results-container
              [:table.table.table-hover.phrase-table.borderless
