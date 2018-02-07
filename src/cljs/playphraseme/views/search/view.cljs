@@ -80,7 +80,14 @@
         [:div.search-container
          [:div.search-content
           [:div.video-player-container
-           [player/video-player {:index 1 :video-path "" :download? true :hide? false :position 0}]]
+           (let [[current @(rf/subscribe [::model/current-phrase-index])]]
+             (for [x    @(rf/subscribe [::model/phrases])
+                   :let [{:keys [index id]} x]]
+               ^{:key (str "phrase-" index "-" id)}
+               [player/video-player {:phrase    x
+                                     :download? (= index current)
+                                     :hide?     (not= index current)
+                                     :position  0}]))]
           [:div.search-ui-container [search-input]]
           [:div.search-results-container
            [:table.table.table-hover.phrase-table.borderless
@@ -89,7 +96,7 @@
               (for [x @(rf/subscribe [::model/phrases])]
                 ^{:key (str "phrase-" x)}
                 [:tr
-                 [:td.phrase-number (:number x)]
+                 [:td.phrase-number (-> x :index inc)]
                  [:td.phrase-text (:text x)]
                  [:td.translate-icons
                   [:a.lang-in-circle

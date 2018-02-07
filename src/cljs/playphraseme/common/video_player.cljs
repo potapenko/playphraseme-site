@@ -11,7 +11,7 @@
 
 (def cdn-url "https://cdn.playphrase.me/phrases/")
 
-(defn video-player [{:keys [index phrase download? hide? played? position]}]
+(defn video-player [{:keys [phrase download? hide? played? position]}]
   (r/create-class
    {:should-component-update
     (fn [])
@@ -23,7 +23,7 @@
         [:div.video-player-box
          [:video.video-player
           {:src   (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")
-           :id    (index->id index)
+           :id    (index->id (:number phrase))
            :style (merge
                    (when hide? {:display :none})
                    {:z-index index})}]]))}))

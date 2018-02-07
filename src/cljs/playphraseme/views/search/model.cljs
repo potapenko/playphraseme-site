@@ -58,7 +58,7 @@
  ::search-result
  (fn [db [_ value]]
    (assoc db
-          ::phrases (->> value :phrases (map-indexed (fn [i e] (assoc e :number (inc i)))))
+          ::phrases (->> value :phrases (map-indexed (fn [i e] (assoc e :index i))))
           ::search-count (:count value)
           ::suggestions (:suggestions value))))
 
@@ -68,14 +68,14 @@
    (update db ::phrases concat (:phrases value))))
 
 (reg-sub
- ::current-phrase
+ ::current-phrase-index
  (fn [db [_]]
-   (get db ::current-phrase)))
+   (get db ::current-phrase-index)))
 
 (reg-event-db
- ::current-phrase
+ ::current-phrase-index
  (fn [db [_ value]]
-   (assoc db ::current-phrase value)))
+   (assoc db ::current-phrase-index value)))
 
 (comment
  (reg-sub
