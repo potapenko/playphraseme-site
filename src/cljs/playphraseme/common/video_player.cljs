@@ -11,7 +11,7 @@
 
 (def cdn-url "https://cdn.playphrase.me/phrases/")
 
-(defn video-player [{:keys [phrase hide? played? position]}]
+(defn video-player [{:keys [phrase hide? stopped? position]}]
   (r/create-class
    {:should-component-update
     (fn [])

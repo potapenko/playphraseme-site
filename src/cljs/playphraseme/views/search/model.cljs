@@ -4,14 +4,14 @@
 
 
 (reg-sub
- ::stoped
+ ::stopped
  (fn [db _]
-   (get db ::stoped false)))
+   (get db ::stopped false)))
 
 (reg-event-db
- ::stoped
+ ::stopped
  (fn [db [_ value]]
-   (assoc db ::stoped value)))
+   (assoc db ::stopped value)))
 
 
 (reg-sub

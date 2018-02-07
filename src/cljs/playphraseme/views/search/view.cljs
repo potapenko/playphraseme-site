@@ -48,7 +48,7 @@
       {:on-click toggle-play}
       [:span.fa-stack.fa-1x
        [:i.fa.fa-circle.fa-stack-2x]
-       (if-not @(rf/subscribe [::model/stoped])
+       (if-not @(rf/subscribe [::model/stopped])
          [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon]
          [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon])]]]
     [:li
@@ -79,7 +79,7 @@
       (let [lang    (util/locale-name)
             current (rf/subscribe [::model/current-phrase-index])
             phrases (rf/subscribe [::model/phrases])
-            stoped  (rf/subscribe [::model/stoped])]
+            stopped (rf/subscribe [::model/stopped])]
         (fn []
           [:div.search-container
            [:div.search-content
@@ -91,10 +91,12 @@
                 ^{:key (str "phrase-" index "-" id)}
                 [player/video-player {:phrase         x
                                       :hide?          (not= @current index)
+                                      :on-pause       #(println "video pause")
+                                      :on-play        #(println "video play")
                                       :on-end         #(println "video ended")
                                       :on-pos-changed #(println "video position changed")
                                       :on-load        #(println "video loaded")
-                                      :stoped?        @stoped
+                                      :stopped?       @stopped
                                       :position       0}]))]
             [:div.search-ui-container [search-input]]
             [:div.search-results-container
