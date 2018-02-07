@@ -101,7 +101,7 @@
                 (for [x @phrases]
                   ^{:key (str "phrase-" x)}
                   [:tr {:on-click #(rf/dispatch [::model/current-phrase-index (:index x)])}
-                   [:td.phrase-number @current #_(-> x :index inc)]
+                   [:td.phrase-number (-> x :index inc)]
                    [:td.phrase-text (:text x)]
                    [:td.translate-icons
                     [:a.lang-in-circle
