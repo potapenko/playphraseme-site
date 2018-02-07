@@ -2,19 +2,35 @@
   (:require [clojure.string :as string]
             [cljs.core.async :as async :refer [<! >! put! chan timeout]]
             [cljs.pprint :refer [pprint]]
-            [reagent.core :as r])
+            [reagent.core :as r]
+            [playphraseme.common.util :as util]
+            [clojure.data :refer [diff]])
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]))
 
 (defn index->id [index]
   (str "video-player-" index))
 
+(defn stop [index]
+  )
+
+(defn play [index]
+  )
+
 (def cdn-url "https://cdn.playphrase.me/phrases/")
 
 (defn video-player [{:keys [phrase hide? stopped? position]}]
   (r/create-class
-   {:should-component-update
-    (fn [])
+   {
+    :component-will-receive-props
+    (fn [this]
+      (let [{:keys [hide? stopped? phrase] :as props}
+            (r/props this)
+            {:keys [index]} phrase
+            playing?        (and (not hide?) (not stopped?))]
+        (if playing?
+          (stop index)
+          (play index))))
     :component-did-mount
     (fn [])
     :reagent-render
