@@ -70,12 +70,10 @@
 (defn favorite-phrase [id]
   (println "favorite pharase:" id))
 
-(defn page []
+(defn page [params]
   (r/create-class
    {:component-will-mount
-    (fn [this]
-      (let [q (some-> @(rf/subscribe [:params]) :q)]
-        (search-phrase q)))
+    (fn [this])
     :component-did-mount
     (fn [this]
       (some-> "search-input" js/document.getElementById .focus))
@@ -85,6 +83,8 @@
             current (rf/subscribe [::model/current-phrase-index])
             phrases (rf/subscribe [::model/phrases])
             stopped (rf/subscribe [::model/stopped])]
+        (let [q (some-> params :q)]
+          (search-phrase q))
         (fn []
           [:div.search-container
            [:div.search-content

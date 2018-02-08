@@ -27,12 +27,14 @@
    :register   #'register-page/page
    :phrase     #'phrase-page/page
    :support    #'support-page/page
-   :history    #'history-page/page
-   })
+   :history    #'history-page/page})
 
 (defn page []
-  [layout/root
-   [(pages @(rf/subscribe [:page]))]])
+  (let [page-id @(rf/subscribe [:page])
+        params  @(rf/subscribe [:params])]
+    [layout/root
+     ^{:key [page-id params]}
+     [(-> pages page-id) params]]))
 
 ;; -------------------------
 ;; Routes

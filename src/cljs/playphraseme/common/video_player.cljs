@@ -71,5 +71,5 @@
          [:video.video-player
           {:src   (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")
            :id    (index->id index)
-           :style {:z-index index}}]]))}))
+           :style {:z-index (* index 1000)}}]]))}))
 
