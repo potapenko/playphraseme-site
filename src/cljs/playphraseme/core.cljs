@@ -41,8 +41,8 @@
 (secretary/defroute "/" []
   (util/go-url! "/#/search"))
 
-(secretary/defroute "/search" []
-  (route/goto-page! :search))
+(secretary/defroute "/search" [query-params]
+  (route/goto-page! :search query-params))
 
 (secretary/defroute "/phrase" []
   (route/goto-page! :phrase))

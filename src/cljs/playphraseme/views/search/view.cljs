@@ -40,6 +40,7 @@
   [:div.filters-container
    [:input#search-input.filter-input.form-control.input-lg
     {:type      "text" :placeholder "Search Phrase"
+     :value     @(rf/subscribe [::model/search-text])
      :on-change #(search-phrase (-> % .-target .-value))}]
    [:ul.filter-input-icons
     [:li [:div.search-result-count @(rf/subscribe [::model/search-count])]]
@@ -71,9 +72,15 @@
 
 (defn page []
   (r/create-class
-   {:component-did-mount
-    (fn []
-      (some-> "search-input" js/document.getElementById .focus))
+   {:component-will-mount
+    (fn [this]
+      (let [q (some-> @(rf/subscribe [:params]) :q)]
+        (rf/dispatch [::model/search-text q])))
+   :component-did-mount
+    (fn [this]
+      (some-> "search-input" js/document.getElementById .focus)
+      (when-let [q @(rf/subscribe [::model/search-text])]
+        (search-phrase q)))
     :reagent-render
     (fn []
       (let [lang    (util/locale-name)
