@@ -16,14 +16,11 @@
 (defn- index->id [index]
   (str "video-player-" index))
 
-(defn get-current-time []
-  )
-
 (defn- index->element [index]
   (-> index index->id js/document.getElementById))
 
-(defn add-video-listeners []
-  )
+(defn add-video-listener [index event-name cb]
+  (-> index index->element (.addEventListener event-name cb)))
 
 (defn stop [index]
   (some-> index index->element .pause))
@@ -41,10 +38,9 @@
   (r/create-class
    {:component-will-receive-props
     (fn [this]
-      (let [{:keys [hide? stopped? phrase]}
-            (r/props this)
+      (let [{:keys [hide? stopped? phrase]} (r/props this)
             {:keys [index]} phrase
-            playing?        (and (not hide?) (not stopped?))]
+            playing? (and (not hide?) (not stopped?))]
         (if playing?
           (play index)
           (stop index))))
