@@ -76,7 +76,7 @@
     (fn [this]
       (let [q (some-> @(rf/subscribe [:params]) :q)]
         (rf/dispatch [::model/search-text q])))
-   :component-did-mount
+    :component-did-mount
     (fn [this]
       (some-> "search-input" js/document.getElementById .focus)
       (when-let [q @(rf/subscribe [::model/search-text])]
@@ -95,7 +95,7 @@
               (for [x     @phrases
                     :let  [{:keys [index id]} x]
                     :when (<= @current index (inc @current))]
-                ^{:key (str "phrase-" index "-" id)}
+                ^{:key (str "phrase-" index "-" id "-" @current)}
                 [player/video-player {:phrase         x
                                       :hide?          (not= @current index)
                                       :on-pause       #(println "video pause")

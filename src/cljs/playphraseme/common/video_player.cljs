@@ -23,22 +23,26 @@
   (some-> index index->element .pause))
 
 (defn play [index]
-  (some-> index index->element .play))
+  (println "play:" index)
+  (when-let [el (some-> index index->element)]
+    (js/console.log el)
+    (when (el .-paused)
+        (el .play))))
 
 (defn jump [index position]
   (let [el (some-> index index->element)]
     (when el
+      (println "jump:" index position)
       (aset el "currentTime" (/ position 1000)))))
 
 (defn video-player []
   (r/create-class
    {:component-will-receive-props
     (fn [this]
-      (let [{:keys [hide? stopped? phrase]}
+      (let [{:keys [hide? stopped? phrase current]}
             (r/props this)
             index    (:index phrase)
             playing? (and (not hide?) (not stopped?))]
-        (println index playing?)
         (if playing?
           (play index)
           (stop index))))
