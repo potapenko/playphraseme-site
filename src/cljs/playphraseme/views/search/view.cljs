@@ -88,12 +88,13 @@
         (fn []
           [:div.search-container
            [:div.search-content
+            ^{:key (str "video-list- " @current)}
             [:div.video-player-container
              (doall
               (for [x     @phrases
                     :let  [{:keys [index id]} x]
                     :when (<= @current index (inc @current))]
-                ^{:key (str "phrase-" index "-" id "-" @current)}
+                ^{:key (str "phrase-" index "-" id)}
                 [player/video-player {:phrase         x
                                       :hide?          (not= @current index)
                                       :on-pause       #(println "video pause")
