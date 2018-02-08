@@ -41,9 +41,10 @@
       (let [{:keys [hide? stopped? phrase]} (r/props this)
             {:keys [index]} phrase
             playing? (and (not hide?) (not stopped?))]
-        (if playing?
-          (play index)
-          (stop index))))
+        (add-video-listener index "canplaythrough"
+                            (if playing?
+                              #(play index)
+                              #(stop index)))))
     :component-did-mount
     (fn [this]
       (let [{:keys [hide? stopped? phrase
@@ -53,7 +54,11 @@
         (add-video-listener index "play" on-play)
         (add-video-listener index "pause" on-pause)
         (add-video-listener index "ended" on-end)
-        (add-video-listener index "timeupdate" #(console.log %))
+        (add-video-listener index "timeupdate"
+                            #(on-pos-changed
+                              (-> %
+                                  .-target .-currentTime
+                                  (* 1000) js/Math.round)))
         (add-video-listener index "canplaythrough" on-load)
         (jump index 0)
         (when-not (or stopped? hide?)
@@ -62,7 +67,7 @@
     (fn [{:keys [phrase hide? stopped?]}]
       (let [index (:index phrase)]
         [:div.video-player-box
-         {:style {:opacity (if hide? 0 1)}}
+         {:style (merge {:opacity (if hide? 0 1)} (when hide? {:display :none}))}
          [:video.video-player
           {:src   (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")
            :id    (index->id index)
