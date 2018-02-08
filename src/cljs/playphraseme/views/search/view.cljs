@@ -75,12 +75,10 @@
    {:component-will-mount
     (fn [this]
       (let [q (some-> @(rf/subscribe [:params]) :q)]
-        (rf/dispatch [::model/search-text q])))
+        (search-phrase q)))
     :component-did-mount
     (fn [this]
-      (some-> "search-input" js/document.getElementById .focus)
-      (when-let [q @(rf/subscribe [::model/search-text])]
-        (search-phrase q)))
+      (some-> "search-input" js/document.getElementById .focus))
     :reagent-render
     (fn []
       (let [lang    (util/locale-name)
