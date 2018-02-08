@@ -4,7 +4,7 @@
             [monger.collection :as mc]
             [monger.operators :refer :all]
             [playphraseme.app.config :refer [env]]
-            [playphraseme.db.core :refer :all]
+            [playphraseme.db.phrases-db :refer :all]
             [playphraseme.api.general-functions.doc-id :refer :all]))
 
 (def coll "phrases")

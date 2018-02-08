@@ -5,6 +5,7 @@
  :authorize-uri "https://api.twitter.com/oauth/authenticate"
  :port 3000
  :nrepl-port 7000
- :database-url "mongodb://127.0.0.1/playphraseme"
+ :database-url ""
+ :phrases-database-url "mongodb://127.0.0.1/playphraseme"
  :indexer-url "http://localhost:9093"
  }
