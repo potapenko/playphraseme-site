@@ -197,6 +197,7 @@ body{
   height: 320px;
   text-align: center;
   margin: 10px auto;
+	transition: opacity 0.4s ease-in-out;
 }
 
 .search-ui-container {
