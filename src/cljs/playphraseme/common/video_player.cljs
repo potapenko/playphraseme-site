@@ -58,7 +58,7 @@
     (fn [{:keys [phrase hide? stopped?]}]
       (let [index (:index phrase)]
         [:div.video-player-box
-         (when hide? {:style {:display :none}})
+         {:style {:opacity (if hide? 0 1)}}
          [:video.video-player
           {:src   (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")
            :id    (index->id index)
