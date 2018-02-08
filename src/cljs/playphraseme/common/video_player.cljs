@@ -19,7 +19,7 @@
 (defn- index->element [index]
   (-> index index->id js/document.getElementById))
 
-(defn add-video-listener [index event-name cb]
+(defn- add-video-listener [index event-name cb]
   (-> index index->element (.addEventListener event-name cb)))
 
 (defn stop [index]
@@ -46,9 +46,15 @@
           (stop index))))
     :component-did-mount
     (fn [this]
-      (let [{:keys [hide? stopped? phrase]}
-            (r/props this)
+      (let [{:keys [hide? stopped? phrase
+                    on-load on-pause on-play
+                    on-end on-pos-changed]} (r/props this)
             index (:index phrase)]
+        (add-video-listener index "play" on-play)
+        (add-video-listener index "pause" on-pause)
+        (add-video-listener index "ended" on-end)
+        (add-video-listener index "timeupdate" #(console.log %))
+        (add-video-listener index "canplaythrough" on-load)
         (jump index 0)
         (when-not (or stopped? hide?)
           (play index))))

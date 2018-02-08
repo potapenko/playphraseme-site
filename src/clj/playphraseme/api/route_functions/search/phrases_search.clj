@@ -7,17 +7,18 @@
             [playphraseme.common.util :as util]
             [playphraseme.api.queries.phrases :as db]
             [clojure.string :as string]
+            [clojure.pprint :refer [pprint]]
             [clojure.walk :as walk]))
 
 (defn use-shifts [p]
   (-> p
-      (update :start + (-> p :shifts :left))
-      (update :end + (-> p :shifts :right))
+      (update :start + (or (some-> p :shifts :left) 0))
+      (update :end + (or (some-> p :shifts :right) 0))
       (dissoc :shifts)))
 
 (defn get-phrase-data [id]
   (-> (db/get-phrase-by-id id)
-      (util/remove-keys [:random :haveVideo])
+      (util/remove-keys [:random :haveVideo :__v :state])
       (util/remove-keys :words [:id])
       use-shifts))
 
@@ -37,7 +38,7 @@
 (comment
   (time (count-response "hello"))
   (time (search-response "hello" 0 10))
-  (-> (search-response "hello" 0 1) :body :phrases first (select-keys [:start :end :shifts]))
+  (-> (search-response "hello" 0 1) :body)
 
 
   )
