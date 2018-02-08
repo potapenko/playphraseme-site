@@ -97,11 +97,8 @@
                 ^{:key (str "phrase-" index "-" id)}
                 [player/video-player {:phrase         x
                                       :hide?          (not= @current index)
-                                      :on-pause       #(println index "video pause")
-                                      :on-play        #(println index "video play")
-                                      :on-end         #(println index "video ended")
+                                      :on-end         #(rf/dispatch [::model/next-phrase])
                                       :on-pos-changed #(println index "video position changed to" %)
-                                      :on-load        #(println index "video loaded")
                                       :stopped?       @stopped}]))]
             [:div.search-ui-container [search-input]]
             [:div.search-results-container

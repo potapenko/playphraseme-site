@@ -20,7 +20,8 @@
   (-> index index->id js/document.getElementById))
 
 (defn- add-video-listener [index event-name cb]
-  (-> index index->element (.addEventListener event-name cb)))
+  (when cb
+    (-> index index->element (.addEventListener event-name cb))))
 
 (defn stop [index]
   (some-> index index->element .pause))

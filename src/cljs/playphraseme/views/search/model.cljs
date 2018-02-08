@@ -78,6 +78,11 @@
  (fn [db [_ value]]
    (assoc db ::current-phrase-index value)))
 
+(reg-event-db
+ ::next-phrase
+ (fn [db [_ value]]
+   (assoc db ::next-phrase value)))
+
 (comment
  (reg-sub
   ::name
