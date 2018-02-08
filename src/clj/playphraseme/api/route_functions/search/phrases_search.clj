@@ -9,10 +9,17 @@
             [clojure.string :as string]
             [clojure.walk :as walk]))
 
+(defn use-shifts [p]
+  (-> p
+      (update :start + (-> p :shifts :left))
+      (update :end + (-> p :shifts :right))
+      (dissoc :shifts)))
+
 (defn get-phrase-data [id]
   (-> (db/get-phrase-by-id id)
       (util/remove-keys [:random :haveVideo])
-      (util/remove-keys :words [:id])))
+      (util/remove-keys :words [:id])
+      use-shifts))
 
 (defn- get-phrases [phrases-ids]
   (pmap get-phrase-data phrases-ids))
@@ -29,4 +36,8 @@
 
 (comment
   (time (count-response "hello"))
-  (time (search-response "hello" 0 10)))
+  (time (search-response "hello" 0 10))
+  (-> (search-response "hello" 0 1) :body :phrases first (select-keys [:start :end :shifts]))
+
+
+  )

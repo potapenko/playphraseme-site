@@ -13,19 +13,24 @@
 (defn- extract-props [argv]
   #_(reagent.impl.util/extract-props argv))
 
-(defn index->id [index]
+(defn- index->id [index]
   (str "video-player-" index))
 
-(defn index->element [index]
+(defn get-current-time []
+  )
+
+(defn- index->element [index]
   (-> index index->id js/document.getElementById))
+
+(defn add-video-listeners []
+  )
 
 (defn stop [index]
   (some-> index index->element .pause))
 
 (defn play [index]
   (when-let [el (some-> index index->element)]
-    (when (-> el .-paused)
-        (-> el .play))))
+    (-> el .play)))
 
 (defn jump [index position]
   (let [el (some-> index index->element)]
@@ -38,8 +43,8 @@
     (fn [this]
       (let [{:keys [hide? stopped? phrase]}
             (r/props this)
-            index    (:index phrase)
-            playing? (and (not hide?) (not stopped?))]
+            {:keys [index]} phrase
+            playing?        (and (not hide?) (not stopped?))]
         (if playing?
           (play index)
           (stop index))))
