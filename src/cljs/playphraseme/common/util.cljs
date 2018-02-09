@@ -58,6 +58,11 @@
     (fn)
     (catch js/Error e (js/console.error " -> " e))))
 
+(defn ignore-err [f]
+  (try
+    (f)
+    (catch js/Error e "nothing")))
+
 (defn target->value [e]
   (some-> e .-target .-value))
 
