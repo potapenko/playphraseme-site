@@ -53,6 +53,10 @@
       #_(println "load new")
       (scroll-end))))
 
+(defn scroll-to-phrase [index]
+  (let [elem (js/document.getElementById (str "phrase-text-" index))]
+    (-> elem (.scrollIntoView #js{:behavior "smooth" :block "start"}))))
+
 (defn next-phrase []
   (rf/dispatch [::model/next-phrase])
   (let [current @(rf/subscribe [::model/current-phrase-index])
@@ -100,6 +104,26 @@
 (defn favorite-phrase [id]
   (println "favorite pharase:" id))
 
+(defn phrase-text [x]
+  (r/create-class
+   {:reagent-render
+    (fn []
+      (let [lang (util/locale-name)
+            {:keys [index text]} x]
+        [:tr {:id       (str "phrase-text-" index)
+              :on-click #(rf/dispatch [::model/current-phrase-index (:index x)])}
+         [:td.phrase-number (-> x :index inc)]
+         [:td.phrase-text text]
+         [:td.translate-icons
+          [:a.lang-in-circle
+           {:href "" :on-click #(favorite-phrase x)}
+           [:i.fa.fa-star.fa-1x]]
+          [:a.lang-in-circle
+           {:href (str "https://translate.google.com/#en/" lang "/" text) :target "_blank"} lang]
+          [:a.lang-in-circle
+           {:href (str "/#/phrase" x)} "#"]]]))}))
+
+
 (defn page [params]
   (r/create-class
    {:component-will-mount
@@ -129,26 +153,17 @@
                 ^{:key (str "phrase-" index "-" id)}
                 [player/video-player {:phrase         x
                                       :hide?          (not= @current index)
+                                      :on-play        #(scroll-to-phrase index)
                                       :on-end         next-phrase
-                                      :on-pos-changed #() #_(println index "video position changed to" %)
+                                      :on-pos-changed #() #_ (println index "video position changed to" %)
                                       :stopped?       @stopped}]))]
             [:div.search-ui-container [search-input]]
-            [:div.search-results-container
+            [:div#search-result.search-results-container
              {:on-scroll #(on-phrases-scroll %)}
              [:table.table.table-hover.phrase-table.borderless
               [:tbody
                (doall
                 (for [x @phrases]
                   ^{:key (str "phrase-" x)}
-                  [:tr {:on-click #(rf/dispatch [::model/current-phrase-index (:index x)])}
-                   [:td.phrase-number (-> x :index inc)]
-                   [:td.phrase-text (:text x)]
-                   [:td.translate-icons
-                    [:a.lang-in-circle
-                     {:href "" :on-click #(favorite-phrase x)}
-                     [:i.fa.fa-star.fa-1x]]
-                    [:a.lang-in-circle
-                     {:href (str "https://translate.google.com/#en/" lang "/" (:text x)) :target "_blank"} lang]
-                    [:a.lang-in-circle
-                     {:href (str "/#/phrase" x)} "#"]]]))]]]]])))}))
+                  [phrase-text x]))]]]]])))}))
 
