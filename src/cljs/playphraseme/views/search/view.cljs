@@ -54,7 +54,7 @@
       (scroll-end))))
 
 (defn scroll-to-phrase [index]
-  (let [elem (js/document.getElementById (str "phrase-text-" index))]
+  (when-let [elem (js/document.getElementById (str "phrase-text-" index))]
     (-> elem (.scrollIntoView #js{:behavior "smooth" :block "start"}))))
 
 (defn next-phrase []

@@ -23,12 +23,20 @@
   (when cb
     (-> index index->element (.addEventListener event-name cb))))
 
+(defn is-playing [index]
+  (when-let [el (index->element index)]
+    (and (pos? (-> el .-currentTime))
+         (not (-> el .-paused))
+         (not (-> el .-ended))
+         (> (-> el .-readyState) 2))))
+
 (defn stop [index]
   (some-> index index->element .pause))
 
 (defn play [index]
   (when-let [el (some-> index index->element)]
-    (-> el .play)))
+    (when-not (is-playing index)
+        (-> el .play))))
 
 (defn jump [index position]
   (let [el (some-> index index->element)]
