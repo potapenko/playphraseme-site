@@ -31,14 +31,12 @@
          (> (-> el .-readyState) 2))))
 
 (defn stop [index]
-  (util/ignore-err
-   (some-> index index->element .pause)))
+  (some-> index index->element .pause))
 
 (defn play [index]
-  (util/ignore-err
-   (when-let [el (some-> index index->element)]
-     (when-not (playing? index)
-       (-> el .play)))))
+  (when-let [el (some-> index index->element)]
+    (when-not (playing? index)
+      (-> el .play))))
 
 (defn jump [index position]
   (let [el (some-> index index->element)]
