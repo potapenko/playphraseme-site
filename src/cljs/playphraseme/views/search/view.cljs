@@ -12,24 +12,36 @@
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]))
 
-(defn toggle-play [])
+(defn toggle-play []
+  (let [now-stopped @(rf/subscribe [::model/stopped])]
+    (rf/dispatch [::model/stopped (not now-stopped)])))
 
 (defn search-phrase [text]
   (rf/dispatch [::model/search-text text])
   (rf/dispatch [::model/search-result []])
   (rf/dispatch [::model/current-phrase-index nil])
   (when text
+    (util/set-url! "search" {:q text})
     (go
-      (let [res (<! (rest-api/search-phrase text))]
+      (let [res (<! (rest-api/search-phrase text 10 0))]
         (rf/dispatch [::model/search-result res])))))
 
 (defn scroll-end []
   (let [count-all    @(rf/subscribe [::model/search-count])
-        count-loaded @(-> (rf/subscribe [::model/phrases]) count)]
+        count-loaded (-> @(rf/subscribe [::model/phrases]) count)]
     (when (< count-loaded count-all)
       (go
-        (let [res (<! (rest-api/search-phrase @(rf/subscribe [::model/search-text])))]
+        (let [res (<! (rest-api/search-phrase
+                       @(rf/subscribe [::model/search-text])
+                       10 count-loaded))]
           (rf/dispatch [::model/search-result-append res]))))))
+
+(defn next-phrase []
+  (rf/dispatch [::model/next-phrase])
+  (let [current @(rf/subscribe [::model/current-phrase-index])
+        loaded  (count @(rf/subscribe [::model/phrases]))]
+    (when (-> current (+ 5) (> loaded))
+      (scroll-end))))
 
 (defn favorite-current-phrase [])
 (defn show-config [])
@@ -41,7 +53,8 @@
    [:input#search-input.filter-input.form-control.input-lg
     {:type      "text" :placeholder "Search Phrase"
      :value     @(rf/subscribe [::model/search-text])
-     :on-change #(search-phrase (-> % .-target .-value))}]
+     :on-change #(search-phrase (-> % .-target .-value))}
+    ]
    [:ul.filter-input-icons
     [:li [:div.search-result-count @(rf/subscribe [::model/search-count])]]
     [:li
@@ -76,7 +89,9 @@
     (fn [this])
     :component-did-mount
     (fn [this]
-      (some-> "search-input" js/document.getElementById .focus))
+      (when-let [elem (some-> "search-input" js/document.getElementById)]
+        (aset elem "selectionStart" (-> elem .-value count))
+        (-> elem .focus)))
     :reagent-render
     (fn []
       (let [lang    (util/locale-name)
@@ -97,7 +112,7 @@
                 ^{:key (str "phrase-" index "-" id)}
                 [player/video-player {:phrase         x
                                       :hide?          (not= @current index)
-                                      :on-end         #(rf/dispatch [::model/next-phrase])
+                                      :on-end         next-phrase
                                       :on-pos-changed #(println index "video position changed to" %)
                                       :stopped?       @stopped}]))]
             [:div.search-ui-container [search-input]]

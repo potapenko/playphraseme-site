@@ -64,6 +64,27 @@
 (defn index-of [v e]
   (.indexOf v e))
 
+(def ^:private lazy-id (atom 0))
+
+(defn- clear-lazy []
+  (js/clearInterval @lazy-id))
+
+(defn lazy-call
+  ([cb] (lazy-call cb 400))
+  ([cb idle]
+   (clear-lazy)
+   (reset! lazy-id
+           (js/setInterval
+            (fn []
+              (clear-lazy)
+              (cb)) idle))))
+
+(defn params-to-url [params]
+  (string/join "&" (map (fn [[k v]] (str (name k) "=" (js/encodeURIComponent v))) params)))
+
+(defn set-url! [url params]
+  (aset js/window.location "hash" (str "/" url "?" (params-to-url params))))
+
 (comment
 
   (class->str

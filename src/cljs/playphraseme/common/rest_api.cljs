@@ -95,10 +95,12 @@
     (do (goto-login-page!) nil)
     res))
 
-(defn search-phrase [text]
-  (call-api http/get "/phrases/search"
-            (merge (api-headers) {:query-params {:q text}})
-            login-md :body))
+(defn search-phrase
+  ([text] (search-phrase text 10 0))
+  ([text limit skip]
+   (call-api http/get "/phrases/search"
+             (merge (api-headers) {:query-params {:q text :limit limit :skip skip}})
+             login-md :body)))
 
 (defn count-phrase [text]
   (call-api http/get "/phrases/count"
