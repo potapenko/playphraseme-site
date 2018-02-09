@@ -40,6 +40,19 @@
                        10 count-loaded))]
           (rf/dispatch [::model/search-result-append res]))))))
 
+(defn on-phrases-scroll [e]
+  (let [sh (-> e .-target .-scrollHeight)
+        st (-> e .-target .-scrollTop)
+        oh (-> e .-target .-offsetHeight)
+        th 50]
+    (when (= st 0)
+      #_(println "start"))
+    (when (>= (+ oh st) sh)
+      #_(println "end"))
+    (when (>= (+ oh st th) sh)
+      #_(println "load new")
+      (scroll-end))))
+
 (defn next-phrase []
   (rf/dispatch [::model/next-phrase])
   (let [current @(rf/subscribe [::model/current-phrase-index])
@@ -117,10 +130,11 @@
                 [player/video-player {:phrase         x
                                       :hide?          (not= @current index)
                                       :on-end         next-phrase
-                                      :on-pos-changed #(println index "video position changed to" %)
+                                      :on-pos-changed #() #_(println index "video position changed to" %)
                                       :stopped?       @stopped}]))]
             [:div.search-ui-container [search-input]]
             [:div.search-results-container
+             {:on-scroll #(on-phrases-scroll %)}
              [:table.table.table-hover.phrase-table.borderless
               [:tbody
                (doall
