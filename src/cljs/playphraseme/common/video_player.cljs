@@ -23,7 +23,7 @@
   (when cb
     (-> index index->element (.addEventListener event-name cb))))
 
-(defn is-playing [index]
+(defn playing? [index]
   (when-let [el (index->element index)]
     (and (pos? (-> el .-currentTime))
          (not (-> el .-paused))
@@ -35,7 +35,7 @@
 
 (defn play [index]
   (when-let [el (some-> index index->element)]
-    (when-not (is-playing index)
+    (when-not (playing? index)
         (-> el .play))))
 
 (defn jump [index position]
