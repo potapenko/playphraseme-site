@@ -66,12 +66,13 @@
       (scroll-end))))
 
 (defn  update-current-word [pos]
+  (println "update current world: " pos)
   (let [phrases @(rf/subscribe [::model/phrases])
         current-phrase-index @(rf/subscribe [::model/current-phrase-index])
         current-phrase (nth phrases current-phrase-index)]
     (when current-phrase
-      (let [current-word (->> current-phrase :words (filter #(-> % :start (> pos))) first)]
-        (rf/dispatch [::model/current-word-index (:index current-word)])))))
+      (let [current-word (->> current-phrase :words (filter #(-> % :start (< pos))) last)]
+        (rf/dispatch-sync [::model/current-word-index (:index current-word)])))))
 
 (defn favorite-current-phrase [])
 (defn show-config [])
