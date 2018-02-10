@@ -65,6 +65,15 @@
     (when (-> current (+ 5) (> loaded))
       (scroll-end))))
 
+(defn  update-current-word [pos]
+  (let [phrases @(rf/subscribe [::model/phrases])
+        current-phrase-index @(rf/subscribe [::model/current-phrase-index])
+        current-phrase (some->> phrases (filter #(-> phrases :index (= current-phrase-index) first)))]
+    (when current-phrase
+
+
+      )))
+
 (defn favorite-current-phrase [])
 (defn show-config [])
 (defn download-video [])
@@ -105,36 +114,54 @@
 (defn favorite-phrase [id]
   (println "favorite pharase:" id))
 
+(defn karaoke-words [words]
+  [:div.karaoke
+   (for [w    words
+         :let [{:keys [text index]} w]]
+     ^{:key (str "word-" index)}
+     [:a.s-word {:href ""} text])])
+
+(defn karaoke-words-current [words]
+  [:div.karaoke
+   (let [played-word-index @(rf/subscribe [::model/current-word-index])]
+     (for [w    words
+           :let [{:keys [text index]} w]]
+       ^{:key (str "word-" index)}
+       [:a.s-word {:href  ""
+                   :class (util/class->str
+                           (when (= index played-word-index) "s-word-played"))}
+        text]))])
+
 (defn karaoke [phrase]
-  (let [{:keys [words text id]} phrase
-        nlp-words (nlp/create-words text)
-        words     (map (fn [w1 w2 i] (assoc w1 :text w2 :index i))
-                       words nlp-words (range (count words)))]
+  (let [{:keys [words text id index]} phrase
+        nlp-words               (nlp/create-words text)
+        words                   (map (fn [w1 w2 i] (assoc w1 :text w2 :index i))
+                                     words nlp-words (range (count words)))
+        current-index           (rf/subscribe [::model/current-phrase-index])]
     (fn []
-      [:div.karaoke
-       (for [w    words
-             :let [{:keys [text index]} w]]
-         ^{:key (str "word-" index)}
-         [:a.s-word text])])))
+      (if (= @current-index index)
+        [karaoke-words-current words]
+        [karaoke-words words]))))
 
 (defn phrase-text [x]
   (r/create-class
    {:reagent-render
     (fn []
       (let [lang (util/locale-name)
-            {:keys [index text]} x]
-        [:tr {:id       (str "phrase-text-" index)
-              :on-click #(rf/dispatch [::model/current-phrase-index (:index x)])}
-         [:td [:div.phrase-number (-> x :index inc)]]
-         [:td.phrase-text [karaoke x]]
-         [:td.translate-icons
-          [:a.lang-in-circle
-           {:href "" :on-click #(favorite-phrase x)}
-           [:i.fa.fa-star.fa-1x]]
-          [:a.lang-in-circle
-           {:href (str "https://translate.google.com/#en/" lang "/" text) :target "_blank"} lang]
-          [:a.lang-in-circle
-           {:href (str "/#/phrase" x)} "#"]]]))}))
+            {:keys [index text id]} x]
+        (fn []
+          [:tr {:id       (str "phrase-text-" index)
+                :on-click #(rf/dispatch [::model/current-phrase-index (:index x)])}
+           [:td [:div.phrase-number (-> x :index inc)]]
+           [:td.phrase-text [karaoke x]]
+           [:td.translate-icons
+            [:a.lang-in-circle
+             {:href "" :on-click #(favorite-phrase x)}
+             [:i.fa.fa-star.fa-1x]]
+            [:a.lang-in-circle
+             {:href (str "https://translate.google.com/#en/" lang "/" text) :target "_blank"} lang]
+            [:a.lang-in-circle
+             {:href (str "/#/phrase/" id)} "#"]]])))}))
 
 
 (defn page [params]
@@ -168,7 +195,7 @@
                                       :hide?          (not= @current index)
                                       :on-play        #(scroll-to-phrase index)
                                       :on-end         next-phrase
-                                      :on-pos-changed #() #_ (println index "video position changed to" %)
+                                      :on-pos-changed update-current-word
                                       :stopped?       @stopped}]))]
             [:div.search-ui-container [search-input]]
             [:div#search-result.search-results-container

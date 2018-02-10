@@ -236,10 +236,12 @@ body{
 	/*font-family: 'Roboto';*/
 	/*font-weight: 400;*/
 }
+
 word, word:active, word:focus{
 	outline:none !important;
 	border: none;
 }
+
 .s-word-searched {
 	text-decoration: underline;
 
@@ -247,9 +249,6 @@ word, word:active, word:focus{
 .s-word-played {
 	background-color: rgba(0,0,0,1);
 	color: white;
-/*background-color: #ccc;
-	color: black;*/
-	/*font-weight: bold;*/
 }
 .w-invalid {
 	background-color: yellow;

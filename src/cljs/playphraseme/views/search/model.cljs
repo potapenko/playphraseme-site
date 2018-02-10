@@ -54,24 +54,31 @@
  (fn [db [_ value]]
    (assoc db ::suggestions value)))
 
-(defn- add-indexes [phrases]
-  (->> phrases (map-indexed (fn [i e] (assoc e :index i)))))
+(defn- add-indexes [coll]
+  (->> coll (map-indexed (fn [i e] (assoc e :index i))) vec))
+
+(defn add-phrases-indexes [phrases]
+  (->> phrases
+       add-indexes
+       (map #(update % :words add-indexes))))
 
 (reg-event-db
  ::search-result
  (fn [db [_ value]]
-   (assoc db
-          ::phrases (-> value :phrases add-indexes)
-          ::search-count (:count value)
-          ::current-phrase-index 0
-          ::suggestions (:suggestions value))))
+   (-> db
+    (assoc
+     ::phrases (:phrases value)
+     ::search-count (:count value)
+     ::current-phrase-index 0
+     ::suggestions (:suggestions value))
+    (update ::phrases add-phrases-indexes))))
 
 (reg-event-db
  ::search-result-append
  (fn [db [_ value]]
    (-> db
        (update ::phrases concat (:phrases value))
-       (update ::phrases add-indexes))))
+       (update ::phrases add-phrases-indexes))))
 
 (reg-sub
  ::current-phrase-index
@@ -89,6 +96,16 @@
    (let [current       (::current-phrase-index db)
          count-phrases (::search-count db)]
      (assoc db ::current-phrase-index (min (dec count-phrases) (inc current))))))
+
+(reg-sub
+ ::current-word-index
+ (fn [db [_]]
+   (get db ::current-word-index 0)))
+
+(reg-event-db
+ ::current-word-index
+ (fn [db [_ value]]
+   (assoc db ::current-word-index value)))
 
 (comment
  (reg-sub
