@@ -106,12 +106,9 @@
   (println "favorite pharase:" id))
 
 (defn karaoke [phrase]
-  (let [{:keys [words text id]}
-        phrase
+  (let [{:keys [words text id]} phrase
         nlp-words (nlp/create-words text)
-        words     (map (fn [w1 w2 i] (assoc w1
-                                            :text w2
-                                            :index i))
+        words     (map (fn [w1 w2 i] (assoc w1 :text w2 :index i))
                        words nlp-words (range (count words)))]
     (fn []
       [:div.karaoke
