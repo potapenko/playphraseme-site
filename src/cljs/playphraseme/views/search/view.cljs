@@ -109,12 +109,10 @@
   (let [{:keys [words text id]}
         phrase
         nlp-words (nlp/create-words text)
-        counter   (atom 0)
-        words     (map (fn [w1 w2] (assoc w1
-                                          :text w2
-                                          :index (swap! counter inc)))
-                       words nlp-words)]
-    (println (string/join ", " (map :text words)))
+        words     (map (fn [w1 w2 i] (assoc w1
+                                            :text w2
+                                            :index i))
+                       words nlp-words (range (count words)))]
     (fn []
       [:div.karaoke
        (for [w    words
