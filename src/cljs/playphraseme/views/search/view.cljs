@@ -117,26 +117,26 @@
 (defn karaoke-words [words]
   [:div.karaoke
    (for [w    words
-         :let [{:keys [text index]} w]]
+         :let [{:keys [formated-text index]} w]]
      ^{:key (str "word-" index)}
-     [:a.s-word {:href ""} text])])
+     [:a.s-word {:href ""} formated-text])])
 
 (defn karaoke-words-current [words]
   [:div.karaoke
    (let [played-word-index @(rf/subscribe [::model/current-word-index])]
      (for [w    words
-           :let [{:keys [text index]} w]]
+           :let [{:keys [formated-text text index]} w]]
        ^{:key (str "word-" index)}
        [:a.s-word {:href  ""
                    :class (util/class->str
                            (when (= index played-word-index) "s-word-played"))}
-        text]))])
+        formated-text]))])
 
 (defn karaoke [phrase]
   (let [{:keys [words text id index]} phrase
         nlp-words               (nlp/create-words text)
-        words                   (map (fn [w1 w2 i] (assoc w1 :text w2 :index i))
-                                     words nlp-words (range (count words)))
+        words                   (map (fn [w1 w2] (assoc w1 :formated-text w2))
+                                     words nlp-words)
         current-index           (rf/subscribe [::model/current-phrase-index])]
     (fn []
       (if (= @current-index index)
