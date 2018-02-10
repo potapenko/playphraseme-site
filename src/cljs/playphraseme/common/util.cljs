@@ -90,6 +90,17 @@
 (defn set-url! [url params]
   (aset js/window.location "hash" (str "/" url "?" (params-to-url params))))
 
+(defn id->elem [id]
+  (-> id js/document.getElementById))
+
+(defn add-class [elem class]
+  (let [classes (.-classList elem)]
+    (-> classes (.add class))))
+
+(defn remove-class [elem class]
+  (let [classes (.-classList elem)]
+    (-> classes (.remove class))))
+
 (comment
 
   (class->str

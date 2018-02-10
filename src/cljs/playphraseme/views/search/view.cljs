@@ -66,14 +66,17 @@
       (scroll-end))))
 
 (defn  update-current-word [pos]
-  (println "update current world: " pos)
+  ;; (println "update current world: " pos)
   (let [phrases @(rf/subscribe [::model/phrases])
         current-phrase-index @(rf/subscribe [::model/current-phrase-index])
         current-phrase (nth phrases current-phrase-index)]
     (when current-phrase
       (let [current-word (->> current-phrase :words (filter #(-> % :start (< pos))) last)]
         (when current-word
-          (rf/dispatch-sync [::model/current-word-index (:index current-word)]))))))
+          (doseq [x (:words current-phrase)]
+            (-> x :index (->> (str "word-")) util/id->elem (util/remove-class "s-word-played")))
+          (-> current-word :index (->> (str "word-")) util/id->elem (util/add-class "s-word-played"))
+          #_(rf/dispatch-sync [::model/current-word-index (:index current-word)]))))))
 
 (defn favorite-current-phrase [])
 (defn show-config [])
@@ -129,6 +132,7 @@
            :let [{:keys [formated-text text index]} w]]
        ^{:key (str "word-" index)}
        [:a.s-word {:href  ""
+                   :id    (str "word-" index)
                    :class (util/class->str
                            (when (= index played-word-index) "s-word-played"))}
         formated-text]))])
