@@ -72,7 +72,8 @@
         current-phrase (nth phrases current-phrase-index)]
     (when current-phrase
       (let [current-word (->> current-phrase :words (filter #(-> % :start (< pos))) last)]
-        (rf/dispatch-sync [::model/current-word-index (:index current-word)])))))
+        (when current-word
+          (rf/dispatch-sync [::model/current-word-index (:index current-word)]))))))
 
 (defn favorite-current-phrase [])
 (defn show-config [])
