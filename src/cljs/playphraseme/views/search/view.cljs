@@ -8,6 +8,7 @@
             [playphraseme.views.search.model :as model]
             [playphraseme.common.rest-api :as rest-api]
             [playphraseme.common.video-player :as player]
+            [playphraseme.common.nlp :as nlp]
             [re-frame.core :as rf])
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]))
@@ -104,6 +105,19 @@
 (defn favorite-phrase [id]
   (println "favorite pharase:" id))
 
+(defn karaoke [phrase]
+  (let [{:keys [words text id]} phrase
+        nlp-words               (nlp/create-words text)
+        counter                 (atom 0)
+        words                   (map (fn [w1 w2] (assoc w1 :text w2 :index (swap! counter inc))) words nlp-words)]
+    (println (string/join ", " (map :text words)))
+    (fn []
+      [:div.karaoke
+       (for [w    words
+             :let [{:keys [text index]} w]]
+         ^{:key (str "word-" index)}
+         [:span.s-word text])])))
+
 (defn phrase-text [x]
   (r/create-class
    {:reagent-render
@@ -113,7 +127,7 @@
         [:tr {:id       (str "phrase-text-" index)
               :on-click #(rf/dispatch [::model/current-phrase-index (:index x)])}
          [:td.phrase-number (-> x :index inc)]
-         [:td.phrase-text text]
+         [:td.phrase-text [karaoke x]]
          [:td.translate-icons
           [:a.lang-in-circle
            {:href "" :on-click #(favorite-phrase x)}

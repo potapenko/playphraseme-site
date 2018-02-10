@@ -218,6 +218,53 @@ body{
   width: 100%;
 }
 
+
+/* -------------- */
+
+.s-word{
+	background-color: rgba(0,0,0,0);
+	color: #333;
+	font-size: 22px;
+	cursor: pointer;
+	padding: 3px;
+	outline: none;
+
+	/*font-family: 'Roboto';*/
+	/*font-weight: 400;*/
+}
+word, word:active, word:focus{
+	outline:none !important;
+	border: none;
+}
+.s-word-searched {
+	text-decoration: underline;
+
+}
+.s-word-played {
+	background-color: rgba(0,0,0,1);
+	color: white;
+/*background-color: #ccc;
+	color: black;*/
+	/*font-weight: bold;*/
+}
+.w-invalid {
+	background-color: yellow;
+}
+
+.s-invalid {
+	background-color: #FFFFE0;
+}
+
+.current-phrase .s-word{
+  color: black;
+}
+
+.current-phrase .s-word-played {
+  color: white;
+}
+
+/* -------------- */
+
 .phrase-text .link-word{
   color: #333;
   font-size: 22px;
