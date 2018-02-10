@@ -115,7 +115,7 @@
        (for [w    words
              :let [{:keys [text index]} w]]
          ^{:key (str "word-" index)}
-         [:span.s-word text])])))
+         [:a.s-word text])])))
 
 (defn phrase-text [x]
   (r/create-class

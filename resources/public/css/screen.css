@@ -218,13 +218,17 @@ body{
   width: 100%;
 }
 
+.karaoke {
+  display: flex;
+  flex-wrap: wrap;
+}
 
 /* -------------- */
 
 .s-word{
 	background-color: rgba(0,0,0,0);
 	color: #333;
-	font-size: 22px;
+	font-size: 18px;
 	cursor: pointer;
 	padding: 3px;
 	outline: none;
