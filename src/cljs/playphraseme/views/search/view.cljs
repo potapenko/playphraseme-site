@@ -125,7 +125,7 @@
             {:keys [index text]} x]
         [:tr {:id       (str "phrase-text-" index)
               :on-click #(rf/dispatch [::model/current-phrase-index (:index x)])}
-         [:td.phrase-number (-> x :index inc)]
+         [:td [:div.phrase-number (-> x :index inc)]]
          [:td.phrase-text [karaoke x]]
          [:td.translate-icons
           [:a.lang-in-circle

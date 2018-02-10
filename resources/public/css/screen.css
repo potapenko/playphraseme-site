@@ -303,9 +303,8 @@ word, word:active, word:focus{
 }
 
 .phrase-number{
-	width:30px;
+  padding-top: 4px;
 	text-align:right;
-	min-width: 30px;
   color: #ccc;
 }
 
