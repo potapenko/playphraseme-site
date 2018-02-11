@@ -135,7 +135,6 @@
     (player/play (:index phrase))))
 
 (defn get-searched-words [current-words]
-  (println "----------------")
   (let [text             @(rf/subscribe [::model/search-text])
         all-search-words (-> text string/lower-case nlp/create-words)]
     (loop [[v & t]      current-words
@@ -143,7 +142,6 @@
            result       []]
       (let [star?          (= "*" (first search-words))
             current-search (->> search-words (drop-while #{"*"}) first)]
-        (println star? current-search (:text v) (map :text result))
         (if (and v current-search)
           (cond
             (= (:text v) current-search) (recur t (->> search-words (drop-while #{"*"}) rest) (conj result v))
