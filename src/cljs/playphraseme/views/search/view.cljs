@@ -41,6 +41,15 @@
                        10 count-loaded))]
           (rf/dispatch [::model/search-result-append res]))))))
 
+(defn current-phrase-index []
+  @(rf/subscribe [::model/current-phrase-index]))
+
+(defn current-phrase []
+  (let [phrases @(rf/subscribe [::model/phrases])
+        current-phrase-index (current-phrase-index)
+        current-phrase (nth phrases current-phrase-index nil)]
+    current-phrase))
+
 (defn on-phrases-scroll [e]
   (let [sh (-> e .-target .-scrollHeight)
         st (-> e .-target .-scrollTop)
@@ -67,19 +76,14 @@
 
 (defn highlite-word [current-phrase current-word]
   (doseq [x (:words current-phrase)]
-    (-> x :index (->> (str "word-")) util/id->elem (util/remove-class "s-word-played")))
-  (-> current-word :index (->> (str "word-")) util/id->elem (util/add-class "s-word-played"))
+    (some-> x :index (->> (str "word-")) util/id->elem (util/remove-class "s-word-played")))
+  (some-> current-word :index (->> (str "word-")) util/id->elem (util/add-class "s-word-played"))
   #_(rf/dispatch-sync [::model/current-word-index (:index current-word)]))
 
-(defn  update-current-word [pos]
-  ;; (println "update current world: " pos)
-  (let [phrases @(rf/subscribe [::model/phrases])
-        current-phrase-index @(rf/subscribe [::model/current-phrase-index])
-        current-phrase (nth phrases current-phrase-index)]
-    (when current-phrase
-      (let [current-word (->> current-phrase :words (filter #(-> % :start (< pos))) last)]
-        (when current-word
-          (highlite-word current-phrase current-word))))))
+(defn update-current-word [pos]
+  (let [current-word (some->> (current-phrase) :words (filter #(-> % :start (< pos))) last)]
+    (when current-word
+      (highlite-word current-phrase current-word))))
 
 (defn favorite-current-phrase [])
 (defn show-config [])
