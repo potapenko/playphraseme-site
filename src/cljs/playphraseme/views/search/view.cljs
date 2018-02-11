@@ -135,19 +135,21 @@
     (player/play (:index phrase))))
 
 (defn get-searched-words [current-words]
+  (println "----------------")
   (let [text             @(rf/subscribe [::model/search-text])
         all-search-words (-> text string/lower-case nlp/create-words)]
     (loop [[v & t]      current-words
            search-words all-search-words
            result       []]
-
-      (let [current-search (-> search-words first)]
-       (if (and v current-search)
-         (cond
-           (= (:text v) current-search) (recur t (rest search-words) (conj result v))
-           (= "*" current-search) (recur t search-words (conj result v))
-           :else (recur t all-search-words []))
-         result)))))
+      (let [star?          (= "*" (first search-words))
+            current-search (->> search-words (drop-while #{"*"}) first)]
+        (println star? current-search (:text v) (map :text result))
+        (if (and v current-search)
+          (cond
+            (= (:text v) current-search) (recur t (->> search-words (drop-while #{"*"}) rest) (conj result v))
+            star?                        (recur t search-words (conj result v))
+            :else                        (recur t all-search-words []))
+          result)))))
 
 (defn karaoke-words-current [phrase-index words]
   [:div.karaoke
@@ -235,7 +237,10 @@
                 ^{:key (str "phrase-" index "-" id)}
                 [player/video-player {:phrase         x
                                       :hide?          (not= @current index)
-                                      :on-play        #(scroll-to-phrase index)
+                                      :on-play        #(do
+                                                         #_(rf/dispatch [::model/stopped false])
+                                                         (scroll-to-phrase index))
+                                      ;; :on-pause       #(rf/dispatch [::model/stopped true])
                                       :on-end         next-phrase
                                       :on-pos-changed update-current-word
                                       :stopped?       @stopped}]))]
