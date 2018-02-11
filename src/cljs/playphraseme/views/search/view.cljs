@@ -118,23 +118,33 @@
 (defn favorite-phrase [id]
   (println "favorite pharase:" id))
 
-(defn karaoke-words [words]
+(defn goto-word [e phrase-index word-index]
+  (-> e .preventDefault)
+  (let [phrase (nth @(rf/subscribe [::model/phrases]) phrase-index)
+        word (-> phrase :words (nth word-index))]
+    (rf/dispatch-sync [::model/current-word-index] (:index phrase))
+    (println word-index)
+    (player/jump (:index phrase) (:end word))
+    (player/play (:index phrase))))
+
+(defn karaoke-words [phrase-index words]
   [:div.karaoke
    (for [w    words
          :let [{:keys [formated-text index]} w]]
      ^{:key (str "word-" index)}
-     [:a.s-word {:href ""} formated-text])])
+     [:a.s-word {:href "" :on-click #(goto-word % phrase-index index)} formated-text])])
 
-(defn karaoke-words-current [words]
+(defn karaoke-words-current [phrase-index words]
   [:div.karaoke
    (let [played-word-index @(rf/subscribe [::model/current-word-index])]
      (for [w    words
            :let [{:keys [formated-text text index]} w]]
        ^{:key (str "word-" index)}
-       [:a.s-word {:href  ""
-                   :id    (str "word-" index)
-                   :class (util/class->str
-                           (when (= index played-word-index) "s-word-played"))}
+       [:a.s-word {:href     ""
+                   :on-click #(goto-word % phrase-index index)
+                   :id       (str "word-" index)
+                   :class    (util/class->str
+                              (when (= index played-word-index) "s-word-played"))}
         formated-text]))])
 
 (defn karaoke [phrase]
@@ -145,8 +155,8 @@
         current-index           (rf/subscribe [::model/current-phrase-index])]
     (fn []
       (if (= @current-index index)
-        [karaoke-words-current words]
-        [karaoke-words words]))))
+        [karaoke-words-current index words]
+        [karaoke-words index words]))))
 
 (defn phrase-text [x]
   (r/create-class
