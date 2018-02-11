@@ -121,11 +121,10 @@
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
   (let [phrase (nth @(rf/subscribe [::model/phrases]) phrase-index)
-        word (-> phrase :words (nth word-index nil))]
-    (when word
-     (rf/dispatch-sync [::model/current-word-index] (:index phrase))
-     (player/jump (:index phrase) (+ 400 (:start word)))
-     (player/play (:index phrase)))))
+        word (-> phrase :words (nth word-index))]
+    (rf/dispatch-sync [::model/current-word-index] (:index phrase))
+    (player/jump (:index phrase) (+ 400 (:start word)))
+    (player/play (:index phrase))))
 
 (defn karaoke-words [phrase-index words]
   [:div.karaoke
