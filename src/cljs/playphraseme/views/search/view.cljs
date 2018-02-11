@@ -171,12 +171,10 @@
 
 (defn page [params]
   (r/create-class
-   {:component-will-mount
-    (fn [this])
-    :component-did-mount
+   {:component-did-mount
     (fn [this]
       (when-let [elem (some-> "search-input" js/document.getElementById)]
-        (aset elem "selectionStart" (-> elem .-value count))
+        (-> elem .-selectionStart (set! (-> elem .-value count)))
         (-> elem .focus)))
     :reagent-render
     (fn []
@@ -191,6 +189,7 @@
            [:div.search-content
             ^{:key (str "video-list- " @current)}
             [:div.video-player-container
+             {:on-click toggle-play}
              (doall
               (for [x     @phrases
                     :let  [{:keys [index id]} x]
