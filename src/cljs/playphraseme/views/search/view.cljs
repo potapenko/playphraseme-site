@@ -141,11 +141,13 @@
            search-words all-search-words
            result       []]
 
-      (if (and v (-> search-words empty? not))
-        (if (and v (= (:text v) (-> search-words first)))
-          (recur t (rest search-words) (conj result v))
-          (recur t all-search-words []))
-        result))))
+      (let [current-search (-> search-words first)]
+       (if (and v current-search)
+         (cond
+           (= (:text v) current-search) (recur t (rest search-words) (conj result v))
+           (= "*" current-search) (recur t search-words (conj result v))
+           :else (recur t all-search-words []))
+         result)))))
 
 (defn karaoke-words-current [phrase-index words]
   [:div.karaoke
