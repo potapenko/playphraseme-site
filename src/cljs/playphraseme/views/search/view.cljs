@@ -41,12 +41,12 @@
                        10 count-loaded))]
           (rf/dispatch [::model/search-result-append res]))))))
 
-(defn current-phrase-index []
+(defn get-current-phrase-index []
   @(rf/subscribe [::model/current-phrase-index]))
 
-(defn current-phrase []
+(defn get-current-phrase []
   (let [phrases @(rf/subscribe [::model/phrases])
-        current-phrase-index (current-phrase-index)
+        current-phrase-index (get-current-phrase-index)
         current-phrase (nth phrases current-phrase-index nil)]
     current-phrase))
 
@@ -74,16 +74,16 @@
     (when (-> current (+ 5) (> loaded))
       (scroll-end))))
 
-(defn highlite-word [current-phrase current-word]
-  (doseq [x (:words current-phrase)]
+(defn highlite-word [current-word]
+  (doseq [x (:words (get-current-phrase))]
     (some-> x :index (->> (str "word-")) util/id->elem (util/remove-class "s-word-played")))
   (some-> current-word :index (->> (str "word-")) util/id->elem (util/add-class "s-word-played"))
   #_(rf/dispatch-sync [::model/current-word-index (:index current-word)]))
 
 (defn update-current-word [pos]
-  (let [current-word (some->> (current-phrase) :words (filter #(-> % :start (< pos))) last)]
+  (let [current-word (some->> (get-current-phrase) :words (filter #(-> % :start (< pos))) last)]
     (when current-word
-      (highlite-word (current-phrase) current-word))))
+      (highlite-word current-word))))
 
 (defn favorite-current-phrase [])
 (defn show-config [])
@@ -125,26 +125,28 @@
 (defn favorite-phrase [id]
   (println "favorite pharase:" id))
 
-(defn get-searched-words []
-  (let []
-
-    ))
-
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
   (let [phrase (nth @(rf/subscribe [::model/phrases]) phrase-index)
         word (-> phrase :words (nth word-index))]
     (rf/dispatch-sync [::model/current-word-index] (:index phrase))
     (player/jump (:index phrase) (+ 400 (:start word)))
-    (highlite-word phrase word)
+    (highlite-word word)
     (player/play (:index phrase))))
 
-(defn karaoke-words [phrase-index words]
-  [:div.karaoke
-   (for [w    words
-         :let [{:keys [formated-text index]} w]]
-     ^{:key (str "word-" index)}
-     [:a.s-word {:href "" :on-click #(goto-word % phrase-index index)} formated-text])])
+(defn get-searched-words []
+  (let [text             @(rf/subscribe [::model/search-text])
+        all-search-words (-> text string/lower-case nlp/create-words)
+        current-words    (-> (get-current-phrase) :words)]
+    (loop [[v & t]      current-words
+           search-words all-search-words
+           result       []]
+
+      (if (and v (-> search-words empty? not))
+        (if (and v (= (:text v) (-> search-words first)))
+          (recur t (rest search-words) (conj result v))
+          (recur t all-search-words []))
+        result))))
 
 (defn karaoke-words-current [phrase-index words]
   [:div.karaoke
@@ -159,12 +161,20 @@
                               (when (= index played-word-index) "s-word-played"))}
         formated-text]))])
 
+(defn karaoke-words [phrase-index words]
+  [:div.karaoke
+   (for [w    words
+         :let [{:keys [formated-text index]} w]]
+     ^{:key (str "word-" index)}
+     [:a.s-word {:href "" :on-click #(goto-word % phrase-index index)} formated-text])])
+
 (defn karaoke [phrase]
   (let [{:keys [words text id index]} phrase
-        nlp-words               (nlp/create-words text)
-        words                   (map (fn [w1 w2] (assoc w1 :formated-text w2))
-                                     words nlp-words)
-        current-index           (rf/subscribe [::model/current-phrase-index])]
+        nlp-words                     (nlp/create-words text)
+        searched-words                (get-searched-words)
+        words                         (map (fn [w1 w2] (assoc w1 :formated-text w2))
+                                           words nlp-words)
+        current-index                 (rf/subscribe [::model/current-phrase-index])]
     (fn []
       (if (= @current-index index)
         [karaoke-words-current index words]
