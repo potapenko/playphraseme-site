@@ -123,8 +123,7 @@
   (let [phrase (nth @(rf/subscribe [::model/phrases]) phrase-index)
         word (-> phrase :words (nth word-index))]
     (rf/dispatch-sync [::model/current-word-index] (:index phrase))
-    (println word-index)
-    (player/jump (:index phrase) (:end word))
+    (player/jump (:index phrase) (+ 400 (:start word)))
     (player/play (:index phrase))))
 
 (defn karaoke-words [phrase-index words]
