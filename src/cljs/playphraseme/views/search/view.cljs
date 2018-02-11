@@ -134,10 +134,9 @@
     (highlite-word word)
     (player/play (:index phrase))))
 
-(defn get-searched-words []
+(defn get-searched-words [current-words]
   (let [text             @(rf/subscribe [::model/search-text])
-        all-search-words (-> text string/lower-case nlp/create-words)
-        current-words    (-> (get-current-phrase) :words)]
+        all-search-words (-> text string/lower-case nlp/create-words)]
     (loop [[v & t]      current-words
            search-words all-search-words
            result       []]
@@ -152,27 +151,32 @@
   [:div.karaoke
    (let [played-word-index @(rf/subscribe [::model/current-word-index])]
      (for [w    words
-           :let [{:keys [formated-text text index]} w]]
+           :let [{:keys [formated-text text index searched]} w]]
        ^{:key (str "word-" index)}
        [:a.s-word {:href     ""
                    :on-click #(goto-word % phrase-index index)
                    :id       (str "word-" index)
                    :class    (util/class->str
+                              (when searched "s-word-searched")
                               (when (= index played-word-index) "s-word-played"))}
         formated-text]))])
 
 (defn karaoke-words [phrase-index words]
   [:div.karaoke
    (for [w    words
-         :let [{:keys [formated-text index]} w]]
+         :let [{:keys [formated-text index searched]} w]]
      ^{:key (str "word-" index)}
-     [:a.s-word {:href "" :on-click #(goto-word % phrase-index index)} formated-text])])
+     [:a.s-word {:href "" :class (when searched "s-word-searched")
+                 :on-click #(goto-word % phrase-index index)} formated-text])])
 
 (defn karaoke [phrase]
   (let [{:keys [words text id index]} phrase
         nlp-words                     (nlp/create-words text)
-        searched-words                (get-searched-words)
-        words                         (map (fn [w1 w2] (assoc w1 :formated-text w2))
+        searched-words                (set (get-searched-words words))
+        words                         (map (fn [w1 w2]
+                                             (assoc w1
+                                                    :formated-text w2
+                                                    :searched (-> w1 searched-words nil? not)))
                                            words nlp-words)
         current-index                 (rf/subscribe [::model/current-phrase-index])]
     (fn []
