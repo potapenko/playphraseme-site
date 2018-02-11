@@ -65,6 +65,12 @@
     (when (-> current (+ 5) (> loaded))
       (scroll-end))))
 
+(defn highlite-word [current-phrase current-word]
+  (doseq [x (:words current-phrase)]
+    (-> x :index (->> (str "word-")) util/id->elem (util/remove-class "s-word-played")))
+  (-> current-word :index (->> (str "word-")) util/id->elem (util/add-class "s-word-played"))
+  #_(rf/dispatch-sync [::model/current-word-index (:index current-word)]))
+
 (defn  update-current-word [pos]
   ;; (println "update current world: " pos)
   (let [phrases @(rf/subscribe [::model/phrases])
@@ -73,10 +79,7 @@
     (when current-phrase
       (let [current-word (->> current-phrase :words (filter #(-> % :start (< pos))) last)]
         (when current-word
-          (doseq [x (:words current-phrase)]
-            (-> x :index (->> (str "word-")) util/id->elem (util/remove-class "s-word-played")))
-          (-> current-word :index (->> (str "word-")) util/id->elem (util/add-class "s-word-played"))
-          #_(rf/dispatch-sync [::model/current-word-index (:index current-word)]))))))
+          (highlite-word current-phrase current-word))))))
 
 (defn favorite-current-phrase [])
 (defn show-config [])
@@ -124,6 +127,7 @@
         word (-> phrase :words (nth word-index))]
     (rf/dispatch-sync [::model/current-word-index] (:index phrase))
     (player/jump (:index phrase) (+ 400 (:start word)))
+    (highlite-word phrase word)
     (player/play (:index phrase))))
 
 (defn karaoke-words [phrase-index words]
