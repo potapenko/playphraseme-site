@@ -83,7 +83,7 @@
 (defn update-current-word [pos]
   (let [current-word (some->> (current-phrase) :words (filter #(-> % :start (< pos))) last)]
     (when current-word
-      (highlite-word current-phrase current-word))))
+      (highlite-word (current-phrase) current-word))))
 
 (defn favorite-current-phrase [])
 (defn show-config [])
@@ -124,6 +124,11 @@
 
 (defn favorite-phrase [id]
   (println "favorite pharase:" id))
+
+(defn get-searched-words []
+  (let []
+
+    ))
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
