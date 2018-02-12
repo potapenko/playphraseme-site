@@ -72,6 +72,7 @@
      ::current-phrase-index 0
      ::current-suggestion-index nil
      ::suggestions (:suggestions value))
+    (update ::suggestions add-indexes)
     (update ::phrases add-phrases-indexes))))
 
 (reg-event-db

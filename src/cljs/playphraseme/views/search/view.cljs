@@ -108,12 +108,12 @@
         40 (next-suggestion) ;; down
         13 (goto-suggestion) ;; enter
         32 (goto-suggestion) ;; space
-        27 (focus-input) (focus-input) ;; esc
+        27 (focus-input) ;; esc
         nil)
       (case key-code
         38 (rf/dispatch [::model/prev-phrase]) ;; up
         40 (next-phrase) ;; down
-        27 (focus-input) (focus-input) ;; esc
+        27 (focus-input) ;; esc
         13 nil  ;; enter
         nil))))
 
@@ -121,6 +121,7 @@
 (defn show-config [])
 (defn download-video [])
 (defn show-search-help [])
+(defn favorite-phrase [id])
 
 (defn search-input []
   [:div.filters-container
@@ -152,9 +153,6 @@
      [:div.filter-input-icon
       {:on-click show-search-help}
       [:i.fa.fa-question-circle.fa-2x]]]]])
-
-(defn favorite-phrase [id]
-  (println "favorite pharase:" id))
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
@@ -240,9 +238,10 @@
 (defn suggestions-list [list]
   [:div.suggestions-container
    (doall
-    (for [{:keys [text count]} list]
+    (for [{:keys [text count index]} list]
+      ^{:key (str "suggestion-" index)}
       [:a.suggestion
-       {:href (str "/#/search?q=" text)}
+       {:id (str "suggestion-" index) :href (str "/#/search?q=" text)}
        [:div.text text]
        [:div.grow]
        [:div.counter (str count)]]))])
