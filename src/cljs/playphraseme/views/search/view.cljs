@@ -249,7 +249,13 @@
              ]
             [:div.search-ui-container [search-input]]
             (if-not (empty? @suggestions)
-              [:div.suggestions-container (str @suggestions)]
+              [:div.suggestions-container
+               (doall
+                (for [{:keys [text count]} @suggestions]
+                  [:div.suggestion
+                   [:div.text text]
+                   [:div.grow]
+                   [:div.counter (str count)]]))]
               [:div#search-result.search-results-container
                {:on-scroll #(on-phrases-scroll %)}
                [:table.table.table-hover.phrase-table.borderless
