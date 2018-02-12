@@ -118,7 +118,7 @@ body{
 }
 
 .header .logo {
-  font-size: 38px;
+  font-size: 35px;
   font-family: 'Gloria Hallelujah';
   overflow: hidden;
   user-select: none;
@@ -211,10 +211,10 @@ body{
 .inline-logo {
   opacity: 0.5;
   position: absolute;
-  height: 50px;
+  height: 36px;
   bottom: 10px;
-  left: 18px;
-  font-size: 38px;
+  left: 15px;
+  font-size: 28px;
   font-family: 'Gloria Hallelujah';
   overflow: hidden;
   user-select: none;
