@@ -21,6 +21,20 @@
       (player/stop index))
     (rf/dispatch [::model/stopped (not now-stopped?)])))
 
+(defn work-with-keys [e]
+  (let [key-code (-> e .-keyCode)
+        suggestions @(rf/subscribe [::model/suggestions])]
+    (println "key:" key-code)
+    (if suggestions
+      (case key-code
+        38 nil ;; up
+        40 nil ;; down
+        nil)
+      (case key-code
+        38 nil ;; up
+        40 nil ;; down
+        nil))))
+
 (defn search-phrase [text]
   (rf/dispatch [::model/search-text text])
   (rf/dispatch [::model/search-result []])
@@ -94,8 +108,7 @@
    [:input#search-input.filter-input.form-control.input-lg
     {:type      "text" :placeholder "Search Phrase"
      :value     @(rf/subscribe [::model/search-text])
-     :on-change #(search-phrase (-> % .-target .-value))}
-    ]
+     :on-change #(search-phrase (-> % .-target .-value))}]
    [:ul.filter-input-icons
     [:li [:div.search-result-count @(rf/subscribe [::model/search-count])]]
     [:li
@@ -205,6 +218,25 @@
             [:a.lang-in-circle
              {:href (str "/#/phrase/" id)} "#"]]])))}))
 
+(defn suggestions-list [list]
+  [:div.suggestions-container
+   (doall
+    (for [{:keys [text count]} list]
+      [:a.suggestion
+       {:href (str "/#/search?q=" text)}
+       [:div.text text]
+       [:div.grow]
+       [:div.counter (str count)]]))])
+
+(defn search-results-list [phrases]
+  [:div#search-result.search-results-container
+   {:on-scroll #(on-phrases-scroll %)}
+   [:table.table.table-hover.phrase-table.borderless
+    [:tbody
+     (doall
+      (for [x phrases]
+        ^{:key (str "phrase-" x)}
+        [phrase-text x]))]]])
 
 (defn page [params]
   (r/create-class
@@ -224,6 +256,7 @@
           (search-phrase q))
         (fn []
           [:div.search-container
+           {:on-key-up work-with-keys}
            [:div.search-content
             ^{:key (str "video-list- " @current)}
             [:div.video-player-container
@@ -245,23 +278,9 @@
              [:div.inline-logo
               [:span.red "Play"]
               [:span.black "Phrase"]
-              [:span.gray ".me"]]
-             ]
+              [:span.gray ".me"]]]
             [:div.search-ui-container [search-input]]
             (if-not (empty? @suggestions)
-              [:div.suggestions-container
-               (doall
-                (for [{:keys [text count]} @suggestions]
-                  [:div.suggestion
-                   [:div.text text]
-                   [:div.grow]
-                   [:div.counter (str count)]]))]
-              [:div#search-result.search-results-container
-               {:on-scroll #(on-phrases-scroll %)}
-               [:table.table.table-hover.phrase-table.borderless
-                [:tbody
-                 (doall
-                  (for [x @phrases]
-                    ^{:key (str "phrase-" x)}
-                    [phrase-text x]))]]])]])))}))
+              [suggestions-list @suggestions]
+              [search-results-list @phrases])]])))}))
 
