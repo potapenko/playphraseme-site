@@ -238,7 +238,7 @@
                                       :on-play        #(do
                                                          #_(rf/dispatch [::model/stopped false])
                                                          (scroll-to-phrase index))
-                                      ;; :on-pause       #(rf/dispatch [::model/stopped true])
+                                      :on-pause       #(rf/dispatch [::model/stopped true])
                                       :on-end         next-phrase
                                       :on-pos-changed update-current-word
                                       :stopped?       @stopped}]))]

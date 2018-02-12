@@ -61,7 +61,7 @@
                     on-end on-pos-changed]} (r/props this)
             index (:index phrase)]
         (add-video-listener index "play" on-play)
-        (add-video-listener index "pause" on-pause)
+        (add-video-listener index "pause" #(when (playing? index) on-pause))
         (add-video-listener index "ended" on-end)
         (add-video-listener index "timeupdate"
                             #(on-pos-changed
