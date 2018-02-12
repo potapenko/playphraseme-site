@@ -126,7 +126,7 @@
         38 (rf/dispatch [::model/prev-phrase]) ;; up
         40 (next-phrase) ;; down
         27 (focus-input) ;; esc
-        13 (toggle-play) ;; enter
+        ;; 13 (toggle-play) ;; enter
         nil))))
 
 (defn favorite-current-phrase [])
