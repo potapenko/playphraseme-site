@@ -46,9 +46,8 @@
 
 (defn get-current-phrase []
   (let [phrases @(rf/subscribe [::model/phrases])
-        current-phrase-index (get-current-phrase-index)
-        current-phrase (nth phrases current-phrase-index nil)]
-    current-phrase))
+        index (get-current-phrase-index)]
+    (some->> phrases (drop-while #(-> % :index (not= index))) first)))
 
 (defn on-phrases-scroll [e]
   (let [sh (-> e .-target .-scrollHeight)
