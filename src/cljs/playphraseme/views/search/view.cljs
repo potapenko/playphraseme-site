@@ -215,10 +215,11 @@
         (-> elem .focus)))
     :reagent-render
     (fn []
-      (let [lang    (util/locale-name)
-            current (rf/subscribe [::model/current-phrase-index])
-            phrases (rf/subscribe [::model/phrases])
-            stopped (rf/subscribe [::model/stopped])]
+      (let [lang        (util/locale-name)
+            current     (rf/subscribe [::model/current-phrase-index])
+            phrases     (rf/subscribe [::model/phrases])
+            stopped     (rf/subscribe [::model/stopped])
+            suggestions (rf/subscribe [::model/suggestions])]
         (let [q (some-> params :q)]
           (search-phrase q))
         (fn []
@@ -247,12 +248,14 @@
               [:span.gray ".me"]]
              ]
             [:div.search-ui-container [search-input]]
-            [:div#search-result.search-results-container
-             {:on-scroll #(on-phrases-scroll %)}
-             [:table.table.table-hover.phrase-table.borderless
-              [:tbody
-               (doall
-                (for [x @phrases]
-                  ^{:key (str "phrase-" x)}
-                  [phrase-text x]))]]]]])))}))
+            (if-not (empty? @suggestions)
+              [:div.suggestions-container (str @suggestions)]
+              [:div#search-result.search-results-container
+               {:on-scroll #(on-phrases-scroll %)}
+               [:table.table.table-hover.phrase-table.borderless
+                [:tbody
+                 (doall
+                  (for [x @phrases]
+                    ^{:key (str "phrase-" x)}
+                    [phrase-text x]))]]])]])))}))
 

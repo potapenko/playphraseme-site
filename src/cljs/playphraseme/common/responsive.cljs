@@ -80,12 +80,12 @@
     (min scale-w scale-h)))
 
 (defn update-layout []
-  (let [w (window-width)
-        show-left-column? (> w 960)
+  (let [w                  (window-width)
+        show-left-column?  (> w 960)
         show-right-column? (> w 1400)]
    (dispatch [:responsive-scale
               (calculate-window-scale
-               (+ (when show-left-column? 200) 600 (when show-right-column? 200))
+               (+ (when show-left-column? 150) 600 (when show-right-column? 150))
                700)])
    (dispatch [:responsive-show-left-column? show-left-column?])
    (dispatch [:responsive-show-right-column? show-right-column?]))

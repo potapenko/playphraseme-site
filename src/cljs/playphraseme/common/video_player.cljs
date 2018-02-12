@@ -85,7 +85,7 @@
           {:src         (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")
            :playsInline true
            :controls    false
-           :autoPlay    true
+           :autoPlay    false
            :id          (index->id index)
            :style       {:z-index (* index 1000)}}]
          ]))}))

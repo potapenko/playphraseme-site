@@ -32,7 +32,7 @@
 (defn- person-dots [s]
   (let [person-words ["Dr" "Prof" "Ms" "Mrs" "Mr" "St"]]
     (loop [[v t] person-words
-           s s]
+           s     s]
       (if v
         (recur t (string/replace s (str v ".") (str v one-dot-mark)))
         s))))
@@ -44,44 +44,40 @@
       (string/replace #"\s+" " ")
       string/trim))
 
-(def create-sentences
-  (memoize
-   (fn [s]
-     (-> s
-         person-dots
-         (->
-          (string/replace #"\.\*" escape_dot)
-          (string/replace #"\?\*" escape_qustion)
-          (string/replace #"\!\*" escape_exclamation))
-         (->
-          (string/replace #"\.\"\s+" (str one-dot-mark "\"" sentence-separator))
-          (string/replace #"!\"\s+" (str one-exclamation-mark "\"" sentence-separator))
-          (string/replace #"\?\"\s+\" " (str one-question-mark "\"" sentence-separator))
-          (string/replace #"\.'\s+" (str one-dot-mark "'" sentence-separator))
-          (string/replace #"!'\s+" (str one-exclamation-mark "'" sentence-separator))
-          (string/replace #"\?'\s+" (str one-question-mark "'" sentence-separator)) ;
-          (string/replace #"\.\s+" (str "." sentence-separator))
-          (string/replace #"!\s+" (str "!" sentence-separator))
-          (string/replace #"\?\s+" (str "?" sentence-separator)) ;
-          (string/replace one-dot-mark ".")
-          (string/replace one-question-mark "?")
-          (string/replace one-exclamation-mark "!")
-          (string/split (re-pattern (str sentence-separator "|" synthetic-sentence-separator))))
-         (->>
-          (map #(string/replace % escape_dot "."))
-          (map #(string/replace % escape_qustion "?"))
-          (map #(string/replace % escape_exclamation "!"))
-          (map string/trim))))))
+(defn create-sentences [s]
+  (-> s
+      person-dots
+      (->
+       (string/replace #"\.\*" escape_dot)
+       (string/replace #"\?\*" escape_qustion)
+       (string/replace #"\!\*" escape_exclamation))
+      (->
+       (string/replace #"\.\"\s+" (str one-dot-mark "\"" sentence-separator))
+       (string/replace #"!\"\s+" (str one-exclamation-mark "\"" sentence-separator))
+       (string/replace #"\?\"\s+\" " (str one-question-mark "\"" sentence-separator))
+       (string/replace #"\.'\s+" (str one-dot-mark "'" sentence-separator))
+       (string/replace #"!'\s+" (str one-exclamation-mark "'" sentence-separator))
+       (string/replace #"\?'\s+" (str one-question-mark "'" sentence-separator)) ;
+       (string/replace #"\.\s+" (str "." sentence-separator))
+       (string/replace #"!\s+" (str "!" sentence-separator))
+       (string/replace #"\?\s+" (str "?" sentence-separator)) ;
+       (string/replace one-dot-mark ".")
+       (string/replace one-question-mark "?")
+       (string/replace one-exclamation-mark "!")
+       (string/split (re-pattern (str sentence-separator "|" synthetic-sentence-separator))))
+      (->>
+       (map #(string/replace % escape_dot "."))
+       (map #(string/replace % escape_qustion "?"))
+       (map #(string/replace % escape_exclamation "!"))
+       (map string/trim))))
 
 (create-sentences "")
 
-(def create-paragraphs
-  (memoize
-   (fn [s]
-     (->> s
-          (#(string/split % #"(\r|\n)+"))
-          (map string/trim)
-          (filter (complement empty?))))))
+(defn create-paragraphs [s]
+  (->> s
+       (#(string/split % #"(\r|\n)+"))
+       (map string/trim)
+       (filter (complement empty?))))
 
 (defn create-text-parts [source]
   (let [p-counter  (atom 0)

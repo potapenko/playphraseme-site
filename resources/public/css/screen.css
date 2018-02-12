@@ -238,6 +238,12 @@ body{
   overflow-y: auto;
 }
 
+.suggestions-container {
+  position: absolute;
+  left: 0px; right: 0px; bottom: 0px; top: 406px;
+  overflow-y: auto;
+}
+
 .search-results-results .results .one-result{}
 
 .phrase-text {
