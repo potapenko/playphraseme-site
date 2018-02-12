@@ -87,43 +87,42 @@
  (fn [db [_]]
    (get db ::current-phrase-index)))
 
-(reg-event-db
- ::current-phrase-index
- (fn [db [_ value]]
-   (assoc db ::current-phrase-index value)))
-
-(reg-event-db
+(reg-sub
  ::current-suggestion-index
- (fn [db [_ value]]
-   (assoc db ::current-suggestion-index value)))
+ (fn [db [_]]
+   (get db ::current-suggestion-index)))
 
 (reg-event-db
  ::next-phrase
  (fn [db [_]]
    (let [current       (::current-phrase-index db)
-         count-phrases (::search-count db)]
+         count-phrases (-> db ::search-count count)]
      (assoc db ::current-phrase-index (min (dec count-phrases) (inc current))))))
 
 (reg-event-db
  ::prev-phrase
  (fn [db [_]]
    (let [current       (::current-phrase-index db)
-         count-phrases (::search-count db)]
+         count-phrases (-> db ::search-count count)]
      (assoc db ::current-phrase-index (max 0 (dec current))))))
 
 (reg-event-db
  ::next-suggestion
  (fn [db [_]]
    (let [current       (::current-suggestion-index db)
-         count-suggestions (::search-count db)]
-     (assoc db ::current-suggestion-index (min (dec count-suggestions) (inc current))))))
+         count-suggestions (-> db ::suggestions count)]
+     (if (nil? current)
+       (assoc db ::current-suggestion-index 0)
+       (assoc db ::current-suggestion-index (min (dec count-suggestions) (inc current)))))))
 
 (reg-event-db
  ::prev-suggestion
  (fn [db [_]]
    (let [current       (::current-suggestion-index db)
-         count-suggestions (::search-count db)]
-     (assoc db ::current-suggestion-index (max 0 (dec current))))))
+         count-suggestions (-> db ::suggestions count)]
+     (if (nil? current)
+       (assoc db ::current-suggestion-index 0)
+       (assoc db ::current-suggestion-index (max 0 (dec current)))))))
 
 (reg-sub
  ::current-word-index

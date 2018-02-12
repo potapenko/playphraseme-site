@@ -76,22 +76,34 @@
 (defn highlite-word [current-word]
   (doseq [x (:words (get-current-phrase))]
     (some-> x :index (->> (str "word-")) util/id->elem (util/remove-class "s-word-played")))
-  (some-> current-word :index (->> (str "word-")) util/id->elem (util/add-class "s-word-played"))
-  #_(rf/dispatch-sync [::model/current-word-index (:index current-word)]))
+  (some-> current-word :index (->> (str "word-")) util/id->elem (util/add-class "s-word-played")))
 
 (defn update-current-word [pos]
   (let [current-word (some->> (get-current-phrase) :words (filter #(-> % :start (< pos))) last)]
     (when current-word
       (highlite-word current-word))))
 
+(defn scroll-to-suggestion [index]
+  (when-let [elem (js/document.getElementById (str "suggestion-" index))]
+    (-> elem (.scrollIntoView #js{:behavior "smooth" :block "start"}))))
+
 (defn next-suggestion []
-  )
+  (rf/dispatch-sync [::model/next-suggestion])
+  (let [index @(rf/subscribe [::model/current-suggestion-index])]
+    (when-not (nil? index)
+      (scroll-to-suggestion index))))
 
 (defn prev-suggestion []
-  )
+  (rf/dispatch-sync [::model/prev-suggestion])
+  (let [index @(rf/subscribe [::model/current-suggestion-index])]
+    (when-not (nil? index)
+      (scroll-to-suggestion index))))
 
 (defn goto-suggestion []
-  )
+  (let [index @(rf/subscribe [::model/current-suggestion-index])]
+    (when-not (nil? index)
+      (let [current (nth @(rf/subscribe [::model/suggestions]) index)]
+        (search-phrase (:text current))))))
 
 (defn focus-input []
   (when-let [elem (some-> "search-input" js/document.getElementById)]
@@ -114,7 +126,7 @@
         38 (rf/dispatch [::model/prev-phrase]) ;; up
         40 (next-phrase) ;; down
         27 (focus-input) ;; esc
-        13 nil  ;; enter
+        13 (toggle-play) ;; enter
         nil))))
 
 (defn favorite-current-phrase [])
@@ -241,7 +253,9 @@
     (for [{:keys [text count index]} list]
       ^{:key (str "suggestion-" index)}
       [:a.suggestion
-       {:id (str "suggestion-" index) :href (str "/#/search?q=" text)}
+       {:id   (str "suggestion-" index)
+        :class (when (= index @(rf/subscribe [::model/current-suggestion-index])) "higlited")
+        :href (str "/#/search?q=" text)}
        [:div.text text]
        [:div.grow]
        [:div.counter (str count)]]))])

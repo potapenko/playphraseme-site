@@ -258,6 +258,7 @@ body{
 
 .suggestion.higlited {
   color: black;
+  /* background-color: rgba(0,0,0,0.05); */
 }
 
 .search-results-results .results .one-result{}
