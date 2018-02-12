@@ -43,13 +43,16 @@
     (when el
       (aset el "currentTime" (/ position 1000)))))
 
+(defn enable-inline-video [index]
+  (-> index index->element js/enableInlineVideo))
+
 (defn video-player []
   (r/create-class
    {:component-will-receive-props
     (fn [this]
       (let [{:keys [hide? stopped? phrase]} (r/props this)
-            {:keys [index]} phrase
-            playing? (and (not hide?) (not stopped?))]
+            {:keys [index]}                 phrase
+            playing?                        (and (not hide?) (not stopped?))]
         (add-video-listener index "canplaythrough"
                             (if playing?
                               #(play index)
@@ -59,7 +62,8 @@
       (let [{:keys [hide? stopped? phrase
                     on-load on-pause on-play
                     on-end on-pos-changed]} (r/props this)
-            index (:index phrase)]
+            index                           (:index phrase)]
+        (enable-inline-video index)
         (add-video-listener index "play" on-play)
         (add-video-listener index "pause" #(when (playing? index) on-pause))
         (add-video-listener index "ended" on-end)
@@ -78,7 +82,10 @@
         [:div.video-player-box
          {:style (merge {:opacity (if hide? 0 1)} (when hide? {:display :none}))}
          [:video.video-player
-          {:src   (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")
-           :id    (index->id index)
-           :style {:z-index (* index 1000)}}]]))}))
+          {:src         (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")
+           :playsInline true
+           :controls    false
+           :autoplay    true
+           :id          (index->id index)
+           :style       {:z-index (* index 1000)}}]]))}))
 
