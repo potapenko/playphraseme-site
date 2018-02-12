@@ -70,6 +70,7 @@
      ::phrases (:phrases value)
      ::search-count (:count value)
      ::current-phrase-index 0
+     ::current-suggestion-index nil
      ::suggestions (:suggestions value))
     (update ::phrases add-phrases-indexes))))
 
@@ -91,6 +92,11 @@
    (assoc db ::current-phrase-index value)))
 
 (reg-event-db
+ ::current-suggestion-index
+ (fn [db [_ value]]
+   (assoc db ::current-suggestion-index value)))
+
+(reg-event-db
  ::next-phrase
  (fn [db [_]]
    (let [current       (::current-phrase-index db)
@@ -103,6 +109,20 @@
    (let [current       (::current-phrase-index db)
          count-phrases (::search-count db)]
      (assoc db ::current-phrase-index (max 0 (dec current))))))
+
+(reg-event-db
+ ::next-suggestion
+ (fn [db [_]]
+   (let [current       (::current-suggestion-index db)
+         count-suggestions (::search-count db)]
+     (assoc db ::current-suggestion-index (min (dec count-suggestions) (inc current))))))
+
+(reg-event-db
+ ::prev-suggestion
+ (fn [db [_]]
+   (let [current       (::current-suggestion-index db)
+         count-suggestions (::search-count db)]
+     (assoc db ::current-suggestion-index (max 0 (dec current))))))
 
 (reg-sub
  ::current-word-index

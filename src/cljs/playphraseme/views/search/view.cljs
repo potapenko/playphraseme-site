@@ -93,6 +93,11 @@
 (defn goto-suggestion []
   )
 
+(defn focus-input []
+  (when-let [elem (some-> "search-input" js/document.getElementById)]
+    (-> elem .-selectionStart (set! (-> elem .-value count)))
+    (-> elem .focus)))
+
 (defn work-with-keys [e]
   (let [key-code    (-> e .-keyCode)
         suggestions @(rf/subscribe [::model/suggestions])]
@@ -103,10 +108,12 @@
         40 (next-suggestion) ;; down
         13 (goto-suggestion) ;; enter
         32 (goto-suggestion) ;; space
+        27 (focus-input) (focus-input) ;; esc
         nil)
       (case key-code
         38 (rf/dispatch [::model/prev-phrase]) ;; up
         40 (next-phrase) ;; down
+        27 (focus-input) (focus-input) ;; esc
         13 nil  ;; enter
         nil))))
 
@@ -254,9 +261,7 @@
   (r/create-class
    {:component-did-mount
     (fn [this]
-      (when-let [elem (some-> "search-input" js/document.getElementById)]
-        (-> elem .-selectionStart (set! (-> elem .-value count)))
-        (-> elem .focus)))
+      (focus-input))
     :reagent-render
     (fn []
       (let [lang        (util/locale-name)
