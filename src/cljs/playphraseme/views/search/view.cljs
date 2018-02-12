@@ -21,20 +21,6 @@
       (player/stop index))
     (rf/dispatch [::model/stopped (not now-stopped?)])))
 
-(defn work-with-keys [e]
-  (let [key-code (-> e .-keyCode)
-        suggestions @(rf/subscribe [::model/suggestions])]
-    (println "key:" key-code)
-    (if suggestions
-      (case key-code
-        38 nil ;; up
-        40 nil ;; down
-        nil)
-      (case key-code
-        38 nil ;; up
-        40 nil ;; down
-        nil))))
-
 (defn search-phrase [text]
   (rf/dispatch [::model/search-text text])
   (rf/dispatch [::model/search-result []])
@@ -97,6 +83,32 @@
   (let [current-word (some->> (get-current-phrase) :words (filter #(-> % :start (< pos))) last)]
     (when current-word
       (highlite-word current-word))))
+
+(defn next-suggestion []
+  )
+
+(defn prev-suggestion []
+  )
+
+(defn goto-suggestion []
+  )
+
+(defn work-with-keys [e]
+  (let [key-code    (-> e .-keyCode)
+        suggestions @(rf/subscribe [::model/suggestions])]
+    (println "key:" key-code)
+    (if-not (empty? suggestions)
+      (case key-code
+        38 (prev-suggestion) ;; up
+        40 (next-suggestion) ;; down
+        13 (goto-suggestion) ;; enter
+        32 (goto-suggestion) ;; space
+        nil)
+      (case key-code
+        38 (rf/dispatch [::model/prev-phrase]) ;; up
+        40 (next-phrase) ;; down
+        13 nil  ;; enter
+        nil))))
 
 (defn favorite-current-phrase [])
 (defn show-config [])
