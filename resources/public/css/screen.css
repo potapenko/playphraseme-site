@@ -83,7 +83,7 @@ body{
 }
 
 .layout-main {
-  width: 680px;
+  width: 590px;
   display: flex;
   flex-direction: column;
   box-shadow: 0 0 25px 0 rgba(0,0,0,0.1);
@@ -103,10 +103,10 @@ body{
 }
 
 .header-button {
-  padding: 8px 16px;
+  padding: 8px 12px;
   color: gray;
   text-decoration: none;
-  font-size: 10px;
+  font-size: 9px;
 }
 
 .header .bottom {
@@ -114,7 +114,7 @@ body{
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding: 0 16px;
+  padding: 0 12px;
 }
 
 .header .logo {
@@ -134,17 +134,17 @@ body{
 }
 
 .header .statistic .count{
-  font-size: 30px;
+  font-size: 28px;
 }
 
 .header .statistic .info{
   padding-left: 6px;
-  font-size: 18px;
+  font-size: 14px;
   color: gray;
 }
 
 .header .translate-direction {
-  font-size: 28px;
+  font-size: 24px;
   overflow: hidden;
   margin-bottom: 8px;
   user-select: none;
@@ -189,6 +189,7 @@ body{
   left: 0px; right: 0px; top: 0px;
   background-color: black;
   height: 340px;
+  overflow: hidden;
 }
 
 .video-player-box {
@@ -206,6 +207,24 @@ body{
   margin: 10px auto;
 	transition: opacity 0.4s ease-in-out;
 }
+
+.inline-logo {
+  opacity: 0.5;
+  position: absolute;
+  height: 50px;
+  bottom: 10px;
+  left: 18px;
+  font-size: 38px;
+  font-family: 'Gloria Hallelujah';
+  overflow: hidden;
+  user-select: none;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.inline-logo .red {color: red}
+.inline-logo .black {color: white}
+.inline-logo .gray {color: rgba(255,255,255,0.4)}
 
 .search-ui-container {
   position: absolute;
@@ -235,7 +254,7 @@ body{
 .s-word{
 	background-color: rgba(0,0,0,0);
 	color: #333;
-	font-size: 18px;
+	font-size: 16px;
 	cursor: pointer;
 	padding: 3px;
 	outline: none;

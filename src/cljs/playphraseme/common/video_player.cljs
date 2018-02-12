@@ -87,5 +87,6 @@
            :controls    false
            :autoplay    true
            :id          (index->id index)
-           :style       {:z-index (* index 1000)}}]]))}))
+           :style       {:z-index (* index 1000)}}]
+         ]))}))
 

@@ -85,7 +85,7 @@
         show-right-column? (> w 1400)]
    (dispatch [:responsive-scale
               (calculate-window-scale
-               (+ (when show-left-column? 200) 680 (when show-right-column? 200))
+               (+ (when show-left-column? 200) 600 (when show-right-column? 200))
                700)])
    (dispatch [:responsive-show-left-column? show-left-column?])
    (dispatch [:responsive-show-right-column? show-right-column?]))

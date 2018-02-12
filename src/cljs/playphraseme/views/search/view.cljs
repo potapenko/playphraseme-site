@@ -241,7 +241,12 @@
                                       :on-pause       #(rf/dispatch [::model/stopped true])
                                       :on-end         next-phrase
                                       :on-pos-changed update-current-word
-                                      :stopped?       @stopped}]))]
+                                      :stopped?       @stopped}]))
+             [:div.inline-logo
+              [:span.red "Play"]
+              [:span.black "Phrase"]
+              [:span.gray ".me"]]
+             ]
             [:div.search-ui-container [search-input]]
             [:div#search-result.search-results-container
              {:on-scroll #(on-phrases-scroll %)}
