@@ -272,8 +272,12 @@
 
 (defn page [params]
   (r/create-class
-   {:component-did-mount
+   {:component-will-unmount
     (fn [this]
+      (util/remove-document-listener "keyup" work-with-keys))
+    :component-did-mount
+    (fn [this]
+      (util/add-document-listener "keyup" work-with-keys)
       (focus-input))
     :reagent-render
     (fn []
@@ -286,7 +290,7 @@
           (search-phrase q))
         (fn []
           [:div.search-container
-           {:on-key-up work-with-keys}
+           ;; {:on-key-up work-with-keys}
            [:div.search-content
             ^{:key (str "video-list- " @current)}
             [:div.video-player-container

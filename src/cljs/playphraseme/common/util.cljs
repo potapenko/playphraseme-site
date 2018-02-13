@@ -90,8 +90,29 @@
 (defn set-url! [url params]
   (aset js/window.location "hash" (str "/" url "?" (params-to-url params))))
 
+(defn body []
+  js/document.body)
+
+(defn selector [s]
+  (-> s js/document.querySelector))
+
+(defn selector->elem [s]
+  (-> s selector first))
+
 (defn id->elem [id]
   (-> id js/document.getElementById))
+
+(defn add-listener [elem event-name cb]
+  (-> elem (.addEventListener event-name cb)))
+
+(defn remove-listener [elem event-name cb]
+  (-> elem (.removeEventListener event-name cb)))
+
+(defn add-document-listener [event-name cb]
+  (-> (body) (.addEventListener event-name cb)))
+
+(defn remove-document-listener [event-name cb]
+  (-> (body) (.removeEventListener event-name cb)))
 
 (defn add-class [elem class]
   (let [classes (.-classList elem)]

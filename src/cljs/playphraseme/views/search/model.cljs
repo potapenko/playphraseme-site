@@ -87,6 +87,11 @@
  (fn [db [_]]
    (get db ::current-phrase-index)))
 
+(reg-event-db
+ ::current-phrase-index
+ (fn [db [_ value]]
+   (assoc db ::current-phrase-index value)))
+
 (reg-sub
  ::current-suggestion-index
  (fn [db [_]]
