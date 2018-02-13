@@ -109,10 +109,10 @@
   (-> elem (.removeEventListener event-name cb)))
 
 (defn add-document-listener [event-name cb]
-  (-> (body) (.addEventListener event-name cb)))
+  (-> (body) (.addEventListener event-name cb false)))
 
 (defn remove-document-listener [event-name cb]
-  (-> (body) (.removeEventListener event-name cb)))
+  (println (-> (body) (.removeEventListener event-name cb false))))
 
 (defn add-class [elem class]
   (let [classes (.-classList elem)]

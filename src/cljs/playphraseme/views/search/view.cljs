@@ -67,11 +67,18 @@
     (-> elem (.scrollIntoView #js{:behavior "smooth" :block "start"}))))
 
 (defn next-phrase []
-  (rf/dispatch [::model/next-phrase])
+  (println "next-phrase")
+  (rf/dispatch-sync [::model/next-phrase])
   (let [current @(rf/subscribe [::model/current-phrase-index])
         loaded  (count @(rf/subscribe [::model/phrases]))]
+    (scroll-to-phrase current)
     (when (-> current (+ 5) (> loaded))
       (scroll-end))))
+
+(defn prev-phrase []
+  (rf/dispatch-sync [::model/prev-phrase])
+  (let [current @(rf/subscribe [::model/current-phrase-index])]
+    (scroll-to-phrase current)))
 
 (defn highlite-word [current-word]
   (doseq [x (:words (get-current-phrase))]
@@ -123,7 +130,7 @@
         27 (focus-input) ;; esc
         nil)
       (case key-code
-        38 (rf/dispatch [::model/prev-phrase]) ;; up
+        38 (prev-phrase) ;; up
         40 (next-phrase) ;; down
         27 (focus-input) ;; esc
         ;; 13 (toggle-play) ;; enter
@@ -302,9 +309,7 @@
                 ^{:key (str "phrase-" index "-" id)}
                 [player/video-player {:phrase         x
                                       :hide?          (not= @current index)
-                                      :on-play        #(do
-                                                         #_(rf/dispatch [::model/stopped false])
-                                                         (scroll-to-phrase index))
+                                      :on-play        #(scroll-to-phrase index)
                                       :on-pause       #(rf/dispatch [::model/stopped true])
                                       :on-end         next-phrase
                                       :on-pos-changed update-current-word
