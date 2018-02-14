@@ -61,10 +61,9 @@
     (fn [this]
       (let [{:keys [hide? stopped? phrase
                     on-load on-pause on-play
-                    on-end on-autostop
-                    on-pos-changed]} (r/props this)
-            index                    (:index phrase)
-            autoplay                 (not (or stopped? hide?))]
+                    on-end on-pos-changed]} (r/props this)
+            index                           (:index phrase)
+            autoplay                        (not (or stopped? hide?))]
 
         (enable-inline-video index)
         (add-video-listener index "play" on-play)
@@ -77,10 +76,8 @@
                                   (* 1000) js/Math.round)))
         (add-video-listener index "canplaythrough" on-load)
         (jump index 0)
-        (when autoplay
-          (play index)
-          (when (util/ios-safari?)
-            on-autostop))))
+        (if autoplay
+          (play index))))
     :reagent-render
     (fn [{:keys [phrase hide? stopped? mobile]}]
       (let [{:keys [index video_info]} phrase]

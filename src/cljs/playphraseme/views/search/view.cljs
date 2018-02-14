@@ -14,12 +14,14 @@
    [cljs.core.async.macros :refer [go go-loop]]))
 
 (defn toggle-play []
-  (let [now-stopped? @(rf/subscribe [::model/stopped])
-        index @(rf/subscribe [::model/current-phrase-index])]
-    (if now-stopped?
-      (player/play index)
-      (player/stop index))
-    (rf/dispatch [::model/stopped (not now-stopped?)])))
+  (if (util/ios-safari?)
+    (player/play @(rf/subscribe [::model/current-phrase-index]))
+    (let [now-stopped? @(rf/subscribe [::model/stopped])
+          index @(rf/subscribe [::model/current-phrase-index])]
+      (if now-stopped?
+        (player/play index)
+        (player/stop index))
+      (rf/dispatch [::model/stopped (not now-stopped?)]))))
 
 (defn search-phrase [text]
   (rf/dispatch [::model/search-text text])
@@ -150,14 +152,15 @@
      :on-change #(search-phrase (-> % .-target .-value))}]
    [:ul.filter-input-icons
     [:li [:div.search-result-count @(rf/subscribe [::model/search-count])]]
-    [:li
-     [:div.filter-input-icon
-      {:on-click toggle-play}
-      [:span.fa-stack.fa-1x
-       [:i.fa.fa-circle.fa-stack-2x]
-       (if @(rf/subscribe [::model/stopped])
-         [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon]
-         [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon])]]]
+    (when-not (util/ios-safari?)
+        [:li
+         [:div.filter-input-icon
+          {:on-click toggle-play}
+          [:span.fa-stack.fa-1x
+           [:i.fa.fa-circle.fa-stack-2x]
+           (if @(rf/subscribe [::model/stopped])
+             [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon]
+             [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon])]]])
     #_[:li
      [:div.filter-input-icon
       {:on-click favorite-current-phrase}
@@ -311,7 +314,6 @@
                                       :hide?          (not= @current index)
                                       :on-play        #(scroll-to-phrase index)
                                       :on-pause       #(rf/dispatch [::model/stopped true])
-                                      :on-autostop    #(rf/dispatch [::model/stopped true])
                                       :on-end         next-phrase
                                       :on-pos-changed update-current-word
                                       :stopped?       @stopped}]))
