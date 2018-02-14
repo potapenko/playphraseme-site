@@ -88,7 +88,8 @@
   (string/join "&" (map (fn [[k v]] (str (name k) "=" (js/encodeURIComponent v))) params)))
 
 (defn set-url! [url params]
-  (aset js/window.location "hash" (str "/" url "?" (params-to-url params))))
+  (js/history.pushState nil nil (str "/#/" url "?" (params-to-url params)))
+  #_(aset js/window.location "hash" (str "/" url "?" (params-to-url params))))
 
 (defn body []
   js/document.body)
@@ -122,7 +123,14 @@
   (let [classes (.-classList elem)]
     (-> classes (.remove class))))
 
+(defn ios-safari? []
+  (println ">>>" (some-> js/window #_.-navigator #_.-userAgent))
+  (when-let [user-agent (some-> js/window .-navigator .-userAgent)]
+    (js/console.log "User agent:" user-agent)
+    (some->> user-agent string/lower-case (re-find #"ipad|iphone") nil? not)))
+
 (comment
+  (ios-safari?)
 
   (class->str
    :name

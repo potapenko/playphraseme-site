@@ -226,6 +226,23 @@ body{
 .inline-logo .black {color: white}
 .inline-logo .gray {color: rgba(255,255,255,0.4)}
 
+.inline-video-info {
+  position: absolute;
+  right: 20px;
+  font-size: 12px;
+  bottom: 10px;
+  max-width: 500px;
+  color: rgba(255,255,255,0.6);
+}
+
+.inline-video-info:hover {
+  color: white;
+}
+
+.inline-video-info:visited {
+  color: rgba(255,255,255,0.6);
+}
+
 .search-ui-container {
   position: absolute;
   left: 0px; right: 0px; top: 340px;

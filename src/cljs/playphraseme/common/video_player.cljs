@@ -36,7 +36,7 @@
 (defn play [index]
   (when-let [el (some-> index index->element)]
     (when-not (playing? index)
-      (-> el .play))))
+      (-> el .play (.then #()) (.catch #())))))
 
 (defn jump [index position]
   (let [el (some-> index index->element)]
@@ -61,8 +61,11 @@
     (fn [this]
       (let [{:keys [hide? stopped? phrase
                     on-load on-pause on-play
-                    on-end on-pos-changed]} (r/props this)
-            index                           (:index phrase)]
+                    on-end on-autostop
+                    on-pos-changed]} (r/props this)
+            index                    (:index phrase)
+            autoplay                 (not (or stopped? hide?))]
+
         (enable-inline-video index)
         (add-video-listener index "play" on-play)
         (add-video-listener index "pause" #(when (playing? index) on-pause))
@@ -74,19 +77,24 @@
                                   (* 1000) js/Math.round)))
         (add-video-listener index "canplaythrough" on-load)
         (jump index 0)
-        (when-not (or stopped? hide?)
-          (play index))))
+        (when autoplay
+          (play index)
+          (when (util/ios-safari?)
+            on-autostop))))
     :reagent-render
-    (fn [{:keys [phrase hide? stopped?]}]
-      (let [index (:index phrase)]
+    (fn [{:keys [phrase hide? stopped? mobile]}]
+      (let [{:keys [index video_info]} phrase]
         [:div.video-player-box
          {:style (merge {:opacity (if hide? 0 1)} (when hide? {:display :none}))}
          [:video.video-player
           {:src         (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")
            :playsInline true
            :controls    false
-           :autoPlay    false
            :id          (index->id index)
            :style       {:z-index (* index 1000)}}]
+         (let [{:keys [imdb info]} video_info]
+           [:a.inline-video-info
+            {:href imdb :target "_blank"}
+            info])
          ]))}))
 

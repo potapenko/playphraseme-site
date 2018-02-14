@@ -158,17 +158,17 @@
        (if @(rf/subscribe [::model/stopped])
          [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon]
          [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon])]]]
-    [:li
+    #_[:li
      [:div.filter-input-icon
       {:on-click favorite-current-phrase}
       [:span.fa-stack.fa-1x
        [:i.fa.fa-circle.fa-stack-2x]
        [:i.fa.fa-star.fa-stack-1x.fa-inverse]]]]
-    [:li
+    #_[:li
      [:div.filter-input-icon
       {:on-click show-config}
       [:i.fa.fa-cog.fa-2x]]]
-    [:li
+    #_[:li
      [:div.filter-input-icon
       {:on-click show-search-help}
       [:i.fa.fa-question-circle.fa-2x]]]]])
@@ -311,6 +311,7 @@
                                       :hide?          (not= @current index)
                                       :on-play        #(scroll-to-phrase index)
                                       :on-pause       #(rf/dispatch [::model/stopped true])
+                                      :on-autostop    #(rf/dispatch [::model/stopped true])
                                       :on-end         next-phrase
                                       :on-pos-changed update-current-word
                                       :stopped?       @stopped}]))
