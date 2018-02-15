@@ -2,7 +2,7 @@
   (:require [clojure.string :as string]
             [cljs.core.async :as async :refer [<! >! put! chan timeout]]
             [cljs.pprint :refer [pprint]]
-            [reagent.core :as r]
+            [reagent.core :as r :refer [atom]]
             [playphraseme.common.util :as util]
             [clojure.data :refer [diff]])
   (:require-macros
@@ -47,51 +47,60 @@
   (-> index index->element js/enableInlineVideo))
 
 (defn video-player []
-  (r/create-class
-   {:component-will-receive-props
-    (fn [this]
-      (let [{:keys [hide? stopped? phrase]} (r/props this)
-            {:keys [index]}                 phrase
-            playing?                        (and (not hide?) (not stopped?))]
-        (add-video-listener index "canplaythrough"
-                            (if playing?
-                              #(play index)
-                              #(stop index)))))
-    :component-did-mount
-    (fn [this]
-      (let [{:keys [hide? stopped? phrase
-                    on-load on-pause on-play
-                    on-end on-pos-changed]} (r/props this)
-            index                           (:index phrase)
-            autoplay                        (not (or stopped? hide?))]
+  (let [show-play-button? (r/atom (util/ios-safari?))]
+    (r/create-class
+     {:component-will-receive-props
+      (fn [this]
+        (let [{:keys [hide? stopped? phrase]} (r/props this)
+              {:keys [index]}                 phrase
+              playing?                        (and (not hide?) (not stopped?))]
+          (add-video-listener index "canplaythrough"
+                              (if playing?
+                                #(play index)
+                                #(stop index)))))
+      :component-did-mount
+      (fn [this]
+        (let [{:keys [hide? stopped? phrase
+                      on-load on-pause on-play on-load-start
+                      on-end on-pos-changed]} (r/props this)
+              index                           (:index phrase)
+              autoplay                        (not (or stopped? hide?))]
 
-        (enable-inline-video index)
-        (add-video-listener index "play" on-play)
-        (add-video-listener index "pause" #(when (playing? index) on-pause))
-        (add-video-listener index "ended" on-end)
-        (add-video-listener index "timeupdate"
-                            #(on-pos-changed
-                              (-> %
-                                  .-target .-currentTime
-                                  (* 1000) js/Math.round)))
-        (add-video-listener index "canplaythrough" on-load)
-        (jump index 0)
-        (if autoplay
-          (play index))))
-    :reagent-render
-    (fn [{:keys [phrase hide? stopped? mobile]}]
-      (let [{:keys [index video_info]} phrase]
-        [:div.video-player-box
-         {:style (merge {:opacity (if hide? 0 1)} (when hide? {:display :none}))}
-         [:video.video-player
-          {:src         (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")
-           :playsInline true
-           :controls    false
-           :id          (index->id index)
-           :style       {:z-index (* index 1000)}}]
-         (let [{:keys [imdb info]} video_info]
-           [:a.inline-video-info
-            {:href imdb :target "_blank"}
-            info])
-         ]))}))
+          (enable-inline-video index)
+          (add-video-listener index "loadstart" on-load-start)
+          (add-video-listener index "play" on-play)
+          (add-video-listener index "pause" #(when (playing? index) on-pause))
+          (add-video-listener index "ended" on-end)
+          (add-video-listener index "timeupdate"
+                              #(on-pos-changed
+                                (-> %
+                                    .-target .-currentTime
+                                    (* 1000) js/Math.round)))
+          (add-video-listener index "canplaythrough" on-load)
+          (jump index 0)
+          (if autoplay
+            (play index))))
+      :reagent-render
+      (fn [{:keys [phrase hide? stopped? mobile]}]
+        (let [{:keys [index video_info]} phrase]
+          [:div.video-player-box
+           {:style (merge {:opacity (if hide? 0 1)} (when hide? {:display :none}))}
+           [:video.video-player
+            {:src         (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")
+             :playsInline true
+             :controls    false
+             :id          (index->id index)
+             :style       {:z-index (* index 1000)}}]
+           (when @show-play-button?
+             [:div.overly-play-icon
+              {:on-click (fn []
+                           (reset! show-play-button? false)
+                           (play index))}
+              [:span.fa-stack.fa-1x
+               [:i.fa.fa-circle.fa-stack-2x]
+               [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon]]])
+           (let [{:keys [imdb info]} video_info]
+             [:a.overly-video-info
+              {:href imdb :target "_blank"}
+              info])]))})))
 

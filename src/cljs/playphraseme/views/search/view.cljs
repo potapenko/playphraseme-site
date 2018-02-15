@@ -3,13 +3,13 @@
             [cljs.core.async :as async :refer [<! >! put! chan timeout]]
             [cljs.pprint :refer [pprint]]
             [reagent.core :as r]
+            [re-frame.core :as rf]
             [goog.crypt.base64 :as base-64]
             [playphraseme.common.util :as util]
             [playphraseme.views.search.model :as model]
             [playphraseme.common.rest-api :as rest-api]
             [playphraseme.common.video-player :as player]
-            [playphraseme.common.nlp :as nlp]
-            [re-frame.core :as rf])
+            [playphraseme.common.nlp :as nlp])
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]))
 
@@ -316,8 +316,6 @@
                 [player/video-player {:phrase         x
                                       :hide?          (not= @current index)
                                       :on-play        #(scroll-to-phrase index)
-                                      :on-load        #(when (and (util/ios-safari?) (= index @current))
-                                                        (rf/dispatch [::model/show-ios-play true]))
                                       :on-pause       #(rf/dispatch [::model/stopped true])
                                       :on-end         next-phrase
                                       :on-pos-changed update-current-word
@@ -325,15 +323,7 @@
              [:div.overly-logo
               [:span.red "Play"]
               [:span.black "Phrase"]
-              [:span.gray ".me"]]
-             (when @(rf/subscribe [::model/show-ios-play])
-                 [:div.overly-play-icon
-                  {:on-click (fn []
-                               (rf/dispatch [::model/show-ios-play false])
-                               (play))}
-                  [:span.fa-stack.fa-1x
-                   [:i.fa.fa-circle.fa-stack-2x]
-                   [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon]]])]
+              [:span.gray ".me"]]]
             [:div.search-ui-container [search-input]]
             (if-not (empty? @suggestions)
               [suggestions-list @suggestions]

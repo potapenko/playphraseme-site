@@ -203,7 +203,6 @@ body{
 
 .video-player {
   height: 320px;
-  text-align: center;
   margin: 10px auto;
 	transition: opacity 0.4s ease-in-out;
 }
