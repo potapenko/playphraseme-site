@@ -156,28 +156,28 @@
    [:ul.filter-input-icons
     [:li [:div.search-result-count @(rf/subscribe [::model/search-count])]]
     (when-not (util/ios-safari?)
-        [:li
-         [:div.filter-input-icon
-          {:on-click toggle-play}
-          [:span.fa-stack.fa-1x
-           [:i.fa.fa-circle.fa-stack-2x]
-           (if @(rf/subscribe [::model/stopped])
-             [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon]
-             [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon])]]])
+      [:li
+       [:div.filter-input-icon
+        {:on-click toggle-play}
+        [:span.fa-stack.fa-1x
+         [:i.fa.fa-circle.fa-stack-2x]
+         (if @(rf/subscribe [::model/stopped])
+           [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon]
+           [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon])]]])
     #_[:li
-     [:div.filter-input-icon
-      {:on-click favorite-current-phrase}
-      [:span.fa-stack.fa-1x
-       [:i.fa.fa-circle.fa-stack-2x]
-       [:i.fa.fa-star.fa-stack-1x.fa-inverse]]]]
+       [:div.filter-input-icon
+        {:on-click favorite-current-phrase}
+        [:span.fa-stack.fa-1x
+         [:i.fa.fa-circle.fa-stack-2x]
+         [:i.fa.fa-star.fa-stack-1x.fa-inverse]]]]
     #_[:li
-     [:div.filter-input-icon
-      {:on-click show-config}
-      [:i.fa.fa-cog.fa-2x]]]
+       [:div.filter-input-icon
+        {:on-click show-config}
+        [:i.fa.fa-cog.fa-2x]]]
     #_[:li
-     [:div.filter-input-icon
-      {:on-click show-search-help}
-      [:i.fa.fa-question-circle.fa-2x]]]]])
+       [:div.filter-input-icon
+        {:on-click show-search-help}
+        [:i.fa.fa-question-circle.fa-2x]]]]])
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
@@ -251,14 +251,15 @@
                 :on-click #(rf/dispatch [::model/current-phrase-index (:index x)])}
            [:td [:div.phrase-number (-> x :index inc)]]
            [:td.phrase-text [karaoke x]]
-           [:td.translate-icons
-            [:a.lang-in-circle
-             {:href "" :on-click #(favorite-phrase x)}
-             [:i.fa.fa-star.fa-1x]]
-            [:a.lang-in-circle
-             {:href (str "https://translate.google.com/#en/" lang "/" text) :target "_blank"} lang]
-            [:a.lang-in-circle
-             {:href (str "/#/phrase/" id)} "#"]]])))}))
+           (when @(rf/subscribe [:desktop?])
+            [:td.translate-icons
+             [:a.lang-in-circle
+              {:href "" :on-click #(favorite-phrase x)}
+              [:i.fa.fa-star.fa-1x]]
+             [:a.lang-in-circle
+              {:href (str "https://translate.google.com/#en/" lang "/" text) :target "_blank"} lang]
+             [:a.lang-in-circle
+              {:href (str "/#/phrase/" id)} "#"]])])))}))
 
 (defn suggestions-list [list]
   [:div.suggestions-container
