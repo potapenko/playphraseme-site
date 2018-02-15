@@ -13,6 +13,15 @@
  (fn [db [_ value]]
    (assoc db ::stopped value)))
 
+(reg-sub
+ ::show-ios-play
+ (fn [db _]
+   (get db ::show-ios-play false)))
+
+(reg-event-db
+ ::show-ios-play
+ (fn [db [_ value]]
+   (assoc db ::show-ios-play value)))
 
 (reg-sub
  ::search-text

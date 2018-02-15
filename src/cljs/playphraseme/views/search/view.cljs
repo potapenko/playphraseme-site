@@ -13,9 +13,12 @@
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]))
 
+(defn play []
+  (player/play @(rf/subscribe [::model/current-phrase-index])))
+
 (defn toggle-play []
   (if (util/ios-safari?)
-    (player/play @(rf/subscribe [::model/current-phrase-index]))
+    (play)
     (let [now-stopped? @(rf/subscribe [::model/stopped])
           index @(rf/subscribe [::model/current-phrase-index])]
       (if now-stopped?
@@ -313,14 +316,24 @@
                 [player/video-player {:phrase         x
                                       :hide?          (not= @current index)
                                       :on-play        #(scroll-to-phrase index)
+                                      :on-load        #(when (and (util/ios-safari?) (= index @current))
+                                                        (rf/dispatch [::model/show-ios-play true]))
                                       :on-pause       #(rf/dispatch [::model/stopped true])
                                       :on-end         next-phrase
                                       :on-pos-changed update-current-word
                                       :stopped?       @stopped}]))
-             [:div.inline-logo
+             [:div.overly-logo
               [:span.red "Play"]
               [:span.black "Phrase"]
-              [:span.gray ".me"]]]
+              [:span.gray ".me"]]
+             (when @(rf/subscribe [::model/show-ios-play])
+                 [:div.overly-play-icon
+                  {:on-click (fn []
+                               (rf/dispatch [::model/show-ios-play false])
+                               (play))}
+                  [:span.fa-stack.fa-1x
+                   [:i.fa.fa-circle.fa-stack-2x]
+                   [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon]]])]
             [:div.search-ui-container [search-input]]
             (if-not (empty? @suggestions)
               [suggestions-list @suggestions]

@@ -208,7 +208,7 @@ body{
 	transition: opacity 0.4s ease-in-out;
 }
 
-.inline-logo {
+.overly-logo {
   opacity: 0.5;
   position: absolute;
   height: 36px;
@@ -222,11 +222,19 @@ body{
   overflow: hidden;
 }
 
-.inline-logo .red {color: red}
-.inline-logo .black {color: white}
-.inline-logo .gray {color: rgba(255,255,255,0.4)}
+.overly-logo .red {color: red}
+.overly-logo .black {color: white}
+.overly-logo .gray {color: rgba(255,255,255,0.4)}
 
-.inline-video-info {
+.overly-play-icon {
+  position: absolute;
+  font-size: 88px;
+  right: 30px;
+  top: 80px;
+  opacity: 0.5;
+}
+
+.overly-video-info {
   position: absolute;
   right: 20px;
   font-size: 12px;
@@ -235,11 +243,11 @@ body{
   color: rgba(255,255,255,0.6);
 }
 
-.inline-video-info:hover {
+.overly-video-info:hover {
   color: white;
 }
 
-.inline-video-info:visited {
+.overly-video-info:visited {
   color: rgba(255,255,255,0.6);
 }
 
@@ -381,7 +389,7 @@ word, word:active, word:focus{
 }
 
 .lang-in-circle{
-	display: inline-block;
+	display: overly-block;
 	width:18px;
 	height:18px;
 	border-radius:9px;
@@ -439,7 +447,7 @@ word, word:active, word:focus{
 }
 
 .filter-input-icons > li {
-  display: inline-block;
+  display: overly-block;
   vertical-align: middle;
   cursor: pointer;
   padding-left: 12px;
