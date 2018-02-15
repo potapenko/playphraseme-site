@@ -17,7 +17,7 @@
   (player/play @(rf/subscribe [::model/current-phrase-index])))
 
 (defn toggle-play []
-  (if (util/ios-safari?)
+  (if (util/ios?)
     (play)
     (let [now-stopped? @(rf/subscribe [::model/stopped])
           index @(rf/subscribe [::model/current-phrase-index])]
@@ -155,7 +155,7 @@
      :on-change #(search-phrase (-> % .-target .-value))}]
    [:ul.filter-input-icons
     [:li [:div.search-result-count @(rf/subscribe [::model/search-count])]]
-    (when-not (util/ios-safari?)
+    (when-not (util/ios?)
       [:li
        [:div.filter-input-icon
         {:on-click toggle-play}
@@ -308,7 +308,6 @@
            [:div.search-content
             ^{:key (str "video-list- " @current)}
             [:div.video-player-container
-             {:on-click toggle-play}
              (doall
               (for [x     @phrases
                     :let  [{:keys [index id]} x]
@@ -318,10 +317,11 @@
                                       :hide?          (not= @current index)
                                       :on-play        #(scroll-to-phrase index)
                                       :on-pause       #(rf/dispatch [::model/stopped true])
+                                      :on-play-click  toggle-play
                                       :on-end         next-phrase
                                       :on-pos-changed update-current-word
                                       :stopped?       @stopped}]))
-             [:div.overly-logo
+             [:div.overlay-logo
               [:span.red "Play"]
               [:span.black "Phrase"]
               [:span.gray ".me"]]]

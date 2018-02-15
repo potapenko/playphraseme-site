@@ -47,7 +47,7 @@
   (-> index index->element js/enableInlineVideo))
 
 (defn video-player []
-  (let [show-play-button? (r/atom (util/ios-safari?))]
+  (let [show-play-button? (r/atom (util/ios?))]
     (r/create-class
      {:component-will-receive-props
       (fn [this]
@@ -81,10 +81,13 @@
           (if autoplay
             (play index))))
       :reagent-render
-      (fn [{:keys [phrase hide? stopped? mobile]}]
+      (fn [{:keys [phrase hide? stopped? mobile on-play-click]}]
         (let [{:keys [index video_info]} phrase]
           [:div.video-player-box
-           {:style (merge {:opacity (if hide? 0 1)} (when hide? {:display :none}))}
+           {:style (merge {:opacity (if hide? 0 1)} (when hide? {:display :none}))
+            :on-click (fn []
+                        (reset! show-play-button? false)
+                        (on-play-click))}
            [:video.video-player
             {:src         (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")
              :playsInline true
@@ -92,15 +95,12 @@
              :id          (index->id index)
              :style       {:z-index (* index 1000)}}]
            (when @show-play-button?
-             [:div.overly-play-icon
-              {:on-click (fn []
-                           (reset! show-play-button? false)
-                           (play index))}
+             [:div.overlay-play-icon
               [:span.fa-stack.fa-1x
                [:i.fa.fa-circle.fa-stack-2x]
-               [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon]]])
+               [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon2]]])
            (let [{:keys [imdb info]} video_info]
-             [:a.overly-video-info
+             [:a.overlay-video-info
               {:href imdb :target "_blank"}
               info])]))})))
 

@@ -195,7 +195,7 @@ body{
 	transition: opacity 0.4s ease-in-out;
 }
 
-.overly-logo {
+.overlay-logo {
   opacity: 0.5;
   position: absolute;
   height: 36px;
@@ -209,19 +209,20 @@ body{
   overflow: hidden;
 }
 
-.overly-logo .red {color: red}
-.overly-logo .black {color: white}
-.overly-logo .gray {color: rgba(255,255,255,0.4)}
+.overlay-logo .red {color: red}
+.overlay-logo .black {color: white}
+.overlay-logo .gray {color: rgba(255,255,255,0.4)}
 
-.overly-play-icon {
+.overlay-play-icon {
   position: absolute;
-  font-size: 88px;
-  right: 30px;
-  top: 80px;
+  font-size: 55px;
+  right: 20px;
+  top: 20px;
+  color: black;
   opacity: 0.5;
 }
 
-.overly-video-info {
+.overlay-video-info {
   position: absolute;
   right: 20px;
   font-size: 12px;
@@ -230,11 +231,11 @@ body{
   color: rgba(255,255,255,0.6);
 }
 
-.overly-video-info:hover {
+.overlay-video-info:hover {
   color: white;
 }
 
-.overly-video-info:visited {
+.overlay-video-info:visited {
   color: rgba(255,255,255,0.6);
 }
 .search-container {
@@ -425,4 +426,8 @@ word, word:active, word:focus{
 
 .play-icon{
   padding-left: 3px;
+}
+
+.play-icon2{
+  padding-left: 10px;
 }
