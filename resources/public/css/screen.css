@@ -488,8 +488,8 @@ word, word:active, word:focus{
     display: none !important;
   }
   body {
-    background-color: black;
-    position: relative;
+    background-color: black !important;
+    position: relative !important;
     overflow: hidden !important;
   }
   .search-container {
@@ -502,16 +502,35 @@ word, word:active, word:focus{
     position: absolute;
     left: 0px; right: 0px; bottom: 0px; top: 0px !important;
   }
-
   .video-player {
     height: 100% !important;
     margin: 0px auto !important;
 	  transition: opacity 0.4s ease-in-out;
   }
-
   .overlay-play-icon {
     font-size: 35px !important;
     top: 40px;
+  }
+  .currrent-pharase-container-landscape {
+    display: block;
+    position: absolute;
+    bottom: 45px;
+    left: 15px;
+    right: 15px;
+    text-align: center;
+    padding: 2px 8px;
+    background-color: rgba(255,255,255,0.3);
+    box-shadow: 0 0 5px 0 rgba(0,0,0,0.3);
+  }
+  .s-word {
+    color: black !important;
+  }
+  .s-word {
+    color: rgba(0,0,0,0.7) !important;
+  }
+  .s-word-played {
+    color: rgba(255,255,255,0.7) !important;
+    background-color: rgba(0,0,0,0.8) !important;
   }
 }
 

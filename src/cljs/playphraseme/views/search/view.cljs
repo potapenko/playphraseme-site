@@ -284,6 +284,10 @@
         ^{:key (str "phrase-" x)}
         [phrase-text x]))]]])
 
+(defn overlay-current-phrase []
+  [:div.currrent-pharase-container-landscape
+   [:div.phrase-text [karaoke (get-current-phrase)]]])
+
 (defn page [params]
   (r/create-class
    {:component-will-unmount
@@ -304,7 +308,6 @@
           (search-phrase q))
         (fn []
           [:div.search-container
-           ;; {:on-key-up work-with-keys}
            [:div.search-content
             ^{:key (str "video-list- " @current)}
             [:div.video-player-container
@@ -324,7 +327,8 @@
              [:div.overlay-logo
               [:span.red "Play"]
               [:span.black "Phrase"]
-              [:span.gray ".me"]]]
+              [:span.gray ".me"]]
+             [overlay-current-phrase]]
             [:div.search-ui-container [search-input]]
             (if-not (empty? @suggestions)
               [suggestions-list @suggestions]
