@@ -37,8 +37,27 @@
    (-> js/window .-inerHeight)
    (-> js/document.body .-clientHeight)))
 
+(def ios?
+  (memoize
+   (fn []
+     (when-let [user-agent (some-> js/window .-navigator .-userAgent)]
+       (some->> user-agent string/lower-case (re-find #"ipad|iphone") nil? not)))))
+
+(def android?
+  (memoize
+   (fn []
+     (when-let [user-agent (some-> js/window .-navigator .-userAgent)]
+       (some->> user-agent string/lower-case (re-find #"android") nil? not)))))
+
+(def windows-phone?
+  (memoize
+   (fn []
+     (when-let [user-agent (some-> js/window .-navigator .-userAgent)]
+       (some->> user-agent string/lower-case (re-find #"Windows Phone") nil? not)))))
+
 (defn mobile? []
-  (-> (window-width) (< 756)))
+  (or (ios?) (android?) (windows-phone?))
+  #_(-> (window-width) (< 756)))
 
 (defn get-head-html []
   (aget (js/document.querySelector "head") "innerText"))
@@ -81,12 +100,13 @@
 
 (defn update-layout []
   (let [w                  (window-width)
-        show-left-column?  (> w 960)
-        show-right-column? (> w 1400)]
-   (dispatch [:responsive-scale
-              (calculate-window-scale
-               (+ (when show-left-column? 150) 600 (when show-right-column? 150))
-               700)])
+        show-left-column?  (and (not (mobile?)) (> w 960))
+        show-right-column? (and (not (mobile?)) (> w 1400))]
+    (when-not (mobile?)
+        (dispatch [:responsive-scale
+                   (calculate-window-scale
+                    (+ (when show-left-column? 150) 600 (when show-right-column? 150))
+                    700)]))
    (dispatch [:responsive-show-left-column? show-left-column?])
    (dispatch [:responsive-show-right-column? show-right-column?]))
   (when-not (= @(subscribe [:mobile?]) (mobile?))

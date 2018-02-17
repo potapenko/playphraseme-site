@@ -190,8 +190,8 @@ body{
 }
 
 .video-player {
-  height: 320px;
-  margin: 10px auto;
+  height: 97%;
+  margin: 5px auto;
 	transition: opacity 0.4s ease-in-out;
 }
 
@@ -432,7 +432,11 @@ word, word:active, word:focus{
   padding-left: 10px;
 }
 
-@media only screen and (max-width: 800px) and (orientation : portrait){
+@media only screen and (max-device-width: 800px) and (orientation : portrait){
+  .header-button {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
   .search-results-container {
     left: 0px; right: 0px; bottom: 0px; top: 440px !important;
   }
@@ -473,5 +477,42 @@ word, word:active, word:focus{
   }
 }
 
+@media only screen and (max-device-width : 800px) and (orientation : landscape){
+	.mobile-query{
+		display: box;
+	}
+  .header {
+    display: none !important;
+  }
+  .search-ui-container{
+    display: none !important;
+  }
+  body {
+    background-color: black;
+    position: relative;
+    overflow: hidden !important;
+  }
+  .search-container {
+    position: absolute;
+    left: 0px; right: 0px; bottom: 0px; top: 0px !important;
+    background-color: red;
+    overflow: hidden !important;
+  }
+  .video-player-container {
+    position: absolute;
+    left: 0px; right: 0px; bottom: 0px; top: 0px !important;
+  }
+
+  .video-player {
+    height: 100% !important;
+    margin: 0px auto !important;
+	  transition: opacity 0.4s ease-in-out;
+  }
+
+  .overlay-play-icon {
+    font-size: 35px !important;
+    top: 40px;
+  }
+}
 
 
