@@ -432,6 +432,8 @@ word, word:active, word:focus{
   padding-left: 10px;
 }
 
+.currrent-pharase-container-landscape {display: none;}
+
 @media only screen and (max-device-width: 800px) and (orientation : portrait){
   .header-button {
     padding: 8px 12px;
@@ -512,7 +514,7 @@ word, word:active, word:focus{
     top: 40px;
   }
   .currrent-pharase-container-landscape {
-    display: block;
+    display: block !important;
     position: absolute;
     bottom: 45px;
     left: 15px;

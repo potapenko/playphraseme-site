@@ -119,7 +119,6 @@
 
 (defn focus-input []
   (when-let [elem (some-> "search-input" js/document.getElementById)]
-    (-> elem .-selectionStart (set! (-> elem .-value count)))
     (-> elem .focus)))
 
 (defn work-with-keys [e]

@@ -37,27 +37,16 @@
    (-> js/window .-inerHeight)
    (-> js/document.body .-clientHeight)))
 
-(def ios?
-  (memoize
-   (fn []
-     (when-let [user-agent (some-> js/window .-navigator .-userAgent)]
-       (some->> user-agent string/lower-case (re-find #"ipad|iphone") nil? not)))))
+(defn- check-navigator [rx]
+  (when-let [user-agent (some-> js/window .-navigator .-userAgent)]
+    (some->> user-agent string/lower-case (re-find rx) nil? not)))
 
-(def android?
-  (memoize
-   (fn []
-     (when-let [user-agent (some-> js/window .-navigator .-userAgent)]
-       (some->> user-agent string/lower-case (re-find #"android") nil? not)))))
-
-(def windows-phone?
-  (memoize
-   (fn []
-     (when-let [user-agent (some-> js/window .-navigator .-userAgent)]
-       (some->> user-agent string/lower-case (re-find #"Windows Phone") nil? not)))))
+(def ios? (check-navigator #"ipad|iphone"))
+(def android? (check-navigator #"android"))
+(def windows-mobile? (check-navigator #"windows phone"))
 
 (defn mobile? []
-  (or (ios?) (android?) (windows-phone?))
-  #_(-> (window-width) (< 756)))
+  (or ios? android? windows-phone?))
 
 (defn get-head-html []
   (aget (js/document.querySelector "head") "innerText"))
