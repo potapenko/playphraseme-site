@@ -285,7 +285,9 @@
 
 (defn overlay-current-phrase []
   [:div.currrent-pharase-container-landscape
-   [:div.phrase-text (when-let [phrase (get-current-phrase)] [karaoke phrase])]])
+   [:div.phrase-text
+    (when-let [phrase (get-current-phrase)]
+      [karaoke phrase])]])
 
 (defn page [params]
   (r/create-class
