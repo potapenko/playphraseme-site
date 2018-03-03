@@ -285,7 +285,7 @@
 
 (defn overlay-current-phrase []
   [:div.currrent-pharase-container-landscape
-   [:div.phrase-text [karaoke (get-current-phrase)]]])
+   [:div.phrase-text (when-let [phrase (get-current-phrase)] [karaoke phrase])]])
 
 (defn page [params]
   (r/create-class
@@ -327,7 +327,7 @@
               [:span.red "Play"]
               [:span.black "Phrase"]
               [:span.gray ".me"]]
-             [overlay-current-phrase]]
+             #_[overlay-current-phrase]]
             [:div.search-ui-container [search-input]]
             (if-not (empty? @suggestions)
               [suggestions-list @suggestions]

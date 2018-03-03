@@ -48,7 +48,7 @@
 
 (defn video-player []
   (let [show-play-button? (r/atom (util/ios?))]
-    (r/create-class
+    #_(r/create-class
      {:component-will-receive-props
       (fn [this]
         (let [{:keys [hide? stopped? phrase]} (r/props this)
