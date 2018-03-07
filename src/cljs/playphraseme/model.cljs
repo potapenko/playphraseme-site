@@ -1,5 +1,5 @@
 (ns playphraseme.model
-  (:require [re-frame.core :refer [dispatch reg-event-db reg-sub]]
+  (:require [re-frame.core :refer [dispatch subscribe reg-event-db reg-sub]]
             [playphraseme.common.localstorage :as localstorage]))
 
 (reg-event-db
@@ -85,7 +85,7 @@
 (reg-sub
  :mobile?
  (fn [db _]
-   (:mobile? db)))
+   (or (:mobile? db) (:fullscreen db))))
 
 (reg-event-db
  :mobile?
@@ -136,4 +136,3 @@
  :fullscreen
  (fn [db [_ value]]
    (assoc db :fullscreen value)))
-

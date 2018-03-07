@@ -108,4 +108,4 @@
 (defn start []
   (update-layout)
   (-> js/window (.addEventListener "resize" update-layout true))
-  (-> js/document (.addEventListener "fullscreenchange" #(dispatch [:fullscreen (util/fullscreen?)]))))
+  (util/add-prefixed-listener js/document "fullscreenchange" #(dispatch [:fullscreen (util/fullscreen?)]) false))

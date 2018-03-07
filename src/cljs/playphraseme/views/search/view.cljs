@@ -26,6 +26,8 @@
         (player/stop index))
       (rf/dispatch [::model/stopped (not now-stopped?)]))))
 
+(def search-id (atom 0))
+
 (defn search-phrase [text]
   (rf/dispatch [::model/search-text text])
   (rf/dispatch [::model/search-result []])
@@ -33,8 +35,10 @@
   (when text
     (util/set-url! "search" {:q text})
     (go
-      (let [res (<! (rest-api/search-phrase text 10 0))]
-        (rf/dispatch [::model/search-result res])))))
+      (let [res (<! (rest-api/search-phrase text 10 0))
+            id  (swap! search-id inc)]
+        (when (= id @search-id)
+          (rf/dispatch [::model/search-result res]))))))
 
 (defn scroll-end []
   (let [count-all    @(rf/subscribe [::model/search-count])
@@ -124,7 +128,7 @@
 (defn work-with-keys [e]
   (let [key-code    (-> e .-keyCode)
         suggestions @(rf/subscribe [::model/suggestions])]
-    (println "key:" key-code)
+    ;; (println "key:" key-code)
     (if-not (empty? suggestions)
       (case key-code
         38 (prev-suggestion) ;; up

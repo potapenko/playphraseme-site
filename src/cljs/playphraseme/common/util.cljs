@@ -136,12 +136,33 @@
   (str (-> s first string/capitalize)
        (->> s rest (apply str))))
 
+(defn create-prefixes
+  ([param] (create-prefixes param true))
+  ([param capitalize]
+   (let [cap-fn (if capitalize capitalize-first-letter identity)]
+     [(str param)
+      (str "moz" (cap-fn param))
+      (str "webkit" (cap-fn param))
+      (str "ms" (cap-fn param))])))
+
 (defn prefixed-param
-  [el func-name]
-  (or (aget el (str func-name))
-      (aget el (str "moz" (capitalize-first-letter func-name)))
-      (aget el (str "webkit" (capitalize-first-letter func-name)))
-      (aget el (str "ms" (capitalize-first-letter func-name)))))
+  [el param]
+  (loop [[v & t] (create-prefixes param)]
+    (when v
+      (let [res (aget el v)]
+        (if-not (nil? res)
+          res
+          (recur t))))))
+
+(defn add-prefixed-listener
+  ([el event-name pred] (add-prefixed-listener el event-name pred))
+  ([el event-name pred capitalize]
+   (doseq [x (create-prefixes event-name capitalize)]
+     (-> el (.addEventListener x pred)))))
+
+(defn remove-prefixed-listener [el event-name pred]
+  (doseq [x (create-prefixes event-name)]
+    (-> el (.removeEventListener x pred))))
 
 (defn fullscreen? []
   (-> (prefixed-param js/document "fullscreenElement") nil? not))
