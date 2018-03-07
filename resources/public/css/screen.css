@@ -509,7 +509,7 @@ word, word:active, word:focus{
   .search-container {
     position: absolute;
     left: 0px; right: 0px; bottom: 0px; top: 0px !important;
-    background-color: red;
+    background-color: white;
     overflow: hidden !important;
   }
   .video-player-container {

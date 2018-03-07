@@ -339,7 +339,8 @@
               [:span.red "Play"]
               [:span.black "Phrase"]
               [:span.gray ".me"]]
-             [overlay-current-phrase]]
+             (when @(rf/subscribe [:mobile?])
+               [overlay-current-phrase])]
             [:div.search-ui-container [search-input]]
             (if-not (empty? @suggestions)
               [suggestions-list @suggestions]

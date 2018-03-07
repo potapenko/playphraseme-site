@@ -117,7 +117,7 @@
   (-> (body) (.addEventListener event-name cb false)))
 
 (defn remove-document-listener [event-name cb]
-  (println (-> (body) (.removeEventListener event-name cb false))))
+  (-> (body) (.removeEventListener event-name cb false)))
 
 (defn add-class [elem class]
   (let [classes (.-classList elem)]
