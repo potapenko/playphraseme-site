@@ -137,13 +137,14 @@
        (->> s rest (apply str))))
 
 (defn create-prefixes
-  ([param] (create-prefixes param true))
-  ([param capitalize]
-   (let [cap-fn (if capitalize capitalize-first-letter identity)]
-     [(str param)
-      (str "moz" (cap-fn param))
-      (str "webkit" (cap-fn param))
-      (str "ms" (cap-fn param))])))
+  [param]
+  [(str param)
+   (str "moz" param)
+   (str "moz" (capitalize-first-letter param))
+   (str "webkit" param)
+   (str "webkit" (capitalize-first-letter param))
+   (str "ms" param)
+   (str "ms" (capitalize-first-letter param))])
 
 (defn prefixed-param
   [el param]
@@ -154,11 +155,9 @@
           res
           (recur t))))))
 
-(defn add-prefixed-listener
-  ([el event-name pred] (add-prefixed-listener el event-name pred))
-  ([el event-name pred capitalize]
-   (doseq [x (create-prefixes event-name capitalize)]
-     (-> el (.addEventListener x pred)))))
+(defn add-prefixed-listener [el event-name pred]
+  (doseq [x (create-prefixes event-name)]
+    (-> el (.addEventListener x pred))))
 
 (defn remove-prefixed-listener [el event-name pred]
   (doseq [x (create-prefixes event-name)]

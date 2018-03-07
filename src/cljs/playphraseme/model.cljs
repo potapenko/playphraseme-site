@@ -85,7 +85,7 @@
 (reg-sub
  :mobile?
  (fn [db _]
-   (or (:mobile? db) (:fullscreen db))))
+   (:mobile? db)))
 
 (reg-event-db
  :mobile?
