@@ -34,11 +34,12 @@
   (rf/dispatch [::model/current-phrase-index nil])
   (when text
     (util/set-url! "search" {:q text})
-    (go
-      (let [res (<! (rest-api/search-phrase text 10 0))
-            id  (swap! search-id inc)]
-        (when (= id @search-id)
-          (rf/dispatch [::model/search-result res]))))))
+    (let [id  (swap! search-id inc)]
+      (go
+        (let [res (<! (rest-api/search-phrase text 10 0))]
+          (println text id @search-id)
+          (when (= id @search-id)
+            (rf/dispatch [::model/search-result res])))))))
 
 (defn scroll-end []
   (let [count-all    @(rf/subscribe [::model/search-count])

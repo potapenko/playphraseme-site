@@ -129,7 +129,6 @@
 
 (defn ios? []
   (when-let [user-agent (some-> js/window .-navigator .-userAgent)]
-    (js/console.log "User agent:" user-agent)
     (some->> user-agent string/lower-case (re-find #"ipad|iphone") nil? not)))
 
 (defn capitalize-first-letter [s]
