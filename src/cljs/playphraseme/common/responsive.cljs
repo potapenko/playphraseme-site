@@ -1,6 +1,7 @@
 (ns playphraseme.common.responsive
   (:require [re-frame.core :refer [dispatch subscribe]]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [playphraseme.common.util :as util]))
 
 (defn screen-width []
   (-> js/window.screen .-width))
@@ -43,7 +44,7 @@
 
 (def ios? (check-navigator #"ipad|iphone"))
 (def android? (check-navigator #"android"))
-(def windows-mobile? (check-navigator #"windows phone"))
+(def windows-phone? (check-navigator #"windows phone"))
 
 (defn mobile? []
   (or ios? android? windows-phone?))
@@ -106,4 +107,5 @@
 
 (defn start []
   (update-layout)
-  (-> js/window (.addEventListener "resize" update-layout true)))
+  (-> js/window (.addEventListener "resize" update-layout true))
+  (-> js/document (.addEventListener "fullscreenchange" #(dispatch [:fullscreen (util/fullscreen?)]))))

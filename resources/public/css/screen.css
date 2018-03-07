@@ -434,6 +434,18 @@ word, word:active, word:focus{
 
 .currrent-pharase-container-landscape {display: none;}
 
+.overlay-fullscreen{
+  position: absolute;
+  left: 10px;
+  top: 5px;
+  cursor: pointer;
+}
+.overlay-fullscreen > i {
+  opacity: 0.4;
+  color: "#ffffff";
+  font-size: 33px;
+}
+
 @media only screen and (max-device-width: 800px) and (orientation : portrait){
   .header-button {
     padding: 8px 12px;

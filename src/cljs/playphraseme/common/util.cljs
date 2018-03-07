@@ -94,11 +94,15 @@
 (defn body []
   js/document.body)
 
+(defn document []
+  js/document.documentElement)
+
 (defn selector [s]
   (-> s js/document.querySelector))
 
 (defn selector->elem [s]
   (-> s selector first))
+
 
 (defn id->elem [id]
   (-> id js/document.getElementById))
@@ -128,7 +132,49 @@
     (js/console.log "User agent:" user-agent)
     (some->> user-agent string/lower-case (re-find #"ipad|iphone") nil? not)))
 
+(defn capitalize-first-letter [s]
+  (str (-> s first string/capitalize)
+       (->> s rest (apply str))))
+
+(defn prefixed-param
+  [el func-name]
+  (or (aget el (str func-name))
+      (aget el (str "moz" (capitalize-first-letter func-name)))
+      (aget el (str "webkit" (capitalize-first-letter func-name)))
+      (aget el (str "ms" (capitalize-first-letter func-name)))))
+
+(defn fullscreen? []
+  (-> (prefixed-param js/document "fullscreenElement") nil? not))
+
+(defn fullscreen-enabled? []
+  (prefixed-param js/document "fullscreenEnabled"))
+
+(defn fullscreen!
+  ([] (fullscreen! (document)))
+  ([elem]
+   (when-let [func (prefixed-param elem "requestFullscreen")]
+     (-> func (.call elem)))))
+
+(defn exit-fullscreen!
+  ([] (fullscreen! (document)))
+  ([elem]
+   (when-let [func (prefixed-param elem "exitFullscreen")]
+     (-> func (.call elem)))))
+
+(defn toggle-fullscreen! []
+  (println (fullscreen-enabled?)  (fullscreen?))
+  (if (fullscreen?)
+    (exit-fullscreen!)
+    (fullscreen!)))
+
 (comment
+  (prefixed-param (document) "requestFullscreen")
+
+  (fullscreen! (document))
+  (fullscreen-enabled?)
+
+  (fullscreen! (id->elem "app"))
+
   (ios?)
 
   (class->str

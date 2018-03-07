@@ -325,11 +325,17 @@
                                       :on-end         next-phrase
                                       :on-pos-changed update-current-word
                                       :stopped?       @stopped}]))
+             (when (util/fullscreen-enabled?)
+               [:div.overlay-fullscreen
+                {:on-click #(util/toggle-fullscreen!)}
+                (if @(rf/subscribe [:fullscreen])
+                  [:i.material-icons "fullscreen_exit"]
+                  [:i.material-icons "fullscreen"])])
              [:div.overlay-logo
               [:span.red "Play"]
               [:span.black "Phrase"]
               [:span.gray ".me"]]
-             #_[overlay-current-phrase]]
+             [overlay-current-phrase]]
             [:div.search-ui-container [search-input]]
             (if-not (empty? @suggestions)
               [suggestions-list @suggestions]

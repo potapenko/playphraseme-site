@@ -126,3 +126,14 @@
  :responsive-show-right-column?
  (fn [db [_ value]]
    (assoc db :responsive-show-right-column? value)))
+
+(reg-sub
+ :fullscreen
+ (fn [db _]
+   (get db :fullscreen false)))
+
+(reg-event-db
+ :fullscreen
+ (fn [db [_ value]]
+   (assoc db :fullscreen value)))
+
