@@ -249,7 +249,7 @@
   (r/create-class
    {:reagent-render
     (fn []
-      (let [lang (util/locale-name)
+      (let [lang                    (util/locale-name)
             {:keys [index text id]} x]
         (fn []
           [:tr {:id       (str "phrase-text-" index)
@@ -257,14 +257,16 @@
            [:td [:div.phrase-number (-> x :index inc)]]
            [:td.phrase-text [karaoke x]]
            (when @(rf/subscribe [:desktop?])
-            [:td.translate-icons
-             [:a.lang-in-circle
-              {:href "" :on-click #(favorite-phrase x)}
-              [:i.fa.fa-star.fa-1x]]
-             [:a.lang-in-circle
-              {:href (str "https://translate.google.com/#en/" lang "/" text) :target "_blank"} lang]
-             [:a.lang-in-circle
-              {:href (str "/#/phrase/" id)} "#"]])])))}))
+             [:td.translate-icons
+              [:a.lang-in-circle.heart
+               {:href  "" :on-click #(favorite-phrase x)}
+               [:i.fa.fa-heart.fa-1x]]
+              (when-not (= @(rf/subscribe [:locale]) :en)
+                [:a.lang-in-circle
+                 {:href (str "https://translate.google.com/#en/" lang "/" text) :target "_blank"} lang])
+              [:a.lang-in-circle.link
+               {:href (str "/#/phrase/" id)}
+               [:i.fa.fa-link.fa-1x]]])])))}))
 
 (defn suggestions-list [list]
   [:div.suggestions-container

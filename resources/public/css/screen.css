@@ -353,10 +353,10 @@ word, word:active, word:focus{
 
 .lang-in-circle{
 	display: inline-block;
-	width:18px;
-	height:18px;
+	width:20px;
+	height:20px;
 	border-radius:9px;
-	font-size:12px;
+	font-size:14px;
 	color:#ccc;
 	font-weight: bold;
 	line-height:18px;
@@ -364,6 +364,16 @@ word, word:active, word:focus{
 	text-transform: lowercase;
 	background:rgba(0,0,0,0.03);
 }
+
+.lang-in-circle.heart {
+  margin: "2px 0px 0px 0px";
+  font-size: 10px;
+}
+
+.lang-in-circle.link {
+  font-size: 12px;
+}
+
 
 .lang-in-circle:hover{
 	background:rgba(0,0,0,0.2);
