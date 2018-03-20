@@ -425,38 +425,38 @@ word, word:active, word:focus{
   cursor: pointer;
   padding-left: 12px;
 }
-
 .filter-input-icon {
   opacity: 0.3;
 }
-
 .filter-input-icon:hover {
   opacity: 0.6;
 }
-
 .play-icon{
   padding-left: 3px;
 }
-
 .play-icon2{
   padding-left: 10px;
 }
-
-.currrent-pharase-container-landscape {display: none;}
-
+.currrent-pharase-container-landscape {
+  display: none;
+}
 .video-overlay-menu {
   position: absolute;
-  left: 10px;
-  top: 5px;
+  left: 15px;
+  top: 10px;
   cursor: pointer;
   list-style-type: none;
   padding: 0px;
+  color: white;
 }
 .video-overlay-menu li {
   margin-bottom: 12px;
+  opacity: 0.4;
+}
+.video-overlay-menu li:hover {
+  opacity: 0.7;
 }
 .video-overlay-menu i {
-  color: "white" !important;
   font-size: 33px;
 }
 .video-overlay-menu .info-text {
