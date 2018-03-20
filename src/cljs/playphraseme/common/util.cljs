@@ -181,31 +181,10 @@
      (-> func (.call elem)))))
 
 (defn toggle-fullscreen! []
-  (println (fullscreen-enabled?)  (fullscreen?))
   (if (fullscreen?)
     (exit-fullscreen!)
     (fullscreen!)))
 
+
 (comment
-  (prefixed-param (document) "requestFullscreen")
-
-  (fullscreen! (document))
-  (fullscreen-enabled?)
-
-  (fullscreen! (id->elem "app"))
-
-  (ios?)
-
-  (class->str
-   :name
-   :hello
-   nil
-   :world
-   "string-class")
-
-  (flag-map {:a "true"})
-
-  (flag-map :a :b :c {:d "hello"})
-
-  (go-url! "/#/metrics"))
-
+  )

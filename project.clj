@@ -18,8 +18,9 @@
                  [metosin/muuntaja "0.3.2"]
                  [metosin/ring-http-response "0.9.0"]
                  [mount "0.1.11"]
-                 [org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.946" :scope "provided"]
+                 [org.clojure/clojure "1.9.0-beta2"]
+                 [org.clojure/clojurescript "1.9.946"]
+                 [org.clojure/tools.reader "1.1.0"]
                  [org.clojure/tools.cli "0.3.5"]
                  [org.clojure/tools.logging "0.4.0"]
                  [org.webjars.bower/tether "1.4.0"]
@@ -37,7 +38,6 @@
                  [secretary "1.2.3"]
                  [selmer "1.11.1"]
                  [clj-oauth "1.5.5"]
-
 
                  ;; custom clj
 
@@ -83,6 +83,7 @@
 
   :plugins [[lein-cprop "1.0.3"]
             [lein-cljsbuild "1.1.5"]
+            [lein-figwheel "0.5.14"]
             [lein-immutant "2.1.0"]
             [lein-dotenv "RELEASE"]
             [lein-midje "3.1.3"]]
@@ -93,8 +94,7 @@
    :nrepl-port       7002
    :css-dirs         ["resources/public/css"]
    :nrepl-middleware
-   [cemerick.piggieback/wrap-cljs-repl cider.nrepl/cider-middleware]}
-
+   [cemerick.piggieback/wrap-cljs-repl #_cider.nrepl/cider-middleware]}
   :profiles
   {:uberjar {:omit-source    true
              :prep-tasks     ["compile" ["cljsbuild" "once" "min"]]
