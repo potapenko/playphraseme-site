@@ -442,26 +442,31 @@ word, word:active, word:focus{
 }
 .video-overlay-menu {
   position: absolute;
-  left: 15px;
+  left: 10px;
   top: 10px;
   cursor: pointer;
   list-style-type: none;
   padding: 0px;
   color: white;
+  text-align: center;
 }
 .video-overlay-menu li {
   margin-bottom: 12px;
-  opacity: 0.4;
+  font-family: Helvetica-Bold;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0;
+  text-shadow: 0 0 9px rgba(0,0,0,0.74);
 }
 .video-overlay-menu li:hover {
-  opacity: 0.7;
+  color: white;
 }
 .video-overlay-menu i {
-  font-size: 33px;
+  font-size: 25px;
 }
 .video-overlay-menu .info-text {
   margin-top: -5px;
   font-size: 8px;
+  font-weight: 300;
 }
 @media only screen and (max-device-width: 800px) and (orientation : portrait){
   .header-button {

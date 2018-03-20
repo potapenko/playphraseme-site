@@ -344,7 +344,13 @@
                   [:div.info-text "Fullscreen"]])
                [:li
                 [:i.material-icons "favorite_border"]
-                [:div.info-text "Favorites"]]]
+                [:div.info-text "Favorites"]]
+               [:li
+                [:i.material-icons "history"]
+                [:div.info-text "History"]]
+               [:li
+                [:i.material-icons "file_download"]
+                [:div.info-text "Download"]]]
               [:div.overlay-logo
                {:on-click (fn [e]
                             (if (-> e .-altKey)
