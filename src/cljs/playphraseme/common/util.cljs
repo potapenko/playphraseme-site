@@ -180,11 +180,14 @@
    (when-let [func (prefixed-param elem "exitFullscreen")]
      (-> func (.call elem)))))
 
-(defn toggle-fullscreen! []
-  (if (fullscreen?)
-    (exit-fullscreen!)
-    (fullscreen!)))
-
+(defn toggle-fullscreen!
+  ([] (if (fullscreen?)
+        (exit-fullscreen!)
+        (fullscreen!)))
+  ([elem]
+   (if (fullscreen?)
+     (exit-fullscreen! elem)
+     (fullscreen! elem))))
 
 (comment
   )

@@ -337,7 +337,7 @@
               [:ul.video-overlay-menu
                (when (util/fullscreen-enabled?)
                  [:li
-                  {:on-click #(util/toggle-fullscreen!)}
+                  {:on-click #(util/toggle-fullscreen! (util/selector ".search-container"))}
                   (if @(rf/subscribe [:fullscreen])
                     [:i.material-icons "fullscreen_exit"]
                     [:i.material-icons "fullscreen"])
