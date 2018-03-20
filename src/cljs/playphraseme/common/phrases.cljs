@@ -1,6 +1,8 @@
-(ns playphraseme.common.phrases)
+(ns playphraseme.common.phrases
+  (:require [clojure.string :as string]
+            [playphraseme.common.util :as util]))
 
-(defn random-phrases []
+(defn random-phrase []
   (rand-nth
    ["l thought" "told you about" "I would have" "i'd have" "figured out" "what is wrong with you"
     "take care" "if you know what i mean" "right now" "over there" "will give you" "I thought" "" " don't you?"
@@ -25,6 +27,14 @@
     "holy crap" "crap out" "ass hat" "asshole" "fucker" "blowjob" "dumbass" "dickhead" "no fucking way"
     "motherfucker" "What the fuck"  "oh  fuck"]))
 
-(defn search-random-prase
-  []
+(defn search-random-phrase []
+  (util/go-url! (str "#/search?q=" (random-phrase))))
+
+(defn search-random-bad-phrase []
+  (util/go-url! (str "#/search?q=" (random-bad-phrase))))
+
+(comment
+  (search-random-phrase)
+
+
   )

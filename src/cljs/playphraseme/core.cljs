@@ -16,7 +16,8 @@
             [playphraseme.views.history.view :as history-page]
             [playphraseme.layout :as layout]
             [playphraseme.model]
-            [playphraseme.common.responsive :as responsive])
+            [playphraseme.common.responsive :as responsive]
+            [playphraseme.common.phrases :as phrases])
   (:import goog.History))
 
 (def pages
@@ -44,7 +45,9 @@
   (util/go-url! "/#/search"))
 
 (secretary/defroute "/search" [query-params]
-  (route/goto-page! :search query-params))
+  (route/goto-page! :search (merge
+                             {:q (phrases/random-phrase)}
+                             query-params)))
 
 (secretary/defroute "/phrase" []
   (route/goto-page! :phrase))

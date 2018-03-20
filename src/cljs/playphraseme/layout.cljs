@@ -6,6 +6,7 @@
             [playphraseme.common.util :as util]
             [playphraseme.views.search.view :as search-page]
             [playphraseme.common.localization :refer [ls]]
+            [playphraseme.common.phrases :as phrases]
             [playphraseme.model]))
 
 (defn header-button
@@ -26,7 +27,7 @@
     [header-button  "Facebook" "" "fab fa-facebook"]
     [header-button "Like!" "" "far fa-thumbs-up"]]
    [:div.bottom
-    [:div.logo {:on-click #(util/go-url! "/#/")}
+    [:div.logo {:on-click #(phrases/search-random-phrase)}
      [:span.red "Play"]
      [:span.black "Phrase"]
      [:span.gray ".me"]]
