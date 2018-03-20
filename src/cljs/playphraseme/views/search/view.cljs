@@ -9,6 +9,7 @@
             [playphraseme.views.search.model :as model]
             [playphraseme.common.rest-api :as rest-api]
             [playphraseme.common.video-player :as player]
+            [playphraseme.common.phrases :as phrases]
             [playphraseme.common.nlp :as nlp])
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]))
@@ -337,6 +338,10 @@
                   [:i.material-icons "fullscreen_exit"]
                   [:i.material-icons "fullscreen"])])
              [:div.overlay-logo
+              {:on-click (fn [e]
+                 (if (-> e .-altKey)
+                   (phrases/search-random-bad-phrase)
+                   (phrases/search-random-phrase)))}
               [:span.red "Play"]
               [:span.black "Phrase"]
               [:span.gray ".me"]]

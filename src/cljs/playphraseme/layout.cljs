@@ -27,7 +27,10 @@
     [header-button  "Facebook" "" "fab fa-facebook"]
     [header-button "Like!" "" "far fa-thumbs-up"]]
    [:div.bottom
-    [:div.logo {:on-click #(phrases/search-random-phrase)}
+    [:div.logo {:on-click (fn [e]
+                            (if (-> e .-altKey)
+                              (phrases/search-random-bad-phrase)
+                              (phrases/search-random-phrase)))}
      [:span.red "Play"]
      [:span.black "Phrase"]
      [:span.gray ".me"]]
