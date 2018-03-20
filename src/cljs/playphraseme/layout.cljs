@@ -21,7 +21,7 @@
     [header-button (ls :navigation.login.register) "/#/register" "fas fa-user-circle"]
     #_[header-button (ls :navigation.guest.tour) "/#/guest-tour" "far fa-question-circle"]
     [header-button (ls :navigation.support) "/#/support" "far fa-envelope"]
-    [header-button "Public API" "/#/api" "fas fa-plug"]
+    #_[header-button "Favorites" "/#/favorites" "fas fa-heart"]
     [ui/grow]
     [header-button "Github" "" "fab fa-github-square"]
     [header-button  "Facebook" "" "fab fa-facebook"]

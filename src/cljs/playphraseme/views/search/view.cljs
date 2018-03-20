@@ -333,22 +333,29 @@
                                       :on-end         next-phrase
                                       :on-pos-changed update-current-word
                                       :stopped?       @stopped}]))
-             (when (util/fullscreen-enabled?)
-               [:div.overlay-fullscreen
-                {:on-click #(util/toggle-fullscreen!)}
-                (if @(rf/subscribe [:fullscreen])
-                  [:i.material-icons "fullscreen_exit"]
-                  [:i.material-icons "fullscreen"])])
-             [:div.overlay-logo
-              {:on-click (fn [e]
-                 (if (-> e .-altKey)
-                   (phrases/search-random-bad-phrase)
-                   (phrases/search-random-phrase)))}
-              [:span.red "Play"]
-              [:span.black "Phrase"]
-              [:span.gray ".me"]]
-             (when @(rf/subscribe [:mobile?])
-               [overlay-current-phrase])]
+             [:div.video-overlay
+              [:ul.video-overlay-menu
+               (when (util/fullscreen-enabled?)
+                 [:li
+                  {:on-click #(util/toggle-fullscreen!)}
+                  (if @(rf/subscribe [:fullscreen])
+                    [:i.material-icons "fullscreen_exit"]
+                    [:i.material-icons "fullscreen"])
+                  [:div.info-text "Fullscreen"]])
+               [:li
+                [:i.material-icons "favorite_border"]
+                [:div.info-text "Favorites"]]]
+              [:div.overlay-logo
+               {:on-click (fn [e]
+                            (if (-> e .-altKey)
+                              (phrases/search-random-bad-phrase)
+                              (phrases/search-random-phrase)))}
+               [:span.red "Play"]
+               [:span.black "Phrase"]
+               [:span.gray ".me"]]
+              (when @(rf/subscribe [:mobile?])
+                [overlay-current-phrase])]
+             ]
             [:div.search-ui-container [search-input]]
             (if-not (empty? @suggestions)
               [suggestions-list @suggestions]

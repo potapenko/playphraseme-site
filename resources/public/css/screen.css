@@ -444,18 +444,25 @@ word, word:active, word:focus{
 
 .currrent-pharase-container-landscape {display: none;}
 
-.overlay-fullscreen{
+.video-overlay-menu {
   position: absolute;
   left: 10px;
   top: 5px;
   cursor: pointer;
+  list-style-type: none;
+  padding: 0px;
 }
-.overlay-fullscreen > i {
-  opacity: 0.4;
-  color: "#ffffff";
+.video-overlay-menu li {
+  margin-bottom: 12px;
+}
+.video-overlay-menu i {
+  color: "white" !important;
   font-size: 33px;
 }
-
+.video-overlay-menu .info-text {
+  margin-top: -5px;
+  font-size: 8px;
+}
 @media only screen and (max-device-width: 800px) and (orientation : portrait){
   .header-button {
     padding: 8px 12px;
