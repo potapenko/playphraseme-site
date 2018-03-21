@@ -255,18 +255,7 @@
           [:tr {:id       (str "phrase-text-" index)
                 :on-click #(rf/dispatch [::model/current-phrase-index (:index x)])}
            [:td [:div.phrase-number (-> x :index inc)]]
-           [:td.phrase-text [karaoke x]]
-           (when @(rf/subscribe [:desktop?])
-             [:td.translate-icons
-              [:a.lang-in-circle.heart
-               {:href  "" :on-click #(favorite-phrase x)}
-               [:i.fa.fa-heart.fa-1x]]
-              (when-not (= @(rf/subscribe [:locale]) :en)
-                [:a.lang-in-circle
-                 {:href (str "https://translate.google.com/#en/" lang "/" text) :target "_blank"} lang])
-              [:a.lang-in-circle.link
-               {:href (str "/#/phrase/" id)}
-               [:i.fa.fa-link.fa-1x]]])])))}))
+           [:td.phrase-text [karaoke x]]])))}))
 
 (defn suggestions-list [list]
   [:div.suggestions-container
@@ -334,23 +323,27 @@
                                       :on-pos-changed update-current-word
                                       :stopped?       @stopped}]))
              [:div.video-overlay
-              [:ul.video-overlay-menu
-               (when (util/fullscreen-enabled?)
-                 [:li
-                  {:on-click #(util/toggle-fullscreen! (util/selector ".search-container"))}
-                  (if @(rf/subscribe [:fullscreen])
-                    [:i.material-icons "fullscreen_exit"]
-                    [:i.material-icons "fullscreen"])
-                  [:div.info-text "Fullscreen"]])
-               [:li
-                [:i.material-icons "favorite_border"]
-                [:div.info-text "Favorites"]]
-               [:li
-                [:i.material-icons "history"]
-                [:div.info-text "History"]]
-               [:li
-                [:i.material-icons "file_download"]
-                [:div.info-text "Download"]]]
+              (when @(rf/subscribe [::model/stopped])
+               [:ul.video-overlay-menu
+                (when (util/fullscreen-enabled?)
+                  [:li
+                   {:on-click #(util/toggle-fullscreen! (util/selector ".search-container"))}
+                   (if @(rf/subscribe [:fullscreen])
+                     [:i.material-icons "fullscreen_exit"]
+                     [:i.material-icons "fullscreen"])
+                   [:div.info-text "Fullscreen"]])
+                [:li
+                 [:i.material-icons "favorite_border"]
+                 [:div.info-text "Favorites"]]
+                [:li
+                 [:i.material-icons "history"]
+                 [:div.info-text "History"]]
+                [:li
+                 [:i.material-icons "history"]
+                 [:div.info-text "History"]]
+                [:li
+                 [:i.material-icons "file_download"]
+                 [:div.info-text "Download"]]])
               [:div.overlay-logo
                {:on-click (fn [e]
                             (if (-> e .-altKey)

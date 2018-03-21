@@ -442,26 +442,23 @@ word, word:active, word:focus{
 }
 .video-overlay-menu {
   position: absolute;
-  left: 10px;
-  top: 10px;
+  left: 0px;
+  top: 8px;
   cursor: pointer;
   list-style-type: none;
   padding: 0px;
-  color: white;
   text-align: center;
 }
 .video-overlay-menu li {
-  margin-bottom: 12px;
-  font-family: Helvetica-Bold;
-  color: rgba(255,255,255,0.4);
+  padding: 8px 15px;
   letter-spacing: 0;
-  text-shadow: 0 0 9px rgba(0,0,0,0.74);
+  color: #ccc;
+  text-shadow: 0 0 3px rgba(0,0,0,0.7);
 }
 .video-overlay-menu li:hover {
   color: white;
 }
 .video-overlay-menu i {
-  font-size: 25px;
 }
 .video-overlay-menu .info-text {
   margin-top: -5px;
