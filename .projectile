@@ -1,3 +1,4 @@
 -*.log
 -/target
 -/figwheel_server.log
+-/log

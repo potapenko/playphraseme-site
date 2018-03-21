@@ -339,8 +339,8 @@
                  [:i.material-icons "history"]
                  [:div.info-text "History"]]
                 [:li
-                 [:i.material-icons "history"]
-                 [:div.info-text "History"]]
+                 [:i.material-icons "school"]
+                 [:div.info-text "Learn"]]
                 [:li
                  [:i.material-icons "file_download"]
                  [:div.info-text "Download"]]])
