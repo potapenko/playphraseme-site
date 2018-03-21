@@ -3,7 +3,6 @@
             [playphraseme.common.localstorage :as localstorage])
   (:require-macros [playphraseme.common.macros :as m]))
 
-
 (m/reg-sub-event ::stopped false)
 (m/reg-sub-event ::show-ios-play false)
 (m/reg-sub-event ::search-text "")
@@ -17,7 +16,7 @@
 (defn- add-indexes [coll]
   (->> coll (map-indexed (fn [i e] (assoc e :index i))) vec))
 
-(defn add-phrases-indexes [phrases]
+(defn- add-phrases-indexes [phrases]
   (->> phrases
        add-indexes
        (map #(update % :words add-indexes))))
@@ -26,14 +25,14 @@
  ::search-result
  (fn [db [_ value]]
    (-> db
-    (assoc
-     ::phrases (:phrases value)
-     ::search-count (:count value)
-     ::current-phrase-index 0
-     ::current-suggestion-index nil
-     ::suggestions (:suggestions value))
-    (update ::suggestions add-indexes)
-    (update ::phrases add-phrases-indexes))))
+       (assoc
+        ::phrases (:phrases value)
+        ::search-count (:count value)
+        ::current-phrase-index 0
+        ::current-suggestion-index nil
+        ::suggestions (:suggestions value))
+       (update ::suggestions add-indexes)
+       (update ::phrases add-phrases-indexes))))
 
 (reg-event-db
  ::search-result-append
@@ -73,17 +72,3 @@
      (if (nil? current)
        (assoc db ::current-suggestion-index 0)
        (assoc db ::current-suggestion-index (max 0 (dec current)))))))
-
-(comment
- (reg-sub
-  ::name
-  (fn [db [_]]
-    (get db ::name)))
-
- (reg-event-db
-  ::name
-  (fn [db [_ value]]
-    (assoc db ::name value)))
-
-
- )
