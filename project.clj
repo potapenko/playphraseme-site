@@ -58,6 +58,8 @@
                  [metrics-clojure-graphite "2.10.0"]
                  [bk/ring-gzip "0.2.1"]
                  [ring-basic-authentication "1.0.5"]
+                 [lib-noir "0.9.9"]
+                 [clj-oauth2 "0.2.0"]
 
                  ;; custom cljs
 

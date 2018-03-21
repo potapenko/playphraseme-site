@@ -345,10 +345,6 @@
                  [:i.material-icons "file_download"]
                  [:div.info-text "Download"]]])
               [:div.overlay-logo
-               {:on-click (fn [e]
-                            (if (-> e .-altKey)
-                              (phrases/search-random-bad-phrase)
-                              (phrases/search-random-phrase)))}
                [:span.red "Play"]
                [:span.black "Phrase"]
                [:span.gray ".me"]]

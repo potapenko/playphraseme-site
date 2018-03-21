@@ -1,67 +1,18 @@
 (ns playphraseme.views.search.model
   (:require [re-frame.core :refer [dispatch reg-event-db reg-sub]]
-            [playphraseme.common.localstorage :as localstorage]))
+            [playphraseme.common.localstorage :as localstorage])
+  (:require-macros [playphraseme.common.macros :as m]))
 
 
-(reg-sub
- ::stopped
- (fn [db _]
-   (get db ::stopped false)))
-
-(reg-event-db
- ::stopped
- (fn [db [_ value]]
-   (assoc db ::stopped value)))
-
-(reg-sub
- ::show-ios-play
- (fn [db _]
-   (get db ::show-ios-play false)))
-
-(reg-event-db
- ::show-ios-play
- (fn [db [_ value]]
-   (assoc db ::show-ios-play value)))
-
-(reg-sub
- ::search-text
- (fn [db _]
-   (get db ::search-text "")))
-
-(reg-event-db
- ::search-text
- (fn [db [_ value]]
-   (assoc db ::search-text value)))
-
-(reg-sub
- ::search-count
- (fn [db _]
-   (get db ::search-count 0)))
-
-(reg-event-db
- ::search-count
- (fn [db [_ value]]
-   (assoc db ::search-count value)))
-
-(reg-sub
- ::phrases
- (fn [db [_]]
-   (get db ::phrases)))
-
-(reg-event-db
- ::phrases
- (fn [db [_ value]]
-   (assoc db ::phrases value)))
-
-(reg-sub
- ::suggestions
- (fn [db [_]]
-   (get db ::suggestions)))
-
-(reg-event-db
- ::suggestions
- (fn [db [_ value]]
-   (assoc db ::suggestions value)))
+(m/reg-sub-event ::stopped false)
+(m/reg-sub-event ::show-ios-play false)
+(m/reg-sub-event ::search-text "")
+(m/reg-sub-event ::search-count 0)
+(m/reg-sub-event ::phrases nil)
+(m/reg-sub-event ::suggestions nil)
+(m/reg-sub-event ::current-phrase-index nil)
+(m/reg-sub-event ::current-word-index 0)
+(m/reg-sub ::current-suggestion-index nil)
 
 (defn- add-indexes [coll]
   (->> coll (map-indexed (fn [i e] (assoc e :index i))) vec))
@@ -90,21 +41,6 @@
    (-> db
        (update ::phrases concat (:phrases value))
        (update ::phrases add-phrases-indexes))))
-
-(reg-sub
- ::current-phrase-index
- (fn [db [_]]
-   (get db ::current-phrase-index)))
-
-(reg-event-db
- ::current-phrase-index
- (fn [db [_ value]]
-   (assoc db ::current-phrase-index value)))
-
-(reg-sub
- ::current-suggestion-index
- (fn [db [_]]
-   (get db ::current-suggestion-index)))
 
 (reg-event-db
  ::next-phrase
@@ -137,16 +73,6 @@
      (if (nil? current)
        (assoc db ::current-suggestion-index 0)
        (assoc db ::current-suggestion-index (max 0 (dec current)))))))
-
-(reg-sub
- ::current-word-index
- (fn [db [_]]
-   (get db ::current-word-index 0)))
-
-(reg-event-db
- ::current-word-index
- (fn [db [_ value]]
-   (assoc db ::current-word-index value)))
 
 (comment
  (reg-sub
