@@ -6,16 +6,16 @@
             [cheshire.core :as parse]
             [playphraseme.app.config :refer [env]]))
 
-(def APP_ID (:facebook-client-id env))
-(def APP_SECRET (:facebook-client-secret env))
-(def REDIRECT_URI (:facebook-callback-url env))
+(def app-id (:facebook-client-id env))
+(def app-secret (:facebook-client-secret env))
+(def redirect-uri (:facebook-callback-url env))
 
 (def facebook-oauth2
   {:authorization-uri  "https://graph.facebook.com/oauth/authorize"
    :access-token-uri   "https://graph.facebook.com/oauth/access_token"
-   :redirect-uri       REDIRECT_URI
-   :client-id          APP_ID
-   :client-secret      APP_SECRET
+   :redirect-uri       redirect-uri
+   :client-id          app-id
+   :client-secret      app-secret
    :access-query-param :access_token
    :scope              ["email"]
    :grant-type         "authorization_code"})
@@ -27,9 +27,9 @@
 
 (defn facebook [params]
   (let [access-token-response (:body (client/get (str "https://graph.facebook.com/oauth/access_token?"
-                                                      "client_id=" APP_ID
-                                                      "&redirect_uri=" REDIRECT_URI
-                                                      "&client_secret=" APP_SECRET
+                                                      "client_id=" app-id
+                                                      "&redirect_uri=" redirect-uri
+                                                      "&client_secret=" app-secret
                                                       "&code=" (get params "code"))))
         access-token          (get (re-find #"access_token=(.*?)&expires=" access-token-response) 1)
         user-details          (-> (client/get (str "https://graph.facebook.com/me?access_token=" access-token))
