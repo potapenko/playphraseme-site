@@ -9,7 +9,7 @@
   (fn[]
     (let [res (atom nil)]
       (go (rf/dispatch
-           [:set-docs (<! (docs/load-md-doc (str  doc-name "-" (util/locale-name))))]))
+           [:docs (<! (docs/load-md-doc (str  doc-name "-" (util/locale-name))))]))
       (fn []
         [:div.article-container
          @(rf/subscribe [:docs])]))))

@@ -1,6 +1,18 @@
 (ns playphraseme.model
   (:require [re-frame.core :refer [dispatch subscribe reg-event-db reg-sub]]
-            [playphraseme.common.localstorage :as localstorage]))
+            [playphraseme.common.localstorage :as localstorage])
+  (:require-macros [re-frame-macros.macros :as mcr]))
+
+(mcr/reg-sub-event :responsive-scale 1)
+(mcr/reg-sub-event :responsive-show-left-column? true)
+(mcr/reg-sub-event :responsive-show-right-column? true)
+(mcr/reg-sub-event :fullscreen false)
+(mcr/reg-sub-event :mobile? false)
+(mcr/reg-sub-event :docs [])
+(mcr/reg-sub :page nil)
+(mcr/reg-sub :params nil)
+(mcr/reg-sub-event :user-roles [:basic])
+(mcr/reg-sub-event :page-before-login nil)
 
 (reg-event-db
  :initialize-db
@@ -16,35 +28,12 @@
           :params params)))
 
 (reg-event-db
- :set-docs
- (fn [db [_ docs]]
-   (assoc db :docs docs)))
-
-(reg-event-db
  :locale
  [localstorage/model-store-md]
  (fn [db [_ docs]]
    (assoc db :locale docs)))
 
-(reg-sub
- :page
- (fn [db _]
-   (:page db)))
-
-(reg-sub
- :params
- (fn [db _]
-   (:params db)))
-
-(reg-sub
- :docs
- (fn [db _]
-   (:docs db)))
-
-(reg-sub
- :locale
- (fn [db _]
-   (get db :locale :en)))
+(mcr/reg-sub :locale :en)
 
 (reg-event-db
  :set-auth-data
@@ -58,11 +47,6 @@
   (get-in db [:auth-data :permissions] #{}))
 
 (reg-sub
- :user-roles
- (fn [db _]
-   (user-roles db)))
-
-(reg-sub
  :logged?
  (fn [db _]
    (-> db :auth-data nil? not)))
@@ -73,66 +57,8 @@
    (-> ((user-roles db) role) nil? not)))
 
 (reg-sub
- :page-before-login
- (fn [db _]
-   (get db :page-before-login)))
-
-(reg-event-db
- :page-before-login
- (fn [db [_ value]]
-   (assoc db :page-before-login value)))
-
-(reg-sub
- :mobile?
- (fn [db _]
-   (:mobile? db)))
-
-(reg-event-db
- :mobile?
- (fn [db [_ value]]
-   (assoc db :mobile? value)))
-
-(reg-sub
  :desktop?
  (fn [db _]
    (not (:mobile? db))))
 
-(reg-sub
- :responsive-scale
- (fn [db _]
-   (get db :responsive-scale 1)))
 
-(reg-event-db
- :responsive-scale
- (fn [db [_ value]]
-   (assoc db :responsive-scale value)))
-
-(reg-sub
- :responsive-show-left-column?
- (fn [db _]
-   (get db :responsive-show-left-column? true)))
-
-(reg-event-db
- :responsive-show-left-column?
- (fn [db [_ value]]
-   (assoc db :responsive-show-left-column? value)))
-
-(reg-sub
- :responsive-show-right-column?
- (fn [db _]
-   (get db :responsive-show-right-column? true)))
-
-(reg-event-db
- :responsive-show-right-column?
- (fn [db [_ value]]
-   (assoc db :responsive-show-right-column? value)))
-
-(reg-sub
- :fullscreen
- (fn [db _]
-   (get db :fullscreen false)))
-
-(reg-event-db
- :fullscreen
- (fn [db [_ value]]
-   (assoc db :fullscreen value)))
