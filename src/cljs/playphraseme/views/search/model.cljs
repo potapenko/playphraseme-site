@@ -1,17 +1,17 @@
 (ns playphraseme.views.search.model
   (:require [re-frame.core :refer [dispatch reg-event-db reg-sub]]
             [playphraseme.common.localstorage :as localstorage])
-  (:require-macros [playphraseme.common.macros :as m]))
+  (:require-macros [re-frame-macros.macros :as mcr]))
 
-(m/reg-sub-event ::stopped false)
-(m/reg-sub-event ::show-ios-play false)
-(m/reg-sub-event ::search-text "")
-(m/reg-sub-event ::search-count 0)
-(m/reg-sub-event ::phrases nil)
-(m/reg-sub-event ::suggestions nil)
-(m/reg-sub-event ::current-phrase-index nil)
-(m/reg-sub-event ::current-word-index 0)
-(m/reg-sub ::current-suggestion-index nil)
+(mcr/reg-sub-event ::stopped false)
+(mcr/reg-sub-event ::show-ios-play false)
+(mcr/reg-sub-event ::search-text "")
+(mcr/reg-sub-event ::search-count 0)
+(mcr/reg-sub-event ::phrases nil)
+(mcr/reg-sub-event ::suggestions nil)
+(mcr/reg-sub-event ::current-phrase-index nil)
+(mcr/reg-sub-event ::current-word-index 0)
+(mcr/reg-sub ::current-suggestion-index nil)
 
 (defn- add-indexes [coll]
   (->> coll (map-indexed (fn [i e] (assoc e :index i))) vec))

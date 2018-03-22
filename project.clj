@@ -3,7 +3,8 @@
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
 
-  :dependencies [[clj-time "0.14.0"]
+  :dependencies [[cider/cider-nrepl "0.15.1"]
+                 [clj-time "0.14.0"]
                  [cljs-ajax "0.7.2"]
                  [com.google.guava/guava "20.0"]
                  [com.novemberain/monger "3.1.0" :exclusions [com.google.guava/guava]]
@@ -63,16 +64,14 @@
 
                  ;; custom cljs
 
-                 ;; [cljsjs/semantic-ui-react "0.73.0-0"]
                  [soda-ash "0.4.0"]
-                 [day8.re-frame/http-fx "0.1.4"]
                  [cljs-http "0.1.44"]
                  [camel-snake-kebab "0.4.0"]
                  [cljsjs/c3 "0.4.14-0"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [bux "0.3.0"]
-                 [cljsjs/highcharts "5.0.14-0"]
-                 [com.cognitect/transit-cljs "0.8.243"]]
+                 [com.cognitect/transit-cljs "0.8.243"]
+                 [re-frame-macros "0.1.0-SNAPSHOT"]]
 
   :min-lein-version "2.0.0"
 
@@ -96,7 +95,7 @@
    :nrepl-port       7002
    :css-dirs         ["resources/public/css"]
    :nrepl-middleware
-   [cemerick.piggieback/wrap-cljs-repl #_cider.nrepl/cider-middleware]}
+   [cemerick.piggieback/wrap-cljs-repl cider.nrepl/cider-middleware]}
   :profiles
   {:uberjar {:omit-source    true
              :prep-tasks     ["compile" ["cljsbuild" "once" "min"]]

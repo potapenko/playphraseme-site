@@ -9,6 +9,7 @@
             [playphraseme.app.middleware :as middleware]
             [playphraseme.app.config :refer [env]]
             [ring.middleware.gzip :refer :all]
+            [playphraseme.app.facebook-auth :refer [facebook-routes]]
             [ring.middleware.basic-authentication :refer [wrap-basic-authentication]]))
 
 (mount/defstate init-app
@@ -22,6 +23,7 @@
 (def app-routes
   (routes
    (-> #'api-routes wrap-gzip)
+   (-> #'facebook-routes)
    (-> #'home-routes
        (wrap-routes middleware/wrap-csrf)
        (wrap-routes middleware/wrap-formats)
