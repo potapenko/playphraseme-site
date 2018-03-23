@@ -448,6 +448,13 @@ word, word:active, word:focus{
   list-style-type: none;
   padding: 0px;
   text-align: center;
+  opacity: 0;
+}
+.stopped .video-overlay-menu {
+  opacity: 1;
+}
+.video-overlay-menu:hover {
+  opacity: 1;
 }
 .video-overlay-menu li {
   padding: 8px 15px;

@@ -31,19 +31,20 @@
 (def scroll-loaded (atom 0))
 
 (defn search-phrase [text]
-  (rf/dispatch [::model/search-text text])
-  (rf/dispatch [::model/search-result []])
-  (rf/dispatch [::model/current-phrase-index nil])
   (when text
-    (util/set-url! "search" {:q text})
-    (let [id  (swap! search-id inc)]
-      (go
-        (reset! scroll-loaded 0)
-        (let [res (<! (rest-api/search-phrase text 10 0))]
-          (println text id @search-id)
-          (when (= id @search-id)
-            (rf/dispatch [::model/search-result res])))))))
-
+    (when-not (= (some-> text string/trim)
+                 (some-> @(rf/subscribe [::model/search-text]) string/trim))
+     (util/set-url! "search" {:q text})
+     (let [id  (swap! search-id inc)]
+       (rf/dispatch [::model/search-result []])
+       (rf/dispatch [::model/current-phrase-index nil])
+       (go
+         (reset! scroll-loaded 0)
+         (let [res (<! (rest-api/search-phrase text 10 0))]
+           (println text id @search-id)
+           (when (= id @search-id)
+             (rf/dispatch [::model/search-result res])))))))
+  (rf/dispatch [::model/search-text text]))
 
 (defn scroll-end []
   (let [count-all @(rf/subscribe [::model/search-count])
@@ -327,28 +328,27 @@
                                       :on-end         next-phrase
                                       :on-pos-changed update-current-word
                                       :stopped?       @stopped}]))
-             [:div.video-overlay
-              (when @(rf/subscribe [::model/stopped])
-               [:ul.video-overlay-menu
-                (when (util/fullscreen-enabled?)
-                  [:li
-                   {:on-click #(util/toggle-fullscreen! (util/selector ".search-container"))}
-                   (if @(rf/subscribe [:fullscreen])
-                     [:i.material-icons "fullscreen_exit"]
-                     [:i.material-icons "fullscreen"])
-                   [:div.info-text "Fullscreen"]])
-                [:li
-                 [:i.material-icons "favorite_border"]
-                 [:div.info-text "Favorites"]]
-                [:li
-                 [:i.material-icons "history"]
-                 [:div.info-text "History"]]
-                [:li
-                 [:i.material-icons "school"]
-                 [:div.info-text "Learn"]]
-                [:li
-                 [:i.material-icons "file_download"]
-                 [:div.info-text "Download"]]])
+             [:div.video-overlay {:class (util/class->str (when @(rf/subscribe [::model/stopped]) :stopped))}
+              [:ul.video-overlay-menu
+               (when (util/fullscreen-enabled?)
+                 [:li
+                  {:on-click #(util/toggle-fullscreen! (util/selector ".search-container"))}
+                  (if @(rf/subscribe [:fullscreen])
+                    [:i.material-icons "fullscreen_exit"]
+                    [:i.material-icons "fullscreen"])
+                  [:div.info-text "Fullscreen"]])
+               [:li
+                [:i.material-icons "favorite_border"]
+                [:div.info-text "Favorites"]]
+               [:li
+                [:i.material-icons "history"]
+                [:div.info-text "History"]]
+               [:li
+                [:i.material-icons "school"]
+                [:div.info-text "Learn"]]
+               [:li
+                [:i.material-icons "file_download"]
+                [:div.info-text "Download"]]]
               [:div.overlay-logo
                [:span.red "Play"]
                [:span.black "Phrase"]
