@@ -1,7 +1,7 @@
 (ns playphraseme.model
   (:require [re-frame.core :refer [dispatch subscribe reg-event-db reg-sub]]
             [playphraseme.common.localstorage :as localstorage])
-  (:require-macros [re-frame-macros.macros :as mcr]))
+  (:require-macros [re-frame-macros.core :as mcr]))
 
 (mcr/reg-sub-event :responsive-scale 1)
 (mcr/reg-sub-event :responsive-show-left-column? true)

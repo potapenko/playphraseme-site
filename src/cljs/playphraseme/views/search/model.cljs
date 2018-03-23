@@ -1,7 +1,7 @@
 (ns playphraseme.views.search.model
   (:require [re-frame.core :refer [dispatch reg-event-db reg-sub]]
             [playphraseme.common.localstorage :as localstorage])
-  (:require-macros [re-frame-macros.macros :as mcr]))
+  (:require-macros [re-frame-macros.core :as mcr]))
 
 (mcr/reg-sub-event ::stopped false)
 (mcr/reg-sub-event ::show-ios-play false)
