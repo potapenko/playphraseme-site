@@ -28,6 +28,7 @@
       (rf/dispatch [::model/stopped (not now-stopped?)]))))
 
 (def search-id (atom 0))
+(def scroll-loaded (atom 0))
 
 (defn search-phrase [text]
   (rf/dispatch [::model/search-text text])
@@ -37,20 +38,24 @@
     (util/set-url! "search" {:q text})
     (let [id  (swap! search-id inc)]
       (go
+        (reset! scroll-loaded 0)
         (let [res (<! (rest-api/search-phrase text 10 0))]
           (println text id @search-id)
           (when (= id @search-id)
             (rf/dispatch [::model/search-result res])))))))
 
+
 (defn scroll-end []
-  (let [count-all    @(rf/subscribe [::model/search-count])
-        count-loaded (-> @(rf/subscribe [::model/phrases]) count)]
-    (when (< count-loaded count-all)
+  (let [count-all @(rf/subscribe [::model/search-count])
+        skip      (-> @(rf/subscribe [::model/phrases]) count)]
+    (when (< skip count-all)
       (go
-        (let [res (<! (rest-api/search-phrase
-                       @(rf/subscribe [::model/search-text])
-                       10 count-loaded))]
-          (rf/dispatch [::model/search-result-append res]))))))
+        (when-not (= @scroll-loaded skip)
+         (reset! scroll-loaded skip)
+         (let [res (<! (rest-api/search-phrase
+                        @(rf/subscribe [::model/search-text])
+                        10 skip))]
+           (rf/dispatch [::model/search-result-append res])))))))
 
 (defn get-current-phrase-index []
   @(rf/subscribe [::model/current-phrase-index]))
