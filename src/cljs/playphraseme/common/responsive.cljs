@@ -91,7 +91,7 @@
 (defn update-layout []
   (let [w                  (window-width)
         show-left-column?  (and (not (mobile?)) (> w 960))
-        show-right-column? (and (not (mobile?)) (> w 1400))]
+        show-right-column? (and (not (mobile?)) (> w 960))]
     (when-not (mobile?)
         (dispatch [:responsive-scale
                    (calculate-window-scale
