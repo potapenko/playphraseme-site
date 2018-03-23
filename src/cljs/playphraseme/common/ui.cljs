@@ -3,8 +3,8 @@
 (defn spacer [param]
   (let [{:keys [w h]} (if (map? param) param {:w param :h param})]
     [:div {:style (merge {}
-                         (when w {:widht w})
+                         (when w {:width w})
                          (when h {:height h}))}]))
 
-(defn grow []
+(defn flexer []
   [:div.grow ""])

@@ -22,7 +22,7 @@
     #_[header-button (ls :navigation.guest.tour) "/#/guest-tour" "far fa-question-circle"]
     [header-button (ls :navigation.support) "/#/support" "far fa-envelope"]
     #_[header-button "Favorites" "/#/favorites" "fas fa-heart"]
-    [ui/grow]
+    [ui/flexer]
     [header-button "Github" "" "fab fa-github-square"]
     [header-button  "Facebook" "" "fab fa-facebook"]
     [header-button "Like!" "" "far fa-thumbs-up"]]
@@ -34,10 +34,15 @@
      [:span.red "Play"]
      [:span.black "Phrase"]
      [:span.gray ".me"]]
+    [ui/flexer]
+    [:div.statistic
+     [:span.count "322"]
+     [:span.info (ls :statistic.movies)]]
+    [ui/spacer 10]
     [:div.statistic
      [:span.count "254,000"]
      [:span.info (ls :statistic.phrases)]]
-    [:div.translate-direction
+    #_[:div.translate-direction
      [:span.select-button "En"] [:span.arrow ">"] [:span.select-button "En"]]]])
 
 (defn left-column []

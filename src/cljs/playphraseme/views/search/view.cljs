@@ -341,11 +341,11 @@
                 [:i.material-icons "favorite_border"]
                 [:div.info-text "Favorites"]]
                [:li
-                [:i.material-icons "history"]
-                [:div.info-text "History"]]
-               [:li
                 [:i.material-icons "school"]
                 [:div.info-text "Learn"]]
+               [:li
+                [:i.material-icons "settings"]
+                [:div.info-text "Settings"]]
                [:li
                 [:i.material-icons "file_download"]
                 [:div.info-text "Download"]]]
