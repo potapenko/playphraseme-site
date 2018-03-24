@@ -4,6 +4,7 @@
             [playphraseme.api.middleware.cors :refer [cors-mw]]
             [playphraseme.api.route-functions.auth.get-auth-credentials :refer [auth-credentials-response]]
             [playphraseme.api.route-functions.auth.link-auth-tokens :refer :all]
+            [playphraseme.api.route-functions.auth.facebook-auth :refer [facebook-response]]
             [schema.core :as s]
             [compojure.api.sweet :refer :all]))
 
@@ -11,7 +12,7 @@
   "Specify routes for Authentication functions"
   (context "/api/v1/auth" []
 
-     (GET "/"             {:as request}
+           (GET "/"             {:as request}
            :tags          ["Auth"]
            :return        {:id String :username String :permissions [String] :token String :refresh-token String}
            :header-params [authorization :- String]
@@ -36,5 +37,11 @@
            :middleware  [cors-mw]
            :return      {:id String :username String :permissions [String] :token String :refresh-token String}
            :summary     "Authorizes and returns auth info given a temporary link token."
-           (verify-email-response link-token)
-       )))
+           (verify-email-response link-token))
+
+     (GET "/facebook-callback" []
+          :tags          ["Auth"]
+          :query-params  [code :- s/Str]
+          :return        {:id String :username String :permissions [String] :token String :refresh-token String}
+          :summary       "Facebook auth API callback"
+          (facebook-response code))))

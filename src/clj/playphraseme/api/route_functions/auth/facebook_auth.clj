@@ -1,4 +1,4 @@
-(ns playphraseme.app.facebook-auth
+(ns playphraseme.api.route-functions.auth.facebook-auth
   (:use compojure.core)
   (:require [clj-oauth2.client :as oauth2]
             [noir.response :as resp]
@@ -25,12 +25,12 @@
 
 (def facebook-user (atom {}))
 
-(defn facebook [params]
+(defn facebook-response [code]
   (let [access-token-response (:body (client/get (str "https://graph.facebook.com/oauth/access_token?"
                                                       "client_id=" app-id
                                                       "&redirect_uri=" redirect-uri
                                                       "&client_secret=" app-secret
-                                                      "&code=" (get params "code"))))
+                                                      "&code=" code)))
         access-token          (get (re-find #"access_token=(.*?)&expires=" access-token-response) 1)
         user-details          (-> (client/get (str "https://graph.facebook.com/me?access_token=" access-token))
                                   :body
@@ -41,5 +41,3 @@
            (get user-details "first_name")
            (get user-details "email"))))
 
-(defroutes facebook-routes
-  (GET "/auth_facebook_callback" {params :query-params} (facebook params)))

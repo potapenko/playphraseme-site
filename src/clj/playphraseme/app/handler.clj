@@ -1,16 +1,14 @@
 (ns playphraseme.app.handler
   (:require [compojure.core :refer [routes wrap-routes]]
-            [playphraseme.app.layout :refer [error-page]]
-            [playphraseme.app.routes :refer [home-routes]]
             [compojure.route :as route]
-            [playphraseme.env :refer [defaults]]
             [mount.core :as mount]
             [playphraseme.api.handler :refer [api-routes]]
-            [playphraseme.app.middleware :as middleware]
             [playphraseme.app.config :refer [env]]
-            [ring.middleware.gzip :refer :all]
-            [playphraseme.app.facebook-auth :refer [facebook-routes]]
-            [ring.middleware.basic-authentication :refer [wrap-basic-authentication]]))
+            [playphraseme.app.layout :refer [error-page]]
+            [playphraseme.app.middleware :as middleware]
+            [playphraseme.app.routes :refer [home-routes]]
+            [playphraseme.env :refer [defaults]]
+            [ring.middleware.gzip :refer :all]))
 
 (mount/defstate init-app
   :start ((or (:init defaults) identity))
@@ -23,7 +21,6 @@
 (def app-routes
   (routes
    (-> #'api-routes wrap-gzip)
-   (-> #'facebook-routes)
    (-> #'home-routes
        (wrap-routes middleware/wrap-csrf)
        (wrap-routes middleware/wrap-formats)
