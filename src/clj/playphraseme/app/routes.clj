@@ -2,7 +2,7 @@
   (:require [playphraseme.app.layout :as layout]
             [compojure.core :refer [defroutes GET]]
             [ring.util.http-response :as response]
-            [playphraseme.env :refer [defaults]]
+            [playphraseme.app.config :refer [env]]
             [clojure.java.io :as io]))
 
 (defn home-page []
