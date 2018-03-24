@@ -23,7 +23,7 @@
 (resp/redirect
  (:uri (oauth2/make-auth-request facebook-oauth2)))
 
-(def facebook-user (atom nil))
+(def facebook-user (atom {}))
 
 (defn facebook [params]
   (let [access-token-response (:body (client/get (str "https://graph.facebook.com/oauth/access_token?"
@@ -42,4 +42,4 @@
            (get user-details "email"))))
 
 (defroutes facebook-routes
-  (GET "/auth_facebook" {params :query-params} (facebook params)))
+  (GET "/auth_facebook_callback" {params :query-params} (facebook params)))
