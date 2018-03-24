@@ -4,37 +4,36 @@
             [noir.response :as resp]
             [clj-http.client :as client]
             [cheshire.core :as parser]
+            [playphraseme.common.debug-util :as debug-util :refer [...]]
             [playphraseme.app.config :refer [env]]))
 
-(def app-id (:facebook-client-id env))
-(def app-secret (:facebook-client-secret env))
-(def redirect-uri (:facebook-callback-url env))
-
-(def facebook-oauth2
-  {:authorization-uri  "https://graph.facebook.com/oauth/authorize"
-   :access-token-uri   "https://graph.facebook.com/oauth/access_token"
-   :redirect-uri       redirect-uri
-   :client-id          app-id
-   :client-secret      app-secret
-   :access-query-param :access_token
-   :scope              ["email"]
-   :grant-type         "authorization_code"})
-
 (defn facebook-auth-response []
-  (resp/redirect
-   (:uri (oauth2/make-auth-request facebook-oauth2))))
+  (let [{:keys [facebook-callback-uri facebook-client-id facebook-client-secret]} env]
+    (resp/redirect
+     (:uri (oauth2/make-auth-request
+            {:authorization-uri  "https://graph.facebook.com/oauth/authorize"
+             :access-token-uri   "https://graph.facebook.com/oauth/access_token"
+             :redirect-uri       facebook-callback-uri
+             :client-id          facebook-client-id
+             :client-secret      facebook-client-secret
+             :access-query-param :access_token
+             :scope              ["email"]
+             :grant-type         "authorization_code"})))))
 
 (defn facebook-auth-callback-response [code]
-  (let [access-token-response (:body (client/get (str "https://graph.facebook.com/oauth/access_token?"
-                                                      "client_id=" app-id
-                                                      "&redirect_uri=" redirect-uri
-                                                      "&client_secret=" app-secret
-                                                      "&code=" code)))
-        access-token          (get (re-find #"access_token=(.*?)&expires=" access-token-response) 1)
-        user-details          (-> (client/get (str "https://graph.facebook.com/me?access_token=" access-token))
-                                  :body
-                                  (parser/parse-string keyword))]
+  (let [{:keys [facebook-callback-uri
+                facebook-client-id
+                facebook-client-secret]} env
+        access-token-response            (:body (client/get (str "https://graph.facebook.com/oauth/access_token?"
+                                                                 "client_id=" facebook-client-id
+                                                                 "&redirect_uri=" facebook-callback-uri
+                                                                 "&client_secret=" facebook-client-secret
+                                                                 "&code=" code)))
+        access-token                     (get (re-find #"access_token=(.*?)&expires=" access-token-response) 1)
+        user-details-str                 (client/get (str "https://graph.facebook.com/me?access_token=" access-token))
+        user-details                     (-> user-details-str :body (parser/parse-string keyword))]
 
-    (let [{:keys [id first_name email]} user-details]
+    (let [{:keys [id first_name last_name email]} user-details]
+      (println ">> facebook login complete:" (... id first_name email))
       (resp/redirect "/#/auth/?auth-token=any-token"))))
 
