@@ -8,9 +8,9 @@
             [playphraseme.app.config :refer [env]]))
 
 (defn facebook-auth-response []
-  (let [{:keys [facebook-callback-uri facebook-client-id facebook-client-secret]} env]
-    (resp/redirect
-     (:uri (oauth2/make-auth-request
+  (resp/redirect
+   (:uri (let [{:keys [facebook-callback-uri facebook-client-id facebook-client-secret]} env]
+           (oauth2/make-auth-request
             {:authorization-uri  "https://graph.facebook.com/oauth/authorize"
              :access-token-uri   "https://graph.facebook.com/oauth/access_token"
              :redirect-uri       facebook-callback-uri
@@ -24,12 +24,12 @@
   (let [{:keys [facebook-callback-uri
                 facebook-client-id
                 facebook-client-secret]} env
-        access-token-response            (:body (client/get (str "https://graph.facebook.com/oauth/access_token?"
-                                                                 "client_id=" facebook-client-id
-                                                                 "&redirect_uri=" facebook-callback-uri
-                                                                 "&client_secret=" facebook-client-secret
-                                                                 "&code=" code)))
-        access-token                     (get (re-find #"access_token=(.*?)&expires=" access-token-response) 1)
+        uri                              (str "https://graph.facebook.com/oauth/access_token?"
+                                              "client_id=" facebook-client-id
+                                              "&redirect_uri=" facebook-callback-uri
+                                              "&client_secret=" facebook-client-secret
+                                              "&code=" code)
+        access-token                     (-> (client/get uri) :body (parser/parse-string keyword) :access_token)
         user-details-str                 (client/get (str "https://graph.facebook.com/me?access_token=" access-token))
         user-details                     (-> user-details-str :body (parser/parse-string keyword))]
 
