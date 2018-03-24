@@ -20,8 +20,6 @@
    :scope              ["email"]
    :grant-type         "authorization_code"})
 
-(def facebook-user (atom {}))
-
 (defn facebook-auth-response []
   (resp/redirect
    (:uri (oauth2/make-auth-request facebook-oauth2))))
@@ -35,11 +33,8 @@
         access-token          (get (re-find #"access_token=(.*?)&expires=" access-token-response) 1)
         user-details          (-> (client/get (str "https://graph.facebook.com/me?access_token=" access-token))
                                   :body
-                                  parser/parse-string)]
-    (swap! facebook-user
-           #(assoc % :facebook-id %2 :facebook-name %3 :facebook-email %4)
-           (get user-details "id")
-           (get user-details "first_name")
-           (get user-details "email"))
-    (resp/redirect (:uri "/#/auth/?auth-token=any-token"))))
+                                  (parser/parse-string keyword))]
+
+    (let [{:keys [id first_name email]} user-details]
+      (resp/redirect "/#/auth/?auth-token=any-token"))))
 
