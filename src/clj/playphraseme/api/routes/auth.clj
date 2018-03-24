@@ -4,7 +4,7 @@
             [playphraseme.api.middleware.cors :refer [cors-mw]]
             [playphraseme.api.route-functions.auth.get-auth-credentials :refer [auth-credentials-response]]
             [playphraseme.api.route-functions.auth.link-auth-tokens :refer :all]
-            [playphraseme.api.route-functions.auth.facebook-auth :refer [facebook-response]]
+            [playphraseme.api.route-functions.auth.facebook-auth :as facebook]
             [schema.core :as s]
             [compojure.api.sweet :refer :all]))
 
@@ -42,6 +42,11 @@
      (GET "/facebook-callback" []
           :tags          ["Auth"]
           :query-params  [code :- s/Str]
-          :return        {:id String :username String :permissions [String] :token String :refresh-token String}
           :summary       "Facebook auth API callback"
-          (facebook-response code))))
+          (facebook/facebook-auth-callback-response code))
+
+     (GET "/facebook" []
+          :tags          ["Auth"]
+          :return        {:id String :username String :permissions [String] :token String :refresh-token String}
+          :summary       "Facebook auth"
+          (facebook/facebook-auth-response))))
