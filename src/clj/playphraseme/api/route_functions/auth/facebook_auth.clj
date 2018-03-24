@@ -4,6 +4,7 @@
             [noir.response :as resp]
             [clj-http.client :as client]
             [cheshire.core :as parser]
+            [clojure.pprint :refer [pprint]]
             [playphraseme.common.debug-util :as debug-util :refer [...]]
             [playphraseme.app.config :refer [env]]))
 
@@ -18,22 +19,38 @@
              :client-secret      facebook-client-secret
              :access-query-param :access_token
              :scope              ["email"]
+             :profileFields      ["emails" "name" "gender" "displayName" "age_range"]
              :grant-type         "authorization_code"})))))
 
 (defn facebook-auth-callback-response [code]
   (let [{:keys [facebook-callback-uri
                 facebook-client-id
                 facebook-client-secret]} env
-        uri                              (str "https://graph.facebook.com/oauth/access_token?"
-                                              "client_id=" facebook-client-id
-                                              "&redirect_uri=" facebook-callback-uri
-                                              "&client_secret=" facebook-client-secret
-                                              "&code=" code)
-        access-token                     (-> (client/get uri) :body (parser/parse-string keyword) :access_token)
-        user-details-str                 (client/get (str "https://graph.facebook.com/me?access_token=" access-token))
-        user-details                     (-> user-details-str :body (parser/parse-string keyword))]
+        access-token                     (-> (client/get "https://graph.facebook.com/oauth/access_token"
+                                                         {:query-params {:client_id     facebook-client-id
+                                                                         :redirect_uri  facebook-callback-uri
+                                                                         :client_secret facebook-client-secret
+                                                                         :code          code}})
+                                             :body (parser/parse-string keyword) :access_token)
+        user-details                     (-> (client/get "https://graph.facebook.com/me"
+                                                         {:query-params {:access_token access-token}})
+                                             :body (parser/parse-string keyword))]
 
     (let [{:keys [id first_name last_name email]} user-details]
-      (println ">> facebook login complete:" (... id first_name email))
+      (println "-----------------")
+      (pprint user-details)
+      (println "-----------------")
       (resp/redirect "/#/auth/?auth-token=any-token"))))
 
+
+(comment
+
+  (let [code ""
+        {:keys [facebook-callback-uri facebook-client-id facebook-client-secret]} env]
+    (-> (client/get "https://graph.facebook.com/oauth/access_token"
+                 {:query-params {:client_id     facebook-client-id
+                                 :redirect_uri  facebook-callback-uri
+                                 :client_secret facebook-client-secret
+                                 :code          code}})
+        :body))
+  )
