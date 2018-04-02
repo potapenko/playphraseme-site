@@ -5,13 +5,15 @@
 
 (mcr/reg-sub-event ::stopped false)
 (mcr/reg-sub-event ::show-ios-play false)
-(mcr/reg-sub-event ::search-text "")
 (mcr/reg-sub ::search-count 0)
 (mcr/reg-sub ::phrases nil)
 (mcr/reg-sub ::suggestions nil)
-(mcr/reg-sub-event ::current-phrase-index nil)
 (mcr/reg-sub-event ::current-word-index 0)
 (mcr/reg-sub ::current-suggestion-index nil)
+
+(mcr/reg-sub-event :search-text "")
+(mcr/reg-sub-event :current-phrase nil)
+(mcr/reg-sub-event :current-phrase-index nil)
 
 (defn- add-indexes [coll]
   (->> coll (map-indexed (fn [i e] (assoc e :index i))) vec))
@@ -28,7 +30,7 @@
        (assoc
         ::phrases (:phrases value)
         ::search-count (:count value)
-        ::current-phrase-index 0
+        :current-phrase-index 0
         ::current-suggestion-index nil
         ::suggestions (:suggestions value))
        (update ::suggestions add-indexes)
@@ -44,16 +46,16 @@
 (reg-event-db
  ::next-phrase
  (fn [db [_]]
-   (let [current       (::current-phrase-index db)
+   (let [current       (:current-phrase-index db)
          count-phrases (-> db ::phrases count)]
-     (assoc db ::current-phrase-index (min (dec count-phrases) (inc current))))))
+     (assoc db :current-phrase-index (min (dec count-phrases) (inc current))))))
 
 (reg-event-db
  ::prev-phrase
  (fn [db [_]]
-   (let [current       (::current-phrase-index db)
+   (let [current       (:current-phrase-index db)
          count-phrases (-> db ::phrases count)]
-     (assoc db ::current-phrase-index (max 0 (dec current))))))
+     (assoc db :current-phrase-index (max 0 (dec current))))))
 
 (reg-event-db
  ::next-suggestion

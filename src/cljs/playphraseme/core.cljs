@@ -58,6 +58,10 @@
 (secretary/defroute "/login" []
   (route/goto-page! :login))
 
+(secretary/defroute "/auth" [query-params]
+  ;; TODO store auth token
+  (route/goto-page! :search))
+
 (secretary/defroute "/article" []
   (route/goto-page! :article))
 

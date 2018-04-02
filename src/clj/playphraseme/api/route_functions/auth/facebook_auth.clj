@@ -45,12 +45,4 @@
 
 (comment
 
-  (let [code ""
-        {:keys [facebook-callback-uri facebook-client-id facebook-client-secret]} env]
-    (-> (client/get "https://graph.facebook.com/oauth/access_token"
-                 {:query-params {:client_id     facebook-client-id
-                                 :redirect_uri  facebook-callback-uri
-                                 :client_secret facebook-client-secret
-                                 :code          code}})
-        :body))
   )

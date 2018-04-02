@@ -15,13 +15,13 @@
    [cljs.core.async.macros :refer [go go-loop]]))
 
 (defn play []
-  (player/play @(rf/subscribe [::model/current-phrase-index])))
+  (player/play @(rf/subscribe [:current-phrase-index])))
 
 (defn toggle-play []
   (if (util/ios?)
     (play)
     (let [now-stopped? @(rf/subscribe [::model/stopped])
-          index @(rf/subscribe [::model/current-phrase-index])]
+          index @(rf/subscribe [:current-phrase-index])]
       (if now-stopped?
         (player/play index)
         (player/stop index))
@@ -33,18 +33,18 @@
 (defn search-phrase [text]
   (when text
     (when-not (= (some-> text string/trim)
-                 (some-> @(rf/subscribe [::model/search-text]) string/trim))
+                 (some-> @(rf/subscribe [:search-text]) string/trim))
      (util/set-url! "search" {:q text})
      (let [id  (swap! search-id inc)]
        (rf/dispatch [::model/search-result []])
-       (rf/dispatch [::model/current-phrase-index nil])
+       (rf/dispatch [:current-phrase-index nil])
        (go
          (reset! scroll-loaded 0)
          (let [res (<! (rest-api/search-phrase text 10 0))]
            (println text id @search-id)
            (when (= id @search-id)
              (rf/dispatch [::model/search-result res])))))))
-  (rf/dispatch [::model/search-text text]))
+  (rf/dispatch [:search-text text]))
 
 (defn scroll-end []
   (let [count-all @(rf/subscribe [::model/search-count])
@@ -54,12 +54,12 @@
         (when-not (= @scroll-loaded skip)
          (reset! scroll-loaded skip)
          (let [res (<! (rest-api/search-phrase
-                        @(rf/subscribe [::model/search-text])
+                        @(rf/subscribe [:search-text])
                         10 skip))]
            (rf/dispatch [::model/search-result-append res])))))))
 
 (defn get-current-phrase-index []
-  @(rf/subscribe [::model/current-phrase-index]))
+  @(rf/subscribe [:current-phrase-index]))
 
 (defn get-current-phrase []
   (let [phrases @(rf/subscribe [::model/phrases])
@@ -86,7 +86,7 @@
 (defn next-phrase []
   (println "next-phrase")
   (rf/dispatch-sync [::model/next-phrase])
-  (let [current @(rf/subscribe [::model/current-phrase-index])
+  (let [current @(rf/subscribe [:current-phrase-index])
         loaded  (count @(rf/subscribe [::model/phrases]))]
     (scroll-to-phrase current)
     (when (-> current (+ 5) (> loaded))
@@ -94,7 +94,7 @@
 
 (defn prev-phrase []
   (rf/dispatch-sync [::model/prev-phrase])
-  (let [current @(rf/subscribe [::model/current-phrase-index])]
+  (let [current @(rf/subscribe [:current-phrase-index])]
     (scroll-to-phrase current)))
 
 (defn highlite-word [current-word]
@@ -162,7 +162,7 @@
   [:div.filters-container
    [:input#search-input.filter-input.form-control.input-lg
     {:type      "text" :placeholder "Search Phrase"
-     :value     @(rf/subscribe [::model/search-text])
+     :value     @(rf/subscribe [:search-text])
      :on-change #(search-phrase (-> % .-target .-value))}]
    [:ul.filter-input-icons
     [:li [:div.search-result-count @(rf/subscribe [::model/search-count])]]
@@ -200,7 +200,7 @@
     (player/play (:index phrase))))
 
 (defn get-searched-words [current-words]
-  (let [text             @(rf/subscribe [::model/search-text])
+  (let [text             @(rf/subscribe [:search-text])
         all-search-words (-> text string/lower-case nlp/create-words)]
     (loop [[v & t]      current-words
            search-words all-search-words
@@ -245,7 +245,7 @@
                                                     :formated-text w2
                                                     :searched (-> w1 searched-words nil? not)))
                                            words nlp-words)
-        current-index                 (rf/subscribe [::model/current-phrase-index])]
+        current-index                 (rf/subscribe [:current-phrase-index])]
     (fn []
       (if (= @current-index index)
         [karaoke-words-current index words]
@@ -259,7 +259,7 @@
             {:keys [index text id]} x]
         (fn []
           [:tr {:id       (str "phrase-text-" index)
-                :on-click #(rf/dispatch [::model/current-phrase-index (:index x)])}
+                :on-click #(rf/dispatch [:current-phrase-index (:index x)])}
            [:td [:div.phrase-number (-> x :index inc)]]
            [:td.phrase-text [karaoke x]]])))}))
 
@@ -304,7 +304,7 @@
     :reagent-render
     (fn []
       (let [lang        (util/locale-name)
-            current     (rf/subscribe [::model/current-phrase-index])
+            current     (rf/subscribe [:current-phrase-index])
             phrases     (rf/subscribe [::model/phrases])
             stopped     (rf/subscribe [::model/stopped])
             suggestions (rf/subscribe [::model/suggestions])]
