@@ -18,7 +18,7 @@
 (defn header []
   [:div.header
    [:div.top
-    [header-button (ls :navigation.login.register) "/#/register" "fas fa-user-circle"]
+    [header-button (ls :navigation.login.register) "/#/login" "fas fa-user-circle"]
     #_[header-button (ls :navigation.guest.tour) "/#/guest-tour" "far fa-question-circle"]
     [header-button (ls :navigation.support) "/#/support" "far fa-envelope"]
     #_[header-button "Favorites" "/#/favorites" "fas fa-heart"]
