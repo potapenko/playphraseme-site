@@ -473,6 +473,76 @@ word, word:active, word:focus{
   font-size: 8px;
   font-weight: 300;
 }
+
+.page-title {
+  margin: 35px 0;
+	color: rgba(0,0,0,0.8);
+  text-align: center;
+	font-family: Roboto;
+	font-size: 18px;
+	font-weight: 500;
+	line-height: 26px;
+}
+
+.input-box {
+  display: flex;
+  position: relative;
+}
+
+.input-icon{
+  width: 16px;
+  width: 20px;
+  position: absolute;
+  right: 49px;
+  top: 12px;
+}
+
+.input {
+  padding: 0px 52px 0px 22px;
+  margin-right: 30px;
+  margin-left: 30px;
+  margin-bottom: 22px;
+  height: 40px;
+  flex-grow: 1;
+  border: 2px solid #646464;
+  border-radius: 20px;
+  background-color: #FFFFFF;
+}
+
+::-webkit-input-placeholder {
+	color: #000000;
+	font-size: 14px;
+  font-weight: 400px;
+  opacity: 0.5;
+}
+
+.form-button {
+	height: 38px;
+  padding: 0px 23px;
+	background-color: rgba(0,0,0,0.5);
+  border: 0 solid;
+	color: #FFFFFF;
+	font-family: Roboto;
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 18px;
+	text-align: center;
+  white-space: nowrap;
+}
+
+.page-footer-links {
+  margin-top: 22px;
+  font-size: 14px;
+  color: #515151;
+  margin-bottom: 19px;
+  text-align: center;
+}
+
+.page-footer-links a {
+  color: #515151;
+  text-decoration: underline;
+}
+
 @media only screen and (max-device-width: 800px) and (orientation : portrait){
   .header-button {
     padding: 8px 12px;
@@ -574,5 +644,4 @@ word, word:active, word:focus{
     background-color: rgba(0,0,0,0.8) !important;
   }
 }
-
 
