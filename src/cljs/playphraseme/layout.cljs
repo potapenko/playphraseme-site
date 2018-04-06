@@ -17,6 +17,7 @@
 
 (defn header []
   [:div.header
+   {:class (util/class->str (when-not (= @(rf/subscribe [:page]) :search) "invert"))}
    [:div.top
     [header-button (ls :navigation.login.register) "/#/login" "fas fa-user-circle"]
     #_[header-button (ls :navigation.guest.tour) "/#/guest-tour" "far fa-question-circle"]

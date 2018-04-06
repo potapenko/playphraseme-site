@@ -13,8 +13,15 @@ textarea:focus, input:focus{
   outline: none;
 }
 
+.invert {
+  -webkit-filter: invert(100%);
+  filter: invert(100%);
+	transition: filter 0.4s ease-in-out;
+  background-color: rgba(255,255,255,0.9) !important;
+}
+
 button, input {
-	-webkit-border-radius: 0 !important;
+  -webkit-border-radius: 0 !important;
 	-moz-border-radius: 0 !important;
 	border-radius: 0 !important;
 }
@@ -122,6 +129,7 @@ body{
 }
 
 .header .logo .red {color: red}
+.header.invert .logo .red {color: cyan}
 .header .logo .black {color: black}
 .header .logo .gray {color: gray}
 
@@ -475,11 +483,11 @@ word, word:active, word:focus{
 }
 
 .page-title {
+	font-size: 24px;
   margin: 35px 0;
 	color: rgba(0,0,0,0.8);
   text-align: center;
 	font-family: Roboto;
-	font-size: 18px;
 	font-weight: 500;
 	line-height: 26px;
 }
@@ -502,16 +510,17 @@ word, word:active, word:focus{
   margin-right: 30px;
   margin-left: 30px;
   margin-bottom: 22px;
-  height: 40px;
+  height: 50px;
   flex-grow: 1;
   border: 2px solid #646464;
   border-radius: 20px;
   background-color: #FFFFFF;
+  font-size: 18px;
 }
 
 ::-webkit-input-placeholder {
 	color: #000000;
-	font-size: 14px;
+	font-size: 18px;
   font-weight: 400px;
   opacity: 0.5;
 }
