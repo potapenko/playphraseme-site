@@ -37,11 +37,15 @@
 
 (defn page []
   [:form {:on-submit on-login}
-   [:div.page-title "Please sign in"]
+   [:div.fa-button
+    [:a.fa.fa-facebook {:href ""}]
+     [:span "Sign in with Facebook"]]
+   [:h1 "Or sign in with email"]
    [:div
     (when-let [error-message @(rf/subscribe [::model/error-message])]
       [:div.alert.alert-danger
-       {:role "alert"} error-message])
+       {:role "alert"}
+       error-message])
     [:div.d-flex
      [:input.input {:type        "email" :id "input-email"
                     :placeholder "Email Address"
@@ -51,7 +55,8 @@
                                    (rf/dispatch [::model/username (-> e .-target .-value)]))
                     :auto-focus  true}]]]
    [:div.d-flex
-    [:input.input {:type        "password" :id "input-password"
+    [:input.input {:type        "password"
+                   :id          "input-password"
                    :value       (-> (username-password) second)
                    :placeholder "Password"
                    :on-change   (fn [e]

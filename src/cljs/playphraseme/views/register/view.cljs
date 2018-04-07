@@ -60,7 +60,7 @@
 
 (defn page []
   [:form {:on-submit on-register}
-   [:div.page-title "Register"]
+   [:h1 "Register"]
    (when-let [error-message @(rf/subscribe [::model/error-message])]
      [:div.alert.alert-danger
       {:role "alert"} error-message])
