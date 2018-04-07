@@ -61,8 +61,8 @@
 (defn get-current-phrase []
   (let-sub [::model/phrases
             :current-phrase-index ]
-    (some->> phrases
-             (drop-while #(-> % :index (not= current-phrase-index)))
+    (some->> @phrases
+             (drop-while #(-> % :index (not= @current-phrase-index)))
              first)))
 
 (defn on-phrases-scroll [e]
