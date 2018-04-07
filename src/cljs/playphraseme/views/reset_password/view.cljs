@@ -8,7 +8,8 @@
             [playphraseme.common.rest-api :as rest-api :refer [success? error?]]
             [playphraseme.views.reset-password.model :as model])
   (:require-macros
-   [cljs.core.async.macros :refer [go go-loop]]))
+   [cljs.core.async.macros :refer [go go-loop]]
+   [re-frame-macros.core :as mcr :refer [let-sub]]))
 
 (defn form-data []
   [@(rf/subscribe [::model/username])])
@@ -42,7 +43,9 @@
      [:input.input {:type        "email"         :id       "input-email"
                            :placeholder "Email address"
                            :value       (-> (form-data) first)
-                           :on-change   #(do (clear-error!) (rf/dispatch [::model/username (-> % .-target .-value)]))
+                    :on-change   (fn [e]
+                                   (clear-error!)
+                                   (rf/dispatch [::model/username (-> e .-target .-value)]))
                            :auto-focus  true}]]]
    [:div.d-flex
     [:div.grow]

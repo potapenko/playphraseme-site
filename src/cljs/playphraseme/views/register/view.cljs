@@ -8,7 +8,8 @@
             [playphraseme.common.rest-api :refer [success? error? register-user]]
             [playphraseme.views.register.model :as model])
   (:require-macros
-   [cljs.core.async.macros :refer [go go-loop]]))
+   [cljs.core.async.macros :refer [go go-loop]]
+   [re-frame-macros.core :as mcr :refer [let-sub]]))
 
 (declare form-completed?)
 

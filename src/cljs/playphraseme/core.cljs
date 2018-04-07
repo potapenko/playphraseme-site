@@ -70,6 +70,9 @@
 (secretary/defroute "/article" []
   (route/goto-page! :article))
 
+(secretary/defroute "/support" []
+  (route/goto-page! :support))
+
 (secretary/defroute "/guest-tour" []
   (route/goto-page! :guest-tour))
 

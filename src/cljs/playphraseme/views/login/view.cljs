@@ -8,14 +8,14 @@
             [playphraseme.views.login.model :as model])
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]
-   [re-frame-macros.core :as mcr]))
+   [re-frame-macros.core :as mcr :refer [let-sub]]))
 
-(defn username-password []
+(defn form-data []
   [@(rf/subscribe [::model/username])
    @(rf/subscribe [::model/password])])
 
 (defn form-completed? []
-  (->> (username-password) (remove string/blank?) count (= 2)))
+  (->> (form-data) (remove string/blank?) count (= 2)))
 
 (defn clear-error! []
   (rf/dispatch [::model/error-message nil]))
@@ -24,7 +24,7 @@
   (-> e .preventDefault)
   (clear-error!)
   (when (form-completed?)
-    (let [[username password] (username-password)]
+    (let [[username password] (form-data)]
       (go
         #_(let [res (<! (auth username password))]
           (if (success? res)
@@ -50,7 +50,7 @@
     [:div.d-flex
      [:input.input {:type        "email" :id "input-email"
                     :placeholder "Email Address"
-                    :value       (-> (username-password) first)
+                    :value       (-> (form-data) first)
                     :on-change   (fn [e]
                                    (clear-error!)
                                    (rf/dispatch [::model/username (-> e .-target .-value)]))
@@ -58,7 +58,7 @@
    [:div.d-flex
     [:input.input {:type        "password"
                    :id          "input-password"
-                   :value       (-> (username-password) second)
+                   :value       (-> (form-data) second)
                    :placeholder "Password"
                    :on-change   (fn [e]
                                   (clear-error!)

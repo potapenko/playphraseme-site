@@ -8,7 +8,8 @@
             [playphraseme.common.rest-api :as rest-api :refer [success? error?]]
             [playphraseme.views.reset-password.model :as model])
   (:require-macros
-   [cljs.core.async.macros :refer [go go-loop]]))
+   [cljs.core.async.macros :refer [go go-loop]]
+   [re-frame-macros.core :as mcr :refer [let-sub]]))
 
 (defn page []
   [:div "History page"])
