@@ -9,8 +9,8 @@
             [playphraseme.views.register.model :as model])
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]))
-(declare form-completed?)
 
+(declare form-completed?)
 
 (defn form-data []
   [@(rf/subscribe [::model/email])

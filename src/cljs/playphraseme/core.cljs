@@ -10,6 +10,7 @@
             [playphraseme.views.login.view :as login-page]
             [playphraseme.views.not-found.view :as not-found-page]
             [playphraseme.views.register.view :as register-page]
+            [playphraseme.views.reset-password.view :as reset-password-page]
             [playphraseme.views.phrase.view :as phrase-page]
             [playphraseme.views.article.view :as articles]
             [playphraseme.views.support.view :as support-page]
@@ -21,14 +22,15 @@
   (:import goog.History))
 
 (def pages
-  {:search     #'search-page/page
-   :login      #'login-page/page
-   :not-found  #'not-found-page/page
-   :guest-tour #'articles/guest-tour
-   :register   #'register-page/page
-   :phrase     #'phrase-page/page
-   :support    #'support-page/page
-   :history    #'history-page/page})
+  {:search         #'search-page/page
+   :login          #'login-page/page
+   :register       #'register-page/page
+   :reset-password #'reset-password-page/page
+   :not-found      #'not-found-page/page
+   :guest-tour     #'articles/guest-tour
+   :phrase         #'phrase-page/page
+   :support        #'support-page/page
+   :history        #'history-page/page})
 
 (defn page []
   (let [page-id @(rf/subscribe [:page])
@@ -54,6 +56,9 @@
 
 (secretary/defroute "/register" []
   (route/goto-page! :register))
+
+(secretary/defroute "/reset-password" []
+  (route/goto-page! :reset-password))
 
 (secretary/defroute "/login" []
   (route/goto-page! :login))
