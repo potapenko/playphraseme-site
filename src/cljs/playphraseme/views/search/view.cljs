@@ -42,7 +42,6 @@
        (go
          (reset! scroll-loaded 0)
          (let [res (<! (rest-api/search-phrase text 10 0))]
-           (println text id @search-id)
            (when (= id @search-id)
              (rf/dispatch [::model/search-result res])))))))
   (rf/dispatch [:search-text text]))
@@ -59,13 +58,12 @@
                         10 skip))]
            (rf/dispatch [::model/search-result-append res])))))))
 
-(defn get-current-phrase-index []
-  @(rf/subscribe [:current-phrase-index]))
-
 (defn get-current-phrase []
-  (let [phrases @(rf/subscribe [::model/phrases])
-        index (get-current-phrase-index)]
-    (some->> phrases (drop-while #(-> % :index (not= index))) first)))
+  (let-sub [::model/phrases
+            :current-phrase-index ]
+    (some->> phrases
+             (drop-while #(-> % :index (not= current-phrase-index)))
+             first)))
 
 (defn on-phrases-scroll [e]
   (let [sh (-> e .-target .-scrollHeight)
@@ -85,7 +83,6 @@
     (-> elem (.scrollIntoView #js{:behavior "smooth" :block "start"}))))
 
 (defn next-phrase []
-  (println "next-phrase")
   (rf/dispatch-sync [::model/next-phrase])
   (let [current @(rf/subscribe [:current-phrase-index])
         loaded  (count @(rf/subscribe [::model/phrases]))]
@@ -156,7 +153,6 @@
 (defn favorite-current-phrase [])
 (defn show-config [])
 (defn download-video [])
-(defn show-search-help [])
 (defn favorite-phrase [id])
 
 (defn search-input []
@@ -175,21 +171,7 @@
          [:i.fa.fa-circle.fa-stack-2x]
          (if @(rf/subscribe [::model/stopped])
            [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon]
-           [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon])]]])
-    #_[:li
-       [:div.filter-input-icon
-        {:on-click favorite-current-phrase}
-        [:span.fa-stack.fa-1x
-         [:i.fa.fa-circle.fa-stack-2x]
-         [:i.fa.fa-star.fa-stack-1x.fa-inverse]]]]
-    #_[:li
-       [:div.filter-input-icon
-        {:on-click show-config}
-        [:i.fa.fa-cog.fa-2x]]]
-    #_[:li
-       [:div.filter-input-icon
-        {:on-click show-search-help}
-        [:i.fa.fa-question-circle.fa-2x]]]]])
+           [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon])]]])]])
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
@@ -216,18 +198,19 @@
           result)))))
 
 (defn karaoke-words-current [phrase-index words]
-  [:div.karaoke
-   (let [played-word-index @(rf/subscribe [::model/current-word-index])]
-     (for [w    words
-           :let [{:keys [formated-text text index searched]} w]]
-       ^{:key (str "word-" index)}
-       [:a.s-word {:href     ""
-                   :on-click #(goto-word % phrase-index index)
-                   :id       (str "word-" index)
-                   :class    (util/class->str
-                              (when searched "s-word-searched")
-                              (when (= index played-word-index) "s-word-played"))}
-        formated-text]))])
+  (let-sub [::model/current-word-index]
+    (fn []
+      [:div.karaoke
+       (for [w    words
+             :let [{:keys [formated-text text index searched]} w]]
+         ^{:key (str "word-" index)}
+         [:a.s-word {:href     ""
+                     :on-click #(goto-word % phrase-index index)
+                     :id       (str "word-" index)
+                     :class    (util/class->str
+                                (when searched "s-word-searched")
+                                (when (= index current-word-index) "s-word-played"))}
+          formated-text])])))
 
 (defn karaoke-words [phrase-index words]
   [:div.karaoke
