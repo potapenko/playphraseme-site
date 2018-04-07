@@ -33,20 +33,20 @@
 
 (defn page []
   [:form {:on-submit on-send}
-   [:div.page-title "Reset password"]
+   [:div.page-title "Send message to us"]
    [:div
     (when-let [error-message @(rf/subscribe [::model/error-message])]
       [:div.alert.alert-danger {:role "alert"} error-message])
-    (when-let [message @(rf/subscribe [::model/message])]
-      [:div.alert.alert-success {:role "alert"} message])
     [:div.d-flex
-     [:input.input {:type        "message"         :id       "input-message"
-                           :placeholder "Message"
-                           :value       (-> (form-data) first)
-                    :on-change   (fn [e]
-                                   (clear-error!)
-                                   (rf/dispatch [::model/message (-> e .-target .-value)]))
-                           :auto-focus  true}]]]
+     [:textarea.input {:type       "textarea"
+                       :id         "input-message"
+                       :style      {:height "150px"}
+                       :rows       6
+                       :value      (-> (form-data) first)
+                       :on-change  (fn [e]
+                                     (clear-error!)
+                                     (rf/dispatch [::model/message (-> e .-target .-value)]))
+                       :auto-focus true}]]]
    [:div.d-flex
     [:div.grow]
     [:button.form-button {:type "submit" :disabled (not (form-completed?))} "Send message"]

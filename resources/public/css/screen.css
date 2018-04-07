@@ -510,14 +510,13 @@ h1, .page-title {
 }
 
 .input {
-  padding: 0px 52px 0px 22px;
+  padding: 0px 12px 0px 12px;
   margin-right: 30px;
   margin-left: 30px;
   margin-bottom: 22px;
   height: 50px;
   flex-grow: 1;
   border: 2px solid #646464;
-  border-radius: 20px;
   background-color: #FFFFFF;
   font-size: 18px;
 }
