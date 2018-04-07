@@ -6,7 +6,7 @@
             [cljs.core.async :as async :refer [<! >! put! chan timeout]]
             [playphraseme.common.util :as util]
             [playphraseme.common.rest-api :as rest-api :refer [success? error?]]
-            [playphraseme.views.reset-password.model :as model])
+            [playphraseme.views.learn.model :as model])
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]
    [re-frame-macros.core :as mcr :refer [let-sub]]))
