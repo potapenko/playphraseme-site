@@ -97,6 +97,7 @@ body{
   flex-direction: column;
   background-color: rgba(0,0,0,0.05);
   border-bottom: 4px solid rgba(0,0,0,0.2);
+	transition: filter 0.4s ease-in-out;
 }
 
 .header.invert {
@@ -575,6 +576,7 @@ h1, .page-title {
   text-align: center;
   text-decoration: none;
   background: #3B5998;
+  color: white;
 }
 
 .fa-button span {
