@@ -7,7 +7,8 @@
             [playphraseme.common.util :as util]
             [playphraseme.views.login.model :as model])
   (:require-macros
-   [cljs.core.async.macros :refer [go go-loop]]))
+   [cljs.core.async.macros :refer [go go-loop]]
+   [re-frame-macros.core :as mcr]))
 
 (defn username-password []
   [@(rf/subscribe [::model/username])
@@ -66,6 +67,7 @@
     [:div.grow]
     [:button.form-button {:type "submit" :disabled (not (form-completed?))} "SIGN IN"]
     [:div.grow]]
+
    [:div.page-footer-links
     [:p.text-center
      [:a {:href "/#/reset-password"} "Forgot Password?"]
