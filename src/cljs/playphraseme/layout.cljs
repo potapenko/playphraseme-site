@@ -49,6 +49,7 @@
         [ui/flexer]
         [header-button "Github" "" "fab fa-github-square"]
         [header-button  "Facebook" "" "fab fa-facebook"]
+        ^{:key "fixed-key"}
         [facebook-like-button]]
        [:div.bottom
         [:div.logo {:on-click (fn [e]

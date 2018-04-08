@@ -118,7 +118,7 @@ body{
 
 .fb-like {
   width: 63px;
-  overflow: hidden;
+  height: 20px;
   margin-top: 6px;
   margin-right: 0px;
   opacity: 0.6;
