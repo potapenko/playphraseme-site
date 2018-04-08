@@ -603,7 +603,10 @@ h1, .page-title {
 @media only screen and (max-device-width: 800px) and (orientation : portrait){
   .header-button {
     padding: 8px 12px;
-    font-size: 13px;
+    font-size: 16px;
+  }
+  .fb-like {
+    width: 90px;
   }
   .search-results-container {
     left: 0px; right: 0px; bottom: 0px; top: 440px !important;
