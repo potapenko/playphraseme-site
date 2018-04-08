@@ -152,7 +152,6 @@
 
 (defn favorite-current-phrase [])
 (defn show-config [])
-(defn download-video [])
 (defn favorite-phrase [id])
 
 (defn search-input []
@@ -281,6 +280,7 @@
 (defn page [params]
   (let-sub [:current-phrase-index
             ::model/phrases
+            :current-phrase
             ::model/stopped
             ::model/suggestions]
     (r/create-class
@@ -334,6 +334,9 @@
                   [:i.material-icons "settings"]
                   [:div.info-text "Settings"]]
                  [:li
+                  {:on-click #(util/go-url! (str "/api/v1/phrases/video-download?id=" 
+                                                 (:id (get-current-phrase)))
+                                            true)}
                   [:i.material-icons "file_download"]
                   [:div.info-text "Download"]]]
                 [:div.overlay-logo

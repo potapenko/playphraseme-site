@@ -12,7 +12,6 @@
 (mcr/reg-sub ::current-suggestion-index nil)
 
 (mcr/reg-sub-event :search-text "")
-(mcr/reg-sub-event :current-phrase nil)
 (mcr/reg-sub-event :current-phrase-index nil)
 
 (defn- add-indexes [coll]
@@ -48,7 +47,8 @@
  (fn [db [_]]
    (let [current       (:current-phrase-index db)
          count-phrases (-> db ::phrases count)]
-     (assoc db :current-phrase-index (min (dec count-phrases) (inc current))))))
+     (assoc db
+            :current-phrase-index (min (dec count-phrases) (inc current))))))
 
 (reg-event-db
  ::prev-phrase
