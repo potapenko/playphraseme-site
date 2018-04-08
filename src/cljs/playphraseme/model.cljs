@@ -13,6 +13,8 @@
 (mcr/reg-sub :params nil)
 (mcr/reg-sub-event :user-roles [:basic])
 (mcr/reg-sub-event :page-before-login nil)
+(mcr/reg-sub-event :all-phrases-count nil)
+(mcr/reg-sub-event :all-movies-count nil)
 
 (reg-event-db
  :initialize-db

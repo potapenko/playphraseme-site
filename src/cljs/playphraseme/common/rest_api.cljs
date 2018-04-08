@@ -107,10 +107,32 @@
             (merge (api-headers) {:query-params {:q text}})
             login-md :body))
 
-(comment
+(defn count-all-phrases []
+  (call-api http/get "/phrases/all-phrases-count"
+            (merge (api-headers)) :body))
 
+(defn count-all-movies []
+  (call-api http/get "/phrases/all-movies-count"
+            (merge (api-headers))
+            login-md :body))
+
+(defn video-url [id]
+  (call-api http/get "/phrases/video-url"
+            (merge (api-headers) {:query-params {:id id}})
+            login-md :body))
+
+(defn video-download [id]
+  (call-api http/get "/phrases/video-download"
+            (merge (api-headers) {:query-params {:id id}})
+            login-md :body))
+(comment
   (go (println (<! (search-phrase "hello"))))
   (go (println (<! (count-phrase "hello"))))
+  (go (println (<! (count-all-phrases))))
+  (go (println (<! (count-all-movies))))
+  (go (println (<! (count-all-movies))))
+  (go (println (<! (video-url "543bd8c8d0430558da9bfeb1"))))
+  (go (println (<! (video-download "543bd8c8d0430558da9bfeb1"))))
 
 
 
