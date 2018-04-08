@@ -28,3 +28,11 @@
   [^String phrase-id]
   (delete-doc-by-id coll (str->id phrase-id)))
 
+(defn get-phrases-count []
+  (count-docs coll {:state 1}))
+
+(defn get-movies-count []
+  322
+  #_(count-docs "movie" {}))
+
+

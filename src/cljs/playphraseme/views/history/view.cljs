@@ -11,6 +11,19 @@
    [cljs.core.async.macros :refer [go go-loop]]
    [re-frame-macros.core :as mcr :refer [let-sub]]))
 
+(defn elements-list [list]
+  (let-sub [::model/history-list]
+    [:div.elements-container
+     (doall
+      (for [{:keys [text count index]} history-list]
+        ^{:key (str "element-" index)}
+        [:a.element
+         {:id    (str "element-" index)
+          :href  (str "/#/search?q=" text)}
+         [:div.text text]
+         [:div.grow]
+         [:div.counter (str count)]]))]))
+
 (defn page []
   [:div "History page"])
 

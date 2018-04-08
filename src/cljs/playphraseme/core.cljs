@@ -15,6 +15,8 @@
             [playphraseme.views.article.view :as articles]
             [playphraseme.views.support.view :as support-page]
             [playphraseme.views.history.view :as history-page]
+            [playphraseme.views.favorites.view :as favorites-page]
+            [playphraseme.views.settings.view :as settings-page]
             [playphraseme.layout :as layout]
             [playphraseme.model]
             [playphraseme.common.responsive :as responsive]
@@ -30,7 +32,9 @@
    :guest-tour     #'articles/guest-tour
    :phrase         #'phrase-page/page
    :support        #'support-page/page
-   :history        #'history-page/page})
+   :history        #'history-page/page
+   :favorites      #'favorites-page/page
+   :settings       #'settings-page/page})
 
 (defn page []
   (let [page-id @(rf/subscribe [:page])
@@ -72,6 +76,18 @@
 
 (secretary/defroute "/support" []
   (route/goto-page! :support))
+
+(secretary/defroute "/history" []
+  (route/goto-page! :history))
+
+(secretary/defroute "/favorites" []
+  (route/goto-page! :favorites))
+
+(secretary/defroute "/learn" []
+  (route/goto-page! :learn))
+
+(secretary/defroute "/settings" []
+  (route/goto-page! :settings))
 
 (secretary/defroute "/guest-tour" []
   (route/goto-page! :guest-tour))

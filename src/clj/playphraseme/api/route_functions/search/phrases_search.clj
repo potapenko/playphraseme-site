@@ -8,6 +8,7 @@
             [playphraseme.api.queries.phrases :as db]
             [clojure.string :as string]
             [clojure.pprint :refer [pprint]]
+            [noir.response :as resp]
             [clojure.walk :as walk]))
 
 (defn use-shifts [p]
@@ -35,10 +36,41 @@
         res (http/get url {:query-params {:q q} :accept :json})]
     (ok (some-> res :body (parse-string true) :count))))
 
+(defn all-phrases-count-response []
+  (ok (db/get-phrases-count)))
+
+(defn- get-video-file [id]
+  (let [phrase (db/get-phrase-by-id id)]
+    (str (:id phrase) ".mp4")))
+
+(defn- get-video-url [id]
+  (let [cdn-url "https://cdn.playphrase.me/phrases/"
+        phrase (db/get-phrase-by-id id)]
+    (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")))
+
+(defn all-movies-count-response []
+  (ok (db/get-movies-count)))
+
+(defn video-url-response [id]
+  (ok (get-video-url id)))
+
+(defn video-response [id]
+  (resp/redirect (get-video-url id)))
+
+(defn video-download-response [id]
+  (-> id
+      get-video-url
+      resp/redirect
+      (assoc-in [:headers "Content-Disposition"]
+                (format "attachment; filename=\"%s\"" (get-video-file id)))))
+
 (comment
   (time (count-response "hello"))
   (time (search-response "hello" 0 10))
   (-> (search-response "hello" 0 1) :body)
 
+
+
+  (video-download-response "543bd8c8d0430558da9bfeb1")
 
   )

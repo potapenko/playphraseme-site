@@ -4,6 +4,7 @@
             [reagent.core :as r]
             [re-frame.core :as rf]
             [cljs.core.async :as async :refer [<! >! put! chan timeout]]
+            [playphraseme.common.rest-api :as rest-api :refer [success? error?]]
             [playphraseme.common.util :as util]
             [playphraseme.views.login.model :as model])
   (:require-macros
@@ -26,13 +27,8 @@
   (when (form-completed?)
     (let [[username password] (form-data)]
       (go
-        #_(let [res (<! (auth username password))]
-          (if (success? res)
-            (do
-              (if @(rf/subscribe [:metrics-need-save])
-                (rf/dispatch [:save-metrics])
-                (rf/dispatch [:load-metrics]))
-              (util/go-url! "/#/"))
+        (let [res (<! (rest-api/auth username password))]
+          (if (error? res)
             (rf/dispatch [::model/error-message (-> res :body :error)]))))))
   false)
 
