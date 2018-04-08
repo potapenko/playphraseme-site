@@ -116,6 +116,24 @@ body{
   font-size: 11px;
 }
 
+.fb-like {
+  width: 63px;
+  overflow: hidden;
+  margin-top: 6px;
+  margin-right: 0px;
+  opacity: 0.6;
+  filter: alpha(opacity=60);
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  -o-filter: grayscale(100%);
+  -ms-filter: grayscale(100%);
+  filter: grayscale(100%);
+}
+
+.fb-like button {
+  background-color: #ccc !important;
+}
+
 .header .bottom {
   flex-grow: 1;
   display: flex;

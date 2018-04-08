@@ -19,6 +19,16 @@
   ([label href]
    [:a.header-button {:href href} label]))
 
+(defn facebook-like-button []
+  [:div.fb-like
+   {:data-share      "false"
+    :data-show-faces "false"
+    :data-size       "small"
+    :data-width      "100"
+    :data-action     "like"
+    :data-layout     "button"
+    :data-href       "https://www.facebook.com/playphrase/"}])
+
 (defn header []
   (let-sub [:page
             :all-movies-count
@@ -39,7 +49,7 @@
         [ui/flexer]
         [header-button "Github" "" "fab fa-github-square"]
         [header-button  "Facebook" "" "fab fa-facebook"]
-        [header-button "Like!" "" "far fa-thumbs-up"]]
+        [facebook-like-button]]
        [:div.bottom
         [:div.logo {:on-click (fn [e]
                                 (if (-> e .-altKey)
