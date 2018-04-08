@@ -11,6 +11,15 @@
             [noir.response :as resp]
             [clojure.walk :as walk]))
 
+(defn- get-video-file [id]
+  (let [phrase (db/get-phrase-by-id id)]
+    (str (:id phrase) ".mp4")))
+
+(defn- get-video-url [id]
+  (let [cdn-url "https://cdn.playphrase.me/phrases/"
+        phrase (db/get-phrase-by-id id)]
+    (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")))
+
 (defn use-shifts [p]
   (-> p
       (update :start + (or (some-> p :shifts :left) 0))
@@ -21,6 +30,7 @@
   (-> (db/get-phrase-by-id id)
       (util/remove-keys [:random :haveVideo :__v :state])
       (util/remove-keys :words [:id])
+      (assoc :video-url (get-video-url id))
       use-shifts))
 
 (defn- get-phrases [phrases-ids]
@@ -38,15 +48,6 @@
 
 (defn all-phrases-count-response []
   (ok (db/get-phrases-count)))
-
-(defn- get-video-file [id]
-  (let [phrase (db/get-phrase-by-id id)]
-    (str (:id phrase) ".mp4")))
-
-(defn- get-video-url [id]
-  (let [cdn-url "https://cdn.playphrase.me/phrases/"
-        phrase (db/get-phrase-by-id id)]
-    (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")))
 
 (defn all-movies-count-response []
   (ok (db/get-movies-count)))
@@ -69,8 +70,6 @@
   (time (search-response "hello" 0 10))
   (-> (search-response "hello" 0 1) :body)
 
-
-
-  (video-download-response "543bd8c8d0430558da9bfeb1")
+  (get-phrase-data "543bd8c8d0430558da9bfeb1")
 
   )

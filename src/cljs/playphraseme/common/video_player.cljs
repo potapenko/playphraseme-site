@@ -8,8 +8,6 @@
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]))
 
-(def cdn-url "https://cdn.playphrase.me/phrases/")
-
 (defn- extract-props [argv]
   #_(reagent.impl.util/extract-props argv))
 
@@ -89,7 +87,7 @@
                         (reset! show-play-button? false)
                         (on-play-click))}
            [:video.video-player
-            {:src         (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")
+            {:src         (:video-url phrase)
              :playsInline true
              :controls    false
              :id          (index->id index)
