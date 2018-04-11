@@ -17,6 +17,7 @@
             [playphraseme.views.history.view :as history-page]
             [playphraseme.views.favorites.view :as favorites-page]
             [playphraseme.views.settings.view :as settings-page]
+            [playphraseme.views.learn.view :as learn-page]
             [playphraseme.layout :as layout]
             [playphraseme.model]
             [playphraseme.common.responsive :as responsive]
@@ -34,7 +35,8 @@
    :support        #'support-page/page
    :history        #'history-page/page
    :favorites      #'favorites-page/page
-   :settings       #'settings-page/page})
+   :settings       #'settings-page/page
+   :learn          #'learn-page/page})
 
 (defn page []
   (let [page-id @(rf/subscribe [:page])
