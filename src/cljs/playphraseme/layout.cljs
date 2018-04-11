@@ -47,8 +47,8 @@
         (when-not (= @page :support)
           [header-button (ls :navigation.support) "/#/support" "far fa-envelope"])
         [ui/flexer]
-        [header-button "Github" "" "fab fa-github-square"]
-        [header-button  "Facebook" "" "fab fa-facebook"]
+        [header-button "Github" "https://github.com/potapenko/playphraseme-site" "fab fa-github-square"]
+        [header-button  "Facebook" "https://www.facebook.com/playphrase/" "fab fa-facebook"]
         ^{:key "fixed-key"}
         [facebook-like-button]]
        [:div.bottom

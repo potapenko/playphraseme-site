@@ -35,15 +35,15 @@
   (when text
     (when-not (= (some-> text string/trim)
                  (some-> @(rf/subscribe [:search-text]) string/trim))
-     (util/set-url! "search" {:q text})
-     (let [id  (swap! search-id inc)]
-       (rf/dispatch [::model/search-result []])
-       (rf/dispatch [:current-phrase-index nil])
-       (go
-         (reset! scroll-loaded 0)
-         (let [res (<! (rest-api/search-phrase text 10 0))]
-           (when (= id @search-id)
-             (rf/dispatch [::model/search-result res])))))))
+      (util/set-url! "search" {:q text})
+      (let [id  (swap! search-id inc)]
+        (rf/dispatch [::model/search-result []])
+        (rf/dispatch [:current-phrase-index nil])
+        (go
+          (reset! scroll-loaded 0)
+          (let [res (<! (rest-api/search-phrase text 10 0))]
+            (when (= id @search-id)
+              (rf/dispatch [::model/search-result res])))))))
   (rf/dispatch [:search-text text]))
 
 (defn scroll-end []
@@ -52,18 +52,18 @@
     (when (< skip count-all)
       (go
         (when-not (= @scroll-loaded skip)
-         (reset! scroll-loaded skip)
-         (let [res (<! (rest-api/search-phrase
-                        @(rf/subscribe [:search-text])
-                        10 skip))]
-           (rf/dispatch [::model/search-result-append res])))))))
+          (reset! scroll-loaded skip)
+          (let [res (<! (rest-api/search-phrase
+                         @(rf/subscribe [:search-text])
+                         10 skip))]
+            (rf/dispatch [::model/search-result-append res])))))))
 
 (defn get-current-phrase []
   (let-sub [::model/phrases
             :current-phrase-index]
-    (some->> @phrases
-             (drop-while #(-> % :index (not= @current-phrase-index)))
-             first)))
+           (some->> @phrases
+                    (drop-while #(-> % :index (not= @current-phrase-index)))
+                    first)))
 
 (defn on-phrases-scroll [e]
   (let [sh (-> e .-target .-scrollHeight)
@@ -198,18 +198,18 @@
 
 (defn karaoke-words-current [phrase-index words]
   (let-sub [::model/current-word-index]
-    (fn []
-      [:div.karaoke
-       (for [w    words
-             :let [{:keys [formated-text text index searched]} w]]
-         ^{:key (str "word-" index)}
-         [:a.s-word {:href     ""
-                     :on-click #(goto-word % phrase-index index)
-                     :id       (str "word-" index)
-                     :class    (util/class->str
-                                (when searched "s-word-searched")
-                                (when (= index current-word-index) "s-word-played"))}
-          formated-text])])))
+           (fn []
+             [:div.karaoke
+              (for [w    words
+                    :let [{:keys [formated-text text index searched]} w]]
+                ^{:key (str "word-" index)}
+                [:a.s-word {:href     ""
+                            :on-click #(goto-word % phrase-index index)
+                            :id       (str "word-" index)
+                            :class    (util/class->str
+                                       (when searched "s-word-searched")
+                                       (when (= index current-word-index) "s-word-played"))}
+                 formated-text])])))
 
 (defn karaoke-words [phrase-index words]
   [:div.karaoke
@@ -248,18 +248,18 @@
 
 (defn suggestions-list [list]
   (let-sub [::model/current-suggestion-index]
-    (fn []
-      [:div.suggestions-container
-       (doall
-        (for [{:keys [text count index]} list]
-          ^{:key (str "suggestion-" index)}
-          [:a.suggestion
-           {:id    (str "suggestion-" index)
-            :class (when (= index @current-suggestion-index) "higlited")
-            :href  (str "/#/search?q=" text)}
-           [:div.text text]
-           [:div.grow]
-           [:div.counter (str count)]]))])))
+           (fn []
+             [:div.suggestions-container
+              (doall
+               (for [{:keys [text count index]} list]
+                 ^{:key (str "suggestion-" index)}
+                 [:a.suggestion
+                  {:id    (str "suggestion-" index)
+                   :class (when (= index @current-suggestion-index) "higlited")
+                   :href  (str "/#/search?q=" text)}
+                  [:div.text text]
+                  [:div.grow]
+                  [:div.counter (str count)]]))])))
 
 (defn search-results-list [phrases]
   [:div#search-result.search-results-container
@@ -280,74 +280,74 @@
 (defn page [params]
   (let-sub [:current-phrase-index
             ::model/phrases
-            :current-phrase
             ::model/stopped
             ::model/suggestions]
-    (r/create-class
-     {:component-will-unmount
-      (fn [this]
-        (util/remove-document-listener "keyup" work-with-keys))
-      :component-did-mount
-      (fn [this]
-        (util/add-document-listener "keyup" work-with-keys)
-        (focus-input))
-      :reagent-render
-      (fn []
-        (let [lang (util/locale-name)
-              ]
-          (let [q (some-> params :q)]
-            (search-phrase q))
-          (fn []
-            [:div.search-container
-             [:div.search-content
-              ^{:key (str "video-list- " @current-phrase-index)}
-              [:div.video-player-container
-               (doall
-                (for [x     @phrases
-                      :let  [{:keys [index id]} x]
-                      :when (<= @current-phrase-index index (inc @current-phrase-index))]
-                  ^{:key (str "phrase-" index "-" id)}
-                  [player/video-player {:phrase         x
-                                        :hide?          (not= @current-phrase-index index)
-                                        :on-play        #(scroll-to-phrase index)
-                                        :on-pause       #(rf/dispatch [::model/stopped true])
-                                        :on-play-click  toggle-play
-                                        :on-end         next-phrase
-                                        :on-pos-changed update-current-word
-                                        :stopped?       @stopped}]))
-               [:div.video-overlay {:class (util/class->str (when @stopped :stopped))}
-                [:ul.video-overlay-menu
-                 (when (util/fullscreen-enabled?)
-                   [:li
-                    {:on-click #(util/toggle-fullscreen! (util/selector ".search-container"))}
-                    (if @(rf/subscribe [:fullscreen])
-                      [:i.material-icons "fullscreen_exit"]
-                      [:i.material-icons "fullscreen"])
-                    [:div.info-text "Fullscreen"]])
-                 [:li
-                  [:i.material-icons "favorite_border"]
-                  [:div.info-text "Favorites"]]
-                 [:li
-                  [:i.material-icons "school"]
-                  [:div.info-text "Learn"]]
-                 [:li
-                  [:i.material-icons "settings"]
-                  [:div.info-text "Settings"]]
-                 [:li
-                  {:on-click #(util/go-url! (str "/api/v1/phrases/video-download?id=" 
-                                                 (:id (get-current-phrase)))
-                                            true)}
-                  [:i.material-icons "file_download"]
-                  [:div.info-text "Download"]]]
-                [:div.overlay-logo
-                 [:span.red "Play"]
-                 [:span.black "Phrase"]
-                 [:span.gray ".me"]]
-                (when @(rf/subscribe [:mobile?])
-                  [overlay-current-phrase])]
-               ]
-              [:div.search-ui-container [search-input]]
-              (if-not (empty? @suggestions)
-                [suggestions-list @suggestions]
-                [search-results-list @phrases])]])))})))
+           (r/create-class
+            {:component-will-unmount
+             (fn [this]
+               (util/remove-document-listener "keyup" work-with-keys))
+             :component-did-mount
+             (fn [this]
+               (util/add-document-listener "keyup" work-with-keys)
+               (focus-input))
+             :reagent-render
+             (fn []
+               (let [lang (util/locale-name)]
+                 (let [q (some-> params :q)]
+                   (search-phrase q))
+                 (fn []
+                   [:div.search-container
+                    [:div.search-content
+                     ^{:key (str "video-list- " @current-phrase-index)}
+                     [:div.video-player-container
+                      (doall
+                       (for [x     @phrases
+                             :let  [{:keys [index id]} x]
+                             :when (<= @current-phrase-index index (inc @current-phrase-index))]
+                         ^{:key (str "phrase-" index "-" id)}
+                         [player/video-player {:phrase         x
+                                               :hide?          (not= @current-phrase-index index)
+                                               :on-play        #(scroll-to-phrase index)
+                                               :on-pause       #(rf/dispatch [::model/stopped true])
+                                               :on-play-click  toggle-play
+                                               :on-end         next-phrase
+                                               :on-pos-changed update-current-word
+                                               :stopped?       @stopped}]))
+                      [:div.video-overlay {:class (util/class->str (when @stopped :stopped))}
+                       [:ul.video-overlay-menu
+                        (when (util/fullscreen-enabled?)
+                          [:li
+                           {:on-click #(util/toggle-fullscreen! (util/selector ".search-container"))}
+                           (if @(rf/subscribe [:fullscreen])
+                             [:i.material-icons "fullscreen_exit"]
+                             [:i.material-icons "fullscreen"])
+                           [:div.info-text "Fullscreen"]])
+                        [:li
+                         {:on-click #(util/go-url! "/#/favorites")}
+                         [:i.material-icons "favorite_border"]
+                         [:div.info-text "Favorites"]]
+                        [:li
+                         {:on-click #(util/go-url! "/#/learn")}
+                         [:i.material-icons "school"]
+                         [:div.info-text "Learn"]]
+                        [:li
+                         {:on-click #(util/go-url! "/#/settings")}
+                         [:i.material-icons "settings"]
+                         [:div.info-text "Settings"]]
+                        [:li
+                         {:on-click #(util/go-url! (str "/api/v1/phrases/video-download?id="
+                                                        (:id (get-current-phrase)))
+                                                   true)}
+                         [:i.material-icons "file_download"]
+                         [:div.info-text "Download"]]]
+                       [:div.overlay-logo
+                        [:span.red "Play"]
+                        [:span.black "Phrase"]
+                        [:span.gray ".me"]]
+                       (when @(rf/subscribe [:mobile?])
+                         [overlay-current-phrase])]]
+                     [:div.search-ui-container [search-input]]
+                     (if-not (empty? @suggestions)
+                       [suggestions-list @suggestions]
+                       [search-results-list @phrases])]])))})))
 
