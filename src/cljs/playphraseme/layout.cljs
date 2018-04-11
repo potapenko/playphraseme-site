@@ -77,12 +77,15 @@
   [:div.right-column ""])
 
 (defn root [current-page]
-  [:div.layout-container
-   {:style {:zoom @(rf/subscribe [:responsive-scale])}}
-   (when @(rf/subscribe [:responsive-show-left-column?])
-    [left-column])
-   [:div.layout-main
-    [header]
-    [:div.current-page-container current-page]]
-   (when @(rf/subscribe [:responsive-show-right-column?])
-     [right-column])])
+  (let-sub [:responsive-scale
+            :responsive-show-left-column?
+            :responsive-show-right-column?]
+   [:div.layout-container
+    {:style {:zoom @responsive-scale}}
+    (when @responsive-show-left-column?
+      [left-column])
+    [:div.layout-main
+     [header]
+     [:div.current-page-container current-page]]
+    (when @responsive-show-right-column?
+      [right-column])]))

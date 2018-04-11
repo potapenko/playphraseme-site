@@ -71,7 +71,7 @@
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [bux "0.3.0"]
                  [com.cognitect/transit-cljs "0.8.243"]
-                 [re-frame-macros "0.1.10-SNAPSHOT"]]
+                 [re-frame-macros "0.1.12-SNAPSHOT"]]
 
   :min-lein-version "2.0.0"
 

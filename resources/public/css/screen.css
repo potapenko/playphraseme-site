@@ -117,10 +117,9 @@ body{
 }
 
 .fb-like {
-  width: 63px;
+  width: 52px;
+  margin: 6px 12px 0px 0px;
   height: 20px;
-  margin-top: 6px;
-  margin-right: 0px;
   opacity: 0.6;
   filter: alpha(opacity=60);
   -webkit-filter: grayscale(100%);
@@ -128,6 +127,7 @@ body{
   -o-filter: grayscale(100%);
   -ms-filter: grayscale(100%);
   filter: grayscale(100%);
+
 }
 
 .fb-like button {
@@ -581,7 +581,6 @@ h1, .page-title {
   text-decoration: none;
   background: #3B5998;
   color: white;
-  display: flex;
   justify-content: center;
   border-radius: 12px;
   cursor: pointer;
