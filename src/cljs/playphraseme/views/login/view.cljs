@@ -35,7 +35,8 @@
 (defn page []
   [:form {:on-submit on-login}
    [:div.fa-button
-    [:a.fa.fa-facebook {:href "/api/v1/auth/facebook"}]
+    {:on-click #(util/go-url! "/api/v1/auth/facebook")}
+    [:div.fa.fa-facebook]
      [:span "Sign in with Facebook"]]
    [:h1 "Or sign in with email"]
    [:div
