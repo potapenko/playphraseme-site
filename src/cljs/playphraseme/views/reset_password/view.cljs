@@ -12,7 +12,7 @@
    [re-frame-macros.core :as mcr :refer [let-sub]]))
 
 (defn form-data []
-  [@(rf/subscribe [::model/username])])
+  [@(rf/subscribe [::model/name])])
 
 (defn form-completed? []
   (->> (form-data) (remove string/blank?) count (= 1)))
@@ -45,7 +45,7 @@
                            :value       (-> (form-data) first)
                     :on-change   (fn [e]
                                    (clear-error!)
-                                   (rf/dispatch [::model/username (-> e .-target .-value)]))
+                                   (rf/dispatch [::model/name (-> e .-target .-value)]))
                            :auto-focus  true}]]]
    [:div.d-flex
     [:div.grow]

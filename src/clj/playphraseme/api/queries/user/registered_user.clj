@@ -10,7 +10,7 @@
 (def coll "users")
 
 (defn get-registered-user-by-id
-  "Selects the (id, email, username, password, refresh_token) for registered user matching the id"
+  "Selects the (id, email, name, password, refresh_token) for registered user matching the id"
   [^String user-id]
   (stringify-id
    (get-doc-by-id coll (str->id user-id))))
@@ -20,14 +20,14 @@
   (stringify-id
    (get-doc coll {:refresh-token refresh-token})))
 
-(defn get-registered-user-by-username
-  "Selects the (id, email, username) for registered user matching the username"
-  [username]
+(defn get-registered-user-by-name
+  "Selects the (id, email, name) for registered user matching the name"
+  [name]
   (stringify-id
-   (get-doc coll {:username username})))
+   (get-doc coll {:name name})))
 
 (defn get-registered-user-by-email
-  "Selects the (id, email, username) for registered user matching the email"
+  "Selects the (id, email, name) for registered user matching the email"
   [email]
   (stringify-id
    (get-doc coll {:email email})))
@@ -40,7 +40,7 @@
 
 (defn update-registered-user!
   "Update a single user matching provided id"
-  [^String user-id {:keys [email username password refresh-token] :as user-data}]
+  [^String user-id {:keys [email name password refresh-token] :as user-data}]
   (update-doc-by-id coll (str->id user-id) user-data))
 
 (defn update-registered-user-password!

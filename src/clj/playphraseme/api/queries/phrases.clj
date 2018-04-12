@@ -15,12 +15,12 @@
    (get-doc-by-id coll (str->id phrase-id))))
 
 (defn insert-phrase!
-  [{:keys [email username password refresh-token] :as user-data}]
+  [{:keys [email name password refresh-token] :as user-data}]
   (stringify-id
    (add-doc coll user-data)))
 
 (defn update-phrase!
-  [^String phrase-id {:keys [email username password refresh-token] :as user-data}]
+  [^String phrase-id {:keys [email name password refresh-token] :as user-data}]
   (update-doc-by-id coll (str->id phrase-id) user-data))
 
 (defn delete-phrase!

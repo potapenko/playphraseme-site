@@ -32,9 +32,9 @@
   (-> (ObjectId.) id->time)
 
   (stringify-id {:_id      (ObjectId.)
-                :username "John"
+                :name "John"
                 :smith    "Smith"})
 
   (objectify-id {:id       (id->str (ObjectId.))
-                 :username "John"
+                 :name "John"
                  :smith    "Smith"}))

@@ -46,7 +46,7 @@
 
 (defn verify-email-response
   "Generate response for get requests to /api/v1/auth/verify-email. A successful request to this route will generate a new
-   refresh-token, and return {:id :username :permissions :token :refresh-token}"
+   refresh-token, and return {:id :name :permissions :token :refresh-token}"
   [link-token]
   (let [email-jwt-expiration-period        (-> env :auth-by-link :jwt-by-email-ttl)
         {:keys [email date] :as token-doc} (link-tokens/get-token-doc-by-token link-token)]
@@ -61,7 +61,7 @@
               (link-tokens/delete-token link-token)
               (users/update-registered-user-verified-email! (:id user) true)
               (respond/ok {:id            (:id user)
-                           :username      (:username user)
+                           :name      (:name user)
                            :permissions   (:permissions user)
                            :token         (create-token user email-jwt-expiration-period)
                            :refresh-token refresh-token})))))

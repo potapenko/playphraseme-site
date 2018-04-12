@@ -60,9 +60,9 @@
 
 (defn auth
   ([token] (auth* (http/get "/api/v1/session" (api-headers))))
-  ([username password]
+  ([name password]
    (logout)
-   (auth* (http/get "/api/v1/auth" {:basic-auth {:username username :password password}}))))
+   (auth* (http/get "/api/v1/auth" {:basic-auth {:name name :password password}}))))
 
 (defn authorized? []
   @(rf/subscribe [:logged?]))
@@ -76,7 +76,7 @@
 
 (defn register-user [email password]
   (go
-    (let [res (<! (http/post "/api/v1/user" {:json-params {:email email :username email :password password}}))]
+    (let [res (<! (http/post "/api/v1/user" {:json-params {:email email :name email :password password}}))]
       (when (success? res)
         (<! (auth email password)))
       res)))

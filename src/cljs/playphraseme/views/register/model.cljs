@@ -5,6 +5,7 @@
 
 (mcr/reg-sub-event ::error-message nil)
 (mcr/reg-sub-event ::email nil)
+(mcr/reg-sub-event ::full-name nil)
 (mcr/reg-sub-event ::confirm-password nil)
 (mcr/reg-sub-event ::password nil)
 

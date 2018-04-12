@@ -15,7 +15,7 @@
 
   (GET "/"           request
       :tags          ["Session"]
-      :return        {:id String :username String :permissions [String] :token String}
+      :return        {:id String :name String :permissions [String] :token String}
       :header-params [authorization :- String]
       :middleware    [token-auth-mw cors-mw authenticated-mw]
       :summary       "Get Session info"

@@ -5,5 +5,5 @@
 
 (mcr/reg-sub-event ::error-message nil)
 (mcr/reg-sub-event ::message nil)
-(mcr/reg-sub-event ::username nil)
+(mcr/reg-sub-event ::name nil)
 

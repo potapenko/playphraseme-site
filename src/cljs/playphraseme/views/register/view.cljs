@@ -14,7 +14,8 @@
 (declare form-completed?)
 
 (defn form-data []
-  [@(rf/subscribe [::model/email])
+  [@(rf/subscribe [::model/full-name])
+   @(rf/subscribe [::model/email])
    @(rf/subscribe [::model/password])
    @(rf/subscribe [::model/confirm-password])])
 
@@ -25,7 +26,7 @@
   (-> e .preventDefault)
   (clear-error!)
   (when (form-completed?)
-    (let [[email password] (form-data)]
+    (let [[name email password] (form-data)]
       (go
         (let [res (<! (register-user email password))]
           (if (success? res)
@@ -33,25 +34,34 @@
             (rf/dispatch [::model/error-message (-> res :body :error)]))))))
   false)
 
+(defn valid-full-name? []
+  (let [[full-name _ _] (form-data)]
+    (cond (string/blank? full-name) false
+          :else true)))
+
+(defn invalid-full-name? []
+  (let [[full-name _ _] (form-data)]
+    (cond (string/blank? full-name) false
+          :else false)))
 
 (defn valid-email? []
-  (let [[email _ _] (form-data)]
+  (let [[_ email _ _] (form-data)]
     (cond (string/blank? email) false
           :else true)))
 
 (defn invalid-email? []
-  (let [[email _ _] (form-data)]
+  (let [[_ email _ _] (form-data)]
     (cond (string/blank? email) false
           :else false)))
 
 (defn valid-password? []
-  (let [[_ password confirm-password] (form-data)]
+  (let [[_ _ password confirm-password] (form-data)]
     (cond (or (string/blank? password)
               (string/blank? confirm-password)) false
           :else (= password confirm-password))))
 
 (defn invalid-password? []
-  (let [[_ password confirm-password] (form-data)]
+  (let [[_ _ password confirm-password] (form-data)]
     (cond (or (string/blank? password)
               (string/blank? confirm-password)) false
           :else (not= password confirm-password))))
@@ -66,14 +76,22 @@
      [:div.alert.alert-danger
       {:role "alert"} error-message])
    [:div.d-flex
+    [:input.input {:type        "text" :id "input-name"
+                   :on-change   (fn [e]
+                                  (clear-error!)
+                                  (rf/dispatch [::model/full-name (-> e .-target .-value)]))
+                   :placeholder "Full Name"
+                   :class       (util/class->str (when (valid-full-name?) :is-valid)
+                                                 (when (invalid-full-name?) :is-invalid))
+                   :auto-focus  true}]]
+   [:div.d-flex
     [:input.input {:type        "email" :id "input-email"
                    :on-change   (fn [e]
                                   (clear-error!)
                                   (rf/dispatch [::model/email (-> e .-target .-value)]))
                    :placeholder "Email Address"
                    :class       (util/class->str (when (valid-email?) :is-valid)
-                                                 (when (invalid-email?) :is-invalid))
-                   :auto-focus  true}]]
+                                                 (when (invalid-email?) :is-invalid))}]]
    [:div.d-flex
     [:input.input {:type        "password" :id "input-password"
                    :on-change   (fn [e]

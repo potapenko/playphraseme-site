@@ -6,27 +6,27 @@
             [ring.util.http-response :as respond]))
 
 (defn create-new-user
-  "Create user with `email`, `username`, `password`"
-  [email username password]
+  "Create user with `email`, `name`, `password`"
+  [email name password]
   (let [hashed-password (hashers/encrypt password)
         new-user        (users/insert-registered-user! {:email    email
-                                                        :username username
+                                                        :name name
                                                         :password hashed-password})
         permission      (user-prm/insert-permission-for-user! (:id new-user) "basic")]
-    (respond/created "" {:username (str (:username new-user))})))
+    (respond/created "" {:name (str (:name new-user))})))
 
 (defn create-user-response
   "Generate response for user creation"
-  [email username password]
-  (let [username-query   (users/get-registered-user-by-username username)
+  [email name password]
+  (let [name-query   (users/get-registered-user-by-name name)
         email-query      (users/get-registered-user-by-email email)
         email-exists?    (not-empty email-query)
-        username-exists? (not-empty username-query)]
+        name-exists? (not-empty name-query)]
     (cond
-      (and username-exists? email-exists?) (respond/conflict {:error "Username and Email already exist"})
-      username-exists?                     (respond/conflict {:error "Username already exists"})
+      (and name-exists? email-exists?) (respond/conflict {:error "name and Email already exist"})
+      name-exists?                     (respond/conflict {:error "name already exists"})
       (-> password count (< 5))            (respond/conflict {:error "Password - 5 symbols minimum"})
       (-> password string/blank?)          (respond/conflict {:error "Password is empty"})
       email-exists?                        (respond/conflict {:error "Email already exists"})
-      :else                                (create-new-user email username password))))
+      :else                                (create-new-user email name password))))
 

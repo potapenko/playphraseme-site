@@ -4,5 +4,5 @@
   (:require-macros [re-frame-macros.core :as mcr]))
 
 (mcr/reg-sub-event ::error-message nil)
-(mcr/reg-sub-event ::username nil)
+(mcr/reg-sub-event ::name nil)
 (mcr/reg-sub-event ::password nil)

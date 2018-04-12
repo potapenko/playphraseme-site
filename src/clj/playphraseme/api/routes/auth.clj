@@ -14,13 +14,13 @@
 
            (GET "/"             {:as request}
            :tags          ["Auth"]
-           :return        {:id String :username String :permissions [String] :token String :refresh-token String}
+           :return        {:id String :name String :permissions [String] :token String :refresh-token String}
            :header-params [authorization :- String]
            :middleware    [basic-auth-mw cors-mw authenticated-mw]
-           :summary       "Returns auth info given a username and password in the '`Authorization`' header."
-           :description   "Authorization header expects '`Basic username:password`' where `username:password`
+           :summary       "Returns auth info given a name and password in the '`Authorization`' header."
+           :description   "Authorization header expects '`Basic name:password`' where `name:password`
                            is base64 encoded. To adhere to basic auth standards we have to use a field called
-                           `username` however we will accept a valid username or email as a value for this key."
+                           `name` however we will accept a valid name or email as a value for this key."
            (auth-credentials-response request))
 
      (GET "/link"        []
@@ -35,7 +35,7 @@
            :tags        ["Auth"]
            :path-params [link-token :- String]
            :middleware  [cors-mw]
-           :return      {:id String :username String :permissions [String] :token String :refresh-token String}
+           :return      {:id String :name String :permissions [String] :token String :refresh-token String}
            :summary     "Authorizes and returns auth info given a temporary link token."
            (verify-email-response link-token))
 
@@ -47,6 +47,6 @@
 
      (GET "/facebook" []
           :tags          ["Auth"]
-          :return        {:id String :username String :permissions [String] :token String :refresh-token String}
+          :return        {:id String :name String :permissions [String] :token String :refresh-token String}
           :summary       "Facebook auth"
           (facebook/facebook-auth-response))))
