@@ -6,7 +6,10 @@
             [cheshire.core :as parser]
             [clojure.pprint :refer [pprint]]
             [playphraseme.common.debug-util :as debug-util :refer [...]]
-            [playphraseme.app.config :refer [env]]))
+            [playphraseme.app.config :refer [env]]
+            [playphraseme.api.route-functions.user.create-user :refer [create-new-user]]
+            [playphraseme.api.general-functions.user.create-token :refer [create-token]]
+            [playphraseme.api.queries.user.registered-user :as users]))
 
 (defn facebook-auth-response []
   (resp/redirect
@@ -38,7 +41,10 @@
                                                      :fields       "id,name,email"}})
                          :body (parser/parse-string keyword))]
 
-    (let [{:keys [id first_name last_name email]} user-details]
+    (let [{:keys [id email name]} user-details]
+      (when-not (users/get-registered-user-by-email email)
+        (create-new-user email name (str (java.util.UUID/randomUUID))))
+
       (println "-----------------")
       (pprint user-details)
       (println "-----------------")

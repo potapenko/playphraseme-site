@@ -1,9 +1,9 @@
 (ns playphraseme.api.route-functions.user.create-user
-  (:require [playphraseme.api.queries.user.registered-user :as users]
+  (:require [buddy.hashers :as hashers]
+            [clojure.string :as string]
+            [playphraseme.api.queries.user.registered-user :as users]
             [playphraseme.api.queries.user.user-permission :as user-prm]
-            [buddy.hashers :as hashers]
-            [ring.util.http-response :as respond]
-            [clojure.string :as string]))
+            [ring.util.http-response :as respond]))
 
 (defn create-new-user
   "Create user with `email`, `username`, `password`"

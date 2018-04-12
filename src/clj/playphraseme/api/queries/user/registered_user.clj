@@ -34,7 +34,7 @@
 
 (defn insert-registered-user!
   "Inserts a single user"
-  [{:keys [email username password refresh-token] :as user-data}]
+  [user-data]
   (stringify-id
    (add-doc coll user-data)))
 
