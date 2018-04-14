@@ -28,8 +28,8 @@
   preflight-route
   user-routes
   permission-routes
-  ;; refresh-token-routes
+  refresh-token-routes
   auth-routes
-  ;; session-routes
-  ;; password-routes
+  session-routes
+  password-routes
   phrases-routes)
