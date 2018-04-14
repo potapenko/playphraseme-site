@@ -63,4 +63,3 @@
  (fn [db _]
    (not (:mobile? db))))
 
-

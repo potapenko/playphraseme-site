@@ -1,8 +1,9 @@
 (ns playphraseme.api.routes.auth
   (:require [playphraseme.api.middleware.basic-auth :refer [basic-auth-mw]]
+            [playphraseme.api.middleware.token-auth :refer [token-auth-mw]]
             [playphraseme.api.middleware.authenticated :refer [authenticated-mw]]
             [playphraseme.api.middleware.cors :refer [cors-mw]]
-            [playphraseme.api.route-functions.auth.get-auth-credentials :refer [auth-credentials-response]]
+            [playphraseme.api.route-functions.auth.get-auth-credentials :refer [auth-credentials-response credentials-response]]
             [playphraseme.api.route-functions.auth.link-auth-tokens :refer :all]
             [playphraseme.api.route-functions.auth.facebook-auth :as facebook]
             [schema.core :as s]
@@ -38,6 +39,15 @@
            :return      {:id String :name String :permissions [String] :token String :refresh-token String}
            :summary     "Authorizes and returns auth info given a temporary link token."
            (verify-email-response link-token))
+
+     (GET "/session"     request
+          :tags          ["Auth"]
+          :return        {:id String :name String :permissions [String] :token String}
+          :header-params [authorization :- String]
+          :middleware    [token-auth-mw cors-mw authenticated-mw]
+          :summary       "Get Session info"
+          :description   "Authorization header expects the following format 'Token {token}'"
+          (credentials-response request))
 
      (GET "/facebook-callback" []
           :tags          ["Auth"]

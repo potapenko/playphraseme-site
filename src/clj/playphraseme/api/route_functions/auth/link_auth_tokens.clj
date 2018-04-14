@@ -14,8 +14,8 @@
   (let [token-ttl-days (-> env :auth-by-link :email-link-token-ttl-days)]
     (assert (not (nil? token-ttl-days)) "Email link token TTL not set - update config!")
     (time/after?
-      (time/now)
-      (time/plus (from-date token-date) (time/days token-ttl-days)))))
+     (time/now)
+     (time/plus (from-date token-date) (time/days token-ttl-days)))))
 
 (defn- send-email
   "Send password reset email (uses Postal + https://account.sendinblue.com/)"
@@ -24,8 +24,8 @@
                              :to      to-email
                              :subject subject
                              :body    [:alternative
-                                      {:type "text/plain" :content plain-body}
-                                      {:type "text/html"  :content html-body}]}))
+                                       {:type "text/plain" :content plain-body}
+                                       {:type "text/html"  :content html-body}]}))
 
 (defn- verify-email-plain-body [base-url token]
   (let [verify-url (str base-url "/" token)]
@@ -41,8 +41,7 @@
                  :from-email (-> env :reset-password-email-from)
                  :subject    "Verify email"
                  :html-body  (verify-email-html-body base-url link-token)
-                 :plain-body (verify-email-plain-body base-url link-token)
-                 })))
+                 :plain-body (verify-email-plain-body base-url link-token)})))
 
 (defn verify-email-response
   "Generate response for get requests to /api/v1/auth/verify-email. A successful request to this route will generate a new

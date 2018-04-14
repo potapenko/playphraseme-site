@@ -59,7 +59,9 @@
       res)))
 
 (defn auth
-  ([token] (auth* (http/get "/api/v1/session" (api-headers))))
+  ([token]
+   (localstorage/set-item! "auth-token" token)
+   (auth* (http/get "/api/v1/auth/session" (api-headers))))
   ([name password]
    (logout)
    (auth* (http/get "/api/v1/auth" {:basic-auth {:name name :password password}}))))

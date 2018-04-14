@@ -21,7 +21,8 @@
             [playphraseme.layout :as layout]
             [playphraseme.model]
             [playphraseme.common.responsive :as responsive]
-            [playphraseme.common.phrases :as phrases])
+            [playphraseme.common.phrases :as phrases]
+            [playphraseme.common.rest-api :as rest-api])
   (:import goog.History))
 
 (def pages
@@ -70,8 +71,9 @@
   (route/goto-page! :login))
 
 (secretary/defroute "/auth" [query-params]
-  ;; TODO store auth token
-  (route/goto-page! :search))
+  (let [{:keys [auth-token]} query-params]
+   (rest-api/auth auth-token)
+   (util/go-url! "/#/search")))
 
 (secretary/defroute "/article" []
   (route/goto-page! :article))

@@ -21,8 +21,8 @@
              :client-id          facebook-client-id
              :client-secret      facebook-client-secret
              :access-query-param :access_token
-             :scope              ["email" "public_profile" "user_friends"]
-             :profileFields      ["emails" "name" "gender" "displayName" "age_range"]
+             :scope              ["email"]
+             :profileFields      ["emails" "name"]
              :grant-type         "authorization_code"})))))
 
 (defn facebook-auth-callback-response [code]
@@ -45,8 +45,7 @@
       (when-not (users/get-registered-user-by-email email)
         (create-new-user email name (str (java.util.UUID/randomUUID))))
 
-      (println "-----------------")
-      (pprint user-details)
-      (println "-----------------")
-      (resp/redirect "/#/auth?auth-token=any-token"))))
+      (let [user  (users/get-registered-user-by-email email)
+            token (create-token user)]
+        (resp/redirect (str "/#/auth?auth-token=" token))))))
 
