@@ -21,14 +21,16 @@
    [:a.header-button {:href href} label]))
 
 (defn facebook-like-button []
-  [:div.fb-like
-   {:data-share      "false"
-    :data-show-faces "false"
-    :data-size       "small"
-    :data-width      "100"
-    :data-action     "like"
-    :data-layout     "button"
-    :data-href       "https://www.facebook.com/playphrase/"}])
+  (let-sub [scale :responsive-scale]
+    [:div.fb-like
+     {:style {:transform (str "scale(" (/ 1 @scale) ")")}
+      :data-share      "false"
+      :data-show-faces "false"
+      :data-size       "small"
+      :data-width      "100"
+      :data-action     "like"
+      :data-layout     "button"
+      :data-href       "https://www.facebook.com/playphrase/"}]))
 
 (defn header []
   (let-sub [:page

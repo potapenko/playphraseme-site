@@ -115,9 +115,7 @@ body{
 }
 
 .fb-like {
-  width: 52px;
-  margin: 6px 12px 0px 0px;
-  height: 20px;
+  margin-top: 1px;
   opacity: 0.6;
   filter: alpha(opacity=60);
   -webkit-filter: grayscale(100%);
