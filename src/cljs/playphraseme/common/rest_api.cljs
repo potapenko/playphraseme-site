@@ -76,9 +76,9 @@
         (success? res))
       false)))
 
-(defn register-user [email password]
+(defn register-user [name email password]
   (go
-    (let [res (<! (http/post "/api/v1/user" {:json-params {:email email :name email :password password}}))]
+    (let [res (<! (http/post "/api/v1/user" {:json-params {:email email :name name :password password}}))]
       (when (success? res)
         (<! (auth email password)))
       res)))

@@ -28,7 +28,7 @@
   (when (form-completed?)
     (let [[name email password] (form-data)]
       (go
-        (let [res (<! (register-user email password))]
+        (let [res (<! (register-user name email password))]
           (if (success? res)
             (util/go-url! "/#/")
             (rf/dispatch [::model/error-message (-> res :body :error)]))))))
