@@ -51,8 +51,8 @@ html {
 }
 
 body{
-  position: relative;
-  min-height: 100%;
+  position: fixed;
+  left: 0px; right: 0px; bottom: 0px; top: 0px;
 }
 
 *,
@@ -62,8 +62,7 @@ body{
 }
 
 .layout-container {
-  position: absolute;
-  left: 0px; right: 0px; bottom: 0px; top: 0px;
+  position: absolute; left: 0px; right: 0px; bottom: 0px; top: 0px;
   padding: 22px 0;
   height: 100%;
   display: flex;
@@ -71,7 +70,6 @@ body{
   padding: 0px;
   align-items: stretch;
   align-content: stretch;
-  /* justify-content: stretch; */
 }
 
 .left-column {

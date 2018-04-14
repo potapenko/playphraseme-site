@@ -8,7 +8,8 @@
             [playphraseme.common.localization :refer [ls]]
             [playphraseme.common.phrases :as phrases]
             [playphraseme.common.rest-api :as rest-api]
-            [playphraseme.model])
+            [playphraseme.model]
+            [playphraseme.common.responsive :as responsive])
   (:require-macros
    [re-frame-macros.core :as mcr :refer [let-sub]]
    [cljs.core.async.macros :refer [go go-loop]]))
@@ -77,15 +78,15 @@
   [:div.right-column ""])
 
 (defn root [current-page]
-  (let-sub [:responsive-scale
+  (let-sub [scale :responsive-scale
             :responsive-show-left-column?
             :responsive-show-right-column?]
-   [:div.layout-container
-    {:style {:zoom @responsive-scale}}
-    (when @responsive-show-left-column?
-      [left-column])
-    [:div.layout-main
-     [header]
-     [:div.current-page-container current-page]]
-    (when @responsive-show-right-column?
-      [right-column])]))
+    [:div.layout-container
+     {:style (responsive/zoom-css @scale)}
+     (when @responsive-show-left-column?
+       [left-column])
+     [:div.layout-main
+      [header]
+      [:div.current-page-container current-page]]
+     (when @responsive-show-right-column?
+       [right-column])]))

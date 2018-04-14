@@ -88,6 +88,17 @@
         scale-h    (/ h min-height)]
     (min scale-w scale-h)))
 
+(defn zoom-css [scale]
+  (let [h      (window-height)
+        offset (-> h (* scale) (- h) (/ 2))]
+    {:position  "fixed"
+     :top       (str offset "px")
+     :display   "flex"
+     :bottom    "0px"
+     :left      "0px"
+     :rigth     "0px"
+     :transform (str "scale(" scale ")")}))
+
 (defn update-layout []
   (let [w                  (window-width)
         show-left-column?  (and (not (mobile?)) (> w 960))
