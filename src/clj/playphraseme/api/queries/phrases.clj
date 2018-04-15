@@ -29,10 +29,12 @@
   (delete-doc-by-id coll (str->id phrase-id)))
 
 (defn get-phrases-count []
-  (count-docs coll {:state 1}))
+  (+ (count-docs coll {:state 1})
+     #_(count-docs coll {:state 0})))
 
 (defn get-movies-count []
   322
   #_(count-docs "movie" {}))
+
 
 
