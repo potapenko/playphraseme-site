@@ -317,6 +317,11 @@
                        [:ul.video-overlay-menu
                         [:li
                          {:on-click #(util/go-url! "/#/favorites")}
+                         [:i.material-icons "favorite"]
+                         [:div.info-text "Favorite"]
+                         [:div.info-text "This phrase"]]
+                        [:li
+                         {:on-click #(util/go-url! "/#/favorites")}
                          [:i.material-icons "favorite_border"]
                          [:div.info-text "Favorited"]
                          [:div.info-text "Pharases"]
@@ -337,8 +342,7 @@
                          {:on-click #(util/go-url! "/#/settings")}
                          [:i.material-icons "settings"]
                          [:div.info-text "Your"]
-                         [:div.info-text "Settings"]
-                         ]
+                         [:div.info-text "Settings"]]
                         [:li
                          {:on-click #(util/go-url!
                                       (str "/api/v1/phrases/video-download?id="
@@ -348,13 +352,7 @@
                          [:div.info-text "Download"]
                          [:div.info-text "Video"]]]
 
-                       [:ul.video-overlay-menu-right
-                        [:li
-                         {:on-click #(util/go-url! "/#/favorites")}
-                         [:i.material-icons "favorite"]
-                         [:div.info-text "Favorite"]
-                         [:div.info-text "Phrase"]]]
-                       [:div.overlay-logo
+                       #_[:div.overlay-logo
                         [:span.red "Play"]
                         [:span.black "Phrase"]
                         [:span.gray ".me"]]

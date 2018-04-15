@@ -463,7 +463,11 @@ word, word:active, word:focus{
 .filter-input-icon:hover {
   opacity: 0.6;
 }
+.pause-icon{
+  padding-top: 1px;
+}
 .play-icon{
+  padding-top: 1px;
   padding-left: 3px;
 }
 .play-icon2{
@@ -474,8 +478,8 @@ word, word:active, word:focus{
 }
 .video-overlay-menu {
   position: absolute;
-  left: 0px;
-  top: 8px;
+  left: 12px;
+  top: 12px;
   cursor: pointer;
   list-style-type: none;
   padding: 0px;
@@ -484,38 +488,30 @@ word, word:active, word:focus{
 	transition: opacity 0.4s ease-in-out;
   opacity: 0;
 }
-.video-overlay-menu-right {
-  position: absolute;
-  left: 58px;
-  top: 8px;
-  cursor: pointer;
-  list-style-type: none;
-  padding: 0px;
-  text-align: center;
-	transition: opacity 0.4s ease-in-out;
-  opacity: 0;
+.video-overlay-menu i {
+  font-size: 22px;
 }
-.stopped .video-overlay-menu, .stopped .video-overlay-menu-right {
+.stopped .video-overlay-menu {
   opacity: 1;
 }
-.video-overlay-menu:hover, .video-overlay-menu-right:hover {
+.video-overlay-menu:hover {
   opacity: 1;
 }
 .video-overlay-menu-right li {
   display: inline-block;
 }
-.video-overlay-menu li, .video-overlay-menu-right li{
-  padding: 3px 15px;
+.video-overlay-menu li {
+  padding: 3px 0px;
   letter-spacing: 0;
   color: #ccc;
-  text-shadow: 0 0 3px rgba(0,0,0,0.7);
+  text-shadow: 0 0 3px rgba(0,0,0,1);
 }
-.video-overlay-menu li:hover, .video-overlay-menu-right li:hover {
+.video-overlay-menu li:hover {
   color: white;
 }
-.video-overlay-menu .info-text, .video-overlay-menu-right .info-text {
+.video-overlay-menu .info-text {
   margin-top: -5px;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
   font-size: 8px;
   font-weight: 300;
 }

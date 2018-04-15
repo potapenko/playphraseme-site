@@ -81,7 +81,7 @@
       :reagent-render
       (fn [{:keys [phrase hide? stopped? mobile on-play-click]}]
         (let [{:keys [index video_info]} phrase]
-          #_[:div.video-player-box
+          [:div.video-player-box
            {:style (merge {:opacity (if hide? 0 1)} (when hide? {:display :none}))
             :on-click (fn []
                         (reset! show-play-button? false)

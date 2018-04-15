@@ -9,7 +9,10 @@
             [clojure.string :as string]
             [clojure.pprint :refer [pprint]]
             [noir.response :as resp]
-            [clojure.walk :as walk]))
+            [clojure.walk :as walk]
+            [clojure.java.io :as io]
+            [ring.util.io :as ring-io]
+            [ring.util.response :refer [response]]))
 
 (defn- get-video-file [id]
   (let [phrase (db/get-phrase-by-id id)]
@@ -57,6 +60,12 @@
 
 (defn video-response [id]
   (resp/redirect (get-video-url id)))
+
+;; (defn video-stream-response [id]
+;;   (response
+;;    (ring-io/piped-input-stream
+;;     (fn [out-stream]
+;;       ))))
 
 (defn video-download-response [id]
   (-> id

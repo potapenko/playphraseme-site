@@ -55,6 +55,14 @@
       :summary       "Phrase stream video"
       (video-response id))
 
+    ;; (GET "/video-stream"   request
+    ;;      :tags          ["Phrases"]
+    ;;      :return        s/Str
+    ;;      :middleware    [cors-mw]
+    ;;      :query-params  [id :- s/Str]
+    ;;      :summary       "Phrase stream video"
+    ;;      (video-stream-response id))
+
     (GET "/video-download"   request
       :tags          ["Phrases"]
       :middleware    [cors-mw]
