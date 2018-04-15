@@ -1,10 +1,5 @@
 (ns playphraseme.api.queries.user.permission
-  (:require [monger.core :as mg]
-            [monger.collection :as mc]
-            [monger.operators :refer :all]
-            [playphraseme.app.config :refer [env]]
-            [playphraseme.db.core :refer :all]
-            [mount.core :as mount]))
+  (:require [playphraseme.db.core :refer :all]))
 
 (def coll "permissions")
 

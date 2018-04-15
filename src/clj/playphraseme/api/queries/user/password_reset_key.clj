@@ -1,14 +1,8 @@
 (ns playphraseme.api.queries.user.password-reset-key
-  (:require [monger.core :as mg]
-            [monger.collection :as mc]
-            [monger.operators :refer :all]
-            [playphraseme.app.config :refer [env]]
-            [playphraseme.db.core :refer :all]
+  (:require [clj-time.coerce :as c]
             [clj-time.core :as t]
-            [clj-time.format :as f]
-            [clj-time.coerce :as c]
-            [playphraseme.api.general-functions.doc-id :refer :all]
-            [playphraseme.common.dates-util :as date-util]))
+            [playphraseme.common.dates-util :as date-util]
+            [playphraseme.db.core :refer :all]))
 
 (def coll "password_reset_keys")
 

@@ -11,5 +11,20 @@
    [cljs.core.async.macros :refer [go go-loop]]
    [re-frame-macros.core :as mcr :refer [let-sub]]))
 
+(defn elements-list []
+  (let-sub [::model/favorites-list]
+    [:div.elements-container
+     (doall
+      (for [{:keys [text count index]} @favorites-list]
+        ^{:key (str "element-" index)}
+        [:a.element
+         {:id    (str "element-" index)
+          :href  (str "/#/search?q=" text)}
+         [:div.text text]
+         [:div.grow]
+         [:div.counter (str count)]]))]))
+
 (defn page []
-  [:div "Favorites page"])
+  [:div.page-container
+   [:h1 "Favorites page"]
+   [elements-list]])

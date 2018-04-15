@@ -1,11 +1,6 @@
 (ns playphraseme.api.queries.user.registered-user
-  (:require [monger.core :as mg]
-            [mount.core :as mount]
-            [monger.collection :as mc]
-            [monger.operators :refer :all]
-            [playphraseme.app.config :refer [env]]
-            [playphraseme.db.core :refer :all]
-            [playphraseme.api.general-functions.doc-id :refer :all]))
+  (:require [playphraseme.api.general-functions.doc-id :refer :all]
+            [playphraseme.db.core :refer :all]))
 
 (def coll "users")
 

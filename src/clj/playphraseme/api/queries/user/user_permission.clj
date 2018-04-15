@@ -1,10 +1,5 @@
 (ns playphraseme.api.queries.user.user-permission
-  (:require [monger.core :as mg]
-            [monger.collection :as mc]
-            [monger.operators :refer :all]
-            [mount.core :as mount]
-            [playphraseme.app.config :refer [env]]
-            [playphraseme.api.queries.user.registered-user :as db-user]))
+  (:require [playphraseme.api.queries.user.registered-user :as db-user]))
 
 (defn get-permissions-for-userid
   "get all the permissions for a given userid"

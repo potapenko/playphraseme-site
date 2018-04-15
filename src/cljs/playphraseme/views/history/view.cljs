@@ -11,7 +11,7 @@
    [cljs.core.async.macros :refer [go go-loop]]
    [re-frame-macros.core :as mcr :refer [let-sub]]))
 
-(defn elements-list [list]
+(defn elements-list []
   (let-sub [::model/history-list]
     [:div.elements-container
      (doall
