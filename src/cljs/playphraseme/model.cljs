@@ -15,6 +15,7 @@
 (mcr/reg-sub-event :page-before-login nil)
 (mcr/reg-sub-event :all-phrases-count nil)
 (mcr/reg-sub-event :all-movies-count nil)
+(mcr/reg-sub :auth-data {})
 
 (reg-event-db
  :initialize-db

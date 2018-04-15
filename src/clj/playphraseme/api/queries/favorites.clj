@@ -4,10 +4,10 @@
             [monger.collection :as mc]
             [monger.operators :refer :all]
             [playphraseme.api.general-functions.doc-id :refer :all]
-            [playphraseme.db.core :refer :all :as db]
+            [playphraseme.db.core :refer :all]
             [playphraseme.api.queries.phrases :as phrases]))
 
-  (def coll "favoritePhrases")
+(def coll "favoritePhrases")
 
 (defn get-favorite-by-id
   [^String favorite-id]
@@ -31,14 +31,11 @@
 (defn get-favorite-by-user
   [^String user-id skip limit]
   (stringify-id
-   (db/find-docs coll {:pred  {:user (str->id user-id)}
+   (find-docs coll {:pred  {:user (str->id user-id)}
                        :skip  skip
                        :limit limit})))
 
 (defn get-favorites-count
   [^String user-id]
   (count-docs coll {:user (str->id user-id)}))
-
-
-
 

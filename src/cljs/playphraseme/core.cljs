@@ -120,4 +120,5 @@
   (rf/dispatch-sync [:initialize-db])
   (hook-browser-navigation!)
   (responsive/start)
+  (rest-api/authorize!)
   (mount-components))

@@ -45,10 +45,15 @@
        [:div.top
         (when-not (= @page :search)
           [header-button "Home" "/#/" "fas fa-home"])
-        (when-not (= @page :login)
-          [header-button (ls :navigation.login.register) "/#/login" "fas fa-user-circle"])
         (when-not (= @page :support)
           [header-button (ls :navigation.support) "/#/support" "far fa-envelope"])
+        (when-not (= @page :login)
+          (if (rest-api/authorized?)
+            [header-button (str
+                            (ls :navigation.logout)
+                            " (" (:name @(rf/subscribe [:auth-data]))
+                            ")") "/#/logout" "fas fa-user-circle"]
+            [header-button (ls :navigation.login.register) "/#/login" "fas fa-user-circle"]))
         [ui/flexer]
         [header-button "Github" "https://github.com/potapenko/playphraseme-site" "fab fa-github-square"]
         [header-button  "Facebook" "https://www.facebook.com/playphrase/" "fab fa-facebook"]
