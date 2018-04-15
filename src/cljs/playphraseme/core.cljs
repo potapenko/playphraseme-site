@@ -55,8 +55,11 @@
 
 (secretary/defroute "/search" [query-params]
   (route/goto-page! :search (merge
-                             {:q (phrases/random-phrase)}
-                             query-params)))
+                             query-params
+                             {:q (util/or-str
+                                  (:q query-params)
+                                  @(rf/subscribe [:search-text])
+                                  (phrases/random-phrase))})))
 
 (secretary/defroute "/phrase" []
   (route/goto-page! :phrase))
@@ -69,6 +72,10 @@
 
 (secretary/defroute "/login" []
   (route/goto-page! :login))
+
+(secretary/defroute "/logout" []
+  (rest-api/logout)
+  (util/go-url! "/#/"))
 
 (secretary/defroute "/auth" [query-params]
   (let [{:keys [auth-token]} query-params]

@@ -189,5 +189,21 @@
      (exit-fullscreen! elem)
      (fullscreen! elem))))
 
+(defn nil-or-blank? [v]
+  (or (nil? v)
+      (string/blank? v)))
+
+(defn or-str [& values]
+  (loop [[v & t] values]
+    (println v t)
+    (if-not (nil-or-blank? v)
+      v
+      (when-not (empty? t)
+          (recur t)))))
+
 (comment
+  (or-str nil "" "hello" "world")
+  (nil-or-blank? "hello")
+  (nil-or-blank? "")
+
   )
