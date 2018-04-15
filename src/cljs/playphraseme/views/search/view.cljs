@@ -315,53 +315,45 @@
                                                :stopped?       @stopped}]))
                       [:div.video-overlay {:class (util/class->str (when @stopped :stopped))}
                        [:ul.video-overlay-menu
-                        #_(when (util/fullscreen-enabled?)
-                          [:li
-                           {:on-click #(util/toggle-fullscreen! (util/selector ".search-container"))}
-                           (if @(rf/subscribe [:fullscreen])
-                             [:i.material-icons "fullscreen_exit"]
-                             [:i.material-icons "fullscreen"])
-                           [:div.info-text "Fullscreen"]])
-                        [:li
-                         {:on-click #(util/go-url! "/#/history")}
-                         [:i.material-icons "search"]
-                         [:div.info-text "History"]]
                         [:li
                          {:on-click #(util/go-url! "/#/favorites")}
                          [:i.material-icons "favorite_border"]
-                         [:div.info-text "Favorites"]]
+                         [:div.info-text "Favorited"]
+                         [:div.info-text "Pharases"]
+                         ]
+                        [:li
+                         {:on-click #(util/go-url! "/#/history")}
+                         [:i.material-icons "search"]
+                         [:div.info-text "Search"]
+                         [:div.info-text "History"]
+                         ]
                         [:li
                          {:on-click #(util/go-url! "/#/learn")}
                          [:i.material-icons "school"]
-                         [:div.info-text "Learn"]]
+                         [:div.info-text "Learn"]
+                         [:div.info-text "Phrases"]
+                         ]
                         [:li
                          {:on-click #(util/go-url! "/#/settings")}
                          [:i.material-icons "settings"]
-                         [:div.info-text "Settings"]]
+                         [:div.info-text "Your"]
+                         [:div.info-text "Settings"]
+                         ]
                         [:li
                          {:on-click #(util/go-url!
                                       (str "/api/v1/phrases/video-download?id="
                                            (:id (get-current-phrase)))
                                       true)}
                          [:i.material-icons "file_download"]
-                         [:div.info-text "Download"]]]
+                         [:div.info-text "Download"]
+                         [:div.info-text "Video"]]]
 
                        [:ul.video-overlay-menu-right
                         [:li
-                         {:on-click #(util/go-url! "/#/learn")}
-                         [:i.material-icons "school"]
-                         [:div.info-text "Learn"]]
-                        [:li
-                         {:on-click #(util/go-url! "/#/settings")}
-                         [:i.material-icons "settings"]
-                         [:div.info-text "Settings"]]
-                        [:li
-                         {:on-click #(util/go-url!
-                                      (str "/api/v1/phrases/video-download?id="
-                                           (:id (get-current-phrase)))
-                                      true)}
-                         [:i.material-icons "file_download"]
-                         [:div.info-text "Download"]]]
+                         {:on-click #(util/go-url! "/#/favorites")}
+                         [:i.material-icons "favorite"]
+                         [:div.info-text "Favorite"]
+                         [:div.info-text "Phrase"]]]
                        [:div.overlay-logo
                         [:span.red "Play"]
                         [:span.black "Phrase"]
