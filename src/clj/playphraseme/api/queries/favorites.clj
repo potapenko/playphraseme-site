@@ -4,7 +4,8 @@
             [monger.collection :as mc]
             [monger.operators :refer :all]
             [playphraseme.api.general-functions.doc-id :refer :all]
-            [playphraseme.db.core :refer :all]))
+            [playphraseme.db.core :refer :all :as db]
+            [playphraseme.api.queries.phrases :as phrases]))
 
   (def coll "favoritePhrases")
 
@@ -14,9 +15,9 @@
    (get-doc-by-id coll (str->id favorite-id))))
 
 (defn insert-favorite!
-  [{:keys [email name password refresh-token] :as user-data}]
+  [^String phrase-id]
   (stringify-id
-   (add-doc coll user-data)))
+   (add-doc coll {})))
 
 (defn update-favorite!
   [^String favorite-id {:keys [email name password refresh-token] :as user-data}]
@@ -27,9 +28,16 @@
   [^String favorite-id]
   (delete-doc-by-id coll (str->id favorite-id)))
 
-(defn get-favorites-count []
-  (+ (count-docs coll {:state 1})
-     #_(count-docs coll {:state 0})))
+(defn get-favorite-by-user
+  [^String user-id skip limit]
+  (stringify-id
+   (db/find-docs coll {:pred  {:user (str->id user-id)}
+                       :skip  skip
+                       :limit limit})))
+
+(defn get-favorites-count
+  [^String user-id]
+  (count-docs coll {:user (str->id user-id)}))
 
 
 
