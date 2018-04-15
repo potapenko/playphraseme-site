@@ -81,7 +81,7 @@
       :reagent-render
       (fn [{:keys [phrase hide? stopped? mobile on-play-click]}]
         (let [{:keys [index video_info]} phrase]
-          [:div.video-player-box
+          #_[:div.video-player-box
            {:style (merge {:opacity (if hide? 0 1)} (when hide? {:display :none}))
             :on-click (fn []
                         (reset! show-play-button? false)
@@ -90,8 +90,7 @@
             {:src         (:video-url phrase)
              :playsInline true
              :controls    false
-             :id          (index->id index)
-             :style       {:z-index (* index 1000)}}]
+             :id          (index->id index)}]
            (when @show-play-button?
              [:div.overlay-play-icon
               [:span.fa-stack.fa-1x

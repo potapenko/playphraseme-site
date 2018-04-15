@@ -479,28 +479,38 @@ word, word:active, word:focus{
   cursor: pointer;
   list-style-type: none;
   padding: 0px;
+  margin: 0px;
   text-align: center;
 	transition: opacity 0.4s ease-in-out;
   opacity: 0;
 }
-.stopped .video-overlay-menu {
+.video-overlay-menu-right {
+  position: absolute;
+  right: 0px;
+  top: 8px;
+  cursor: pointer;
+  list-style-type: none;
+  padding: 0px;
+  text-align: center;
+	transition: opacity 0.4s ease-in-out;
+  opacity: 0;
+}
+.stopped .video-overlay-menu, .stopped .video-overlay-menu-right {
   opacity: 1;
 }
-.video-overlay-menu:hover {
+.video-overlay-menu:hover, .video-overlay-menu-right:hover {
   opacity: 1;
 }
-.video-overlay-menu li {
+.video-overlay-menu li, .video-overlay-menu-right li{
   padding: 8px 15px;
   letter-spacing: 0;
   color: #ccc;
   text-shadow: 0 0 3px rgba(0,0,0,0.7);
 }
-.video-overlay-menu li:hover {
+.video-overlay-menu li:hover, .video-overlay-menu-right li:hover {
   color: white;
 }
-.video-overlay-menu i {
-}
-.video-overlay-menu .info-text {
+.video-overlay-menu .info-text, .video-overlay-menu-right .info-text {
   margin-top: -5px;
   font-size: 8px;
   font-weight: 300;
