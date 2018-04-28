@@ -45,7 +45,7 @@
   (when-let [doc (get-doc coll {:phrase (str->id phrase-id) :user (str->id user-id)})]
    (delete-doc-by-id coll (:_id doc))))
 
-(defn get-favorite-by-user
+(defn get-favorites-by-user
   [^String user-id skip limit]
   (stringify-id
    (find-docs coll {:pred     {:user (str->id user-id)}
@@ -64,6 +64,8 @@
   (insert-favorite! "543bd8c8d0430558da9bfeb1" "5ad1e1f48079eb152db33a0e")
 
   (delete-favorite-by-phrase-id! "543bd8c8d0430558da9bfeb1" "5ad1e1f48079eb152db33a0e")
+
+  (get-favorites-by-user "5ad1e1f48079eb152db33a0e" 0 20)
 
 
   )
