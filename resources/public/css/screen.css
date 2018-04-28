@@ -478,12 +478,14 @@ word, word:active, word:focus{
 }
 .video-overlay-menu {
   position: absolute;
-  left: 12px;
+  width: 50px;
+  left: 10px;
   top: 12px;
+  bottom: 12px;
   cursor: pointer;
   list-style-type: none;
   padding: 0px;
-  margin: 0px;
+  margin: auto 0px;
   text-align: center;
 	transition: opacity 0.4s ease-in-out;
   opacity: 0;
@@ -656,6 +658,12 @@ h1, .page-title {
 
   .suggestion {
 	  font-size: 33px !important;
+  }
+
+  .filter-input::placeholder
+  {
+    font-size: 36px;
+    color: rgba(0,0,0,0.3);
   }
 }
 

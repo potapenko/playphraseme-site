@@ -27,12 +27,8 @@
       (q/skip skip)
       (q/limit limit))))
 
-(defn find-doc
-  [coll {:keys [pred sort skip]
-               :or   {skip 0 sort {:_id 1} pred {}}
-               :as   params}]
-  (first
-   (find-docs coll params)))
+(defn find-doc [coll pred]
+  (mc/find-one-as-map coll pred))
 
 (defn get-docs [coll pred]
   (mc/find-maps db coll pred))

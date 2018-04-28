@@ -5,7 +5,7 @@
             [goog.events :as events]
             [goog.history.EventType :as HistoryEventType]
             [playphraseme.common.route :as route]
-            [playphraseme.common.util :as util]
+            [playphraseme.common.util :as util :refer [or-str]]
             [playphraseme.views.search.view :as search-page]
             [playphraseme.views.login.view :as login-page]
             [playphraseme.views.not-found.view :as not-found-page]
@@ -56,10 +56,11 @@
 (secretary/defroute "/search" [query-params]
   (route/goto-page! :search (merge
                              query-params
-                             {:q (util/or-str
+                             {:q (or-str
                                   (:q query-params)
                                   @(rf/subscribe [:search-text])
                                   (phrases/random-phrase))})))
+
 
 (secretary/defroute "/phrase" []
   (route/goto-page! :phrase))
