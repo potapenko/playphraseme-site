@@ -127,6 +127,26 @@
   (call-api http/get "/phrases/video-download"
             (merge (api-headers) {:query-params {:id id}})
             login-md :body))
+
+(defn favorites
+  ([] (favorites 10 0))
+  ([limit skip]
+   (call-api http/get "/favorites"
+             (merge (api-headers) {:query-params {:limit limit :skip skip}})
+             login-md :body)))
+
+(defn add-favorite [phrase-id]
+  (call-api http/post (str "/favorites/" phrase-id)
+            (api-headers) login-md :body))
+
+(defn get-favorite [phrase-id]
+  (call-api http/get (str "/favorites/" phrase-id)
+            (api-headers) login-md :body))
+
+(defn delete-favorite [phrase-id]
+  (call-api http/delete (str "/favorites/" phrase-id)
+            (api-headers) login-md :body))
+
 (comment
   (go (println (<! (search-phrase "hello"))))
   (go (println (<! (count-phrase "hello"))))
@@ -135,6 +155,14 @@
   (go (println (<! (count-all-movies))))
   (go (println (<! (video-url "543bd8c8d0430558da9bfeb1"))))
   (go (println (<! (video-download "543bd8c8d0430558da9bfeb1"))))
+
+  (go (println (<! (favorites))))
+
+  (go (println (<! (add-favorite "543bd8c8d0430558da9bfeb1"))))
+
+  (go (println (<! (get-favorite "543bd8c8d0430558da9bfeb1"))))
+
+  (go (println (<! (delete-favorite "543bd8c8d0430558da9bfeb1"))))
 
 
 

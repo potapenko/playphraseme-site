@@ -28,7 +28,7 @@
       (q/limit limit))))
 
 (defn find-doc [coll pred]
-  (mc/find-one-as-map coll pred))
+  (mc/find-one-as-map db coll pred))
 
 (defn get-docs [coll pred]
   (mc/find-maps db coll pred))

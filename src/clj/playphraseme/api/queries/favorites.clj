@@ -1,4 +1,4 @@
-(ns playfavoriteme.api.queries.favorites
+(ns playphraseme.api.queries.favorites
   (:require [monger.core :as mg]
             [mount.core :as mount]
             [monger.collection :as mc]
@@ -15,13 +15,12 @@
    (get-doc-by-id coll (str->id favorite-id))))
 
 (defn get-favorite-by-phrase-id
-  [^String phrase-id]
+  [^String phrase-id ^String user-id]
   (stringify-id
-   (find-doc coll {:phrase (str->id phrase-id)})))
+   (find-doc coll {:phrase (str->id phrase-id) :user (str->id user-id)})))
 
-(defn insert-favorite!
-  [^String phrase-id ^String user-id ]
-  (let [exists (get-favorite-by-phrase-id phrase-id)]
+(defn insert-favorite! [^String phrase-id ^String user-id ]
+  (let [exists (get-favorite-by-phrase-id phrase-id user-id)]
    (if-not exists
      (let [phrase (phrases/get-phrase-by-id phrase-id)]
        (stringify-id
