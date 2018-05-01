@@ -11,6 +11,22 @@
    [cljs.core.async.macros :refer [go go-loop]]
    [re-frame-macros.core :as mcr :refer [let-sub]]))
 
+(def scroll-loaded (atom -1))
+
+(defn load-favotites-part []
+  (let [skip (-> @(rf/subscribe [::model/favorites-list]) count)]
+    (go
+      (when-not (= @scroll-loaded skip)
+        (reset! scroll-loaded skip)
+        (let [res (<! (rest-api/favorites 10 skip))]
+          (println res)
+          (rf/dispatch [::model/favorites-append res]))))))
+
+(defn reload []
+  (reset! scroll-loaded -1)
+  (rf/dispatch-sync [::model/favorites-list []])
+  (load-favotites-part))
+
 (defn elements-list []
   (let-sub [::model/favorites-list]
     [:div.elements-container
@@ -25,6 +41,12 @@
          [:div.counter (str count)]]))]))
 
 (defn page []
-  [:div.page-container
-   [:h1 "Favorites page"]
-   [elements-list]])
+  (r/create-class
+   {:component-did-mount
+    (fn []
+      (reload))
+    :reagent-render
+    (fn []
+      [:div.page-container
+       [:h1 "Favorites page"]
+       [elements-list]])}))

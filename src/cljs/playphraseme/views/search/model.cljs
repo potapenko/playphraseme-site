@@ -1,7 +1,10 @@
 (ns playphraseme.views.search.model
   (:require [re-frame.core :refer [dispatch reg-event-db reg-sub]]
-            [playphraseme.common.localstorage :as localstorage])
-  (:require-macros [re-frame-macros.core :as mcr]))
+            [playphraseme.common.localstorage :as localstorage]
+            [cljs.core.async :as async :refer [<! >! put! chan timeout]])
+  (:require-macros
+   [cljs.core.async.macros :refer [go go-loop]]
+   [re-frame-macros.core :as mcr :refer [let-sub]]))
 
 (mcr/reg-sub-event ::stopped false)
 (mcr/reg-sub-event ::show-ios-play false)
