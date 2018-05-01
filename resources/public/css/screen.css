@@ -89,7 +89,7 @@ body{
 }
 
 .header {
-  height: 95px;
+  height: 81px;
   display: flex;
   flex-direction: column;
   background-color: rgba(0,0,0,0.05);
@@ -197,8 +197,10 @@ body{
 }
 
 .page-container {
-  overflow-y: auto;
   padding: 16px;
+  position: absolute;
+  left: 0px; right: 0px; bottom: 0px; top: 0px;
+  overflow-y: auto;
 }
 
 .video-player-container {
