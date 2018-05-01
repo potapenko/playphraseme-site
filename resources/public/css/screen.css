@@ -188,6 +188,7 @@ body{
 .current-page-container {
   display: flex;
   flex-grow: 1;
+  position: relative;
 }
 
 .article-container {
@@ -280,11 +281,10 @@ body{
 }
 
 .search-bottom-containter {
-  flex-grow: 1;
-  align-items: stretch;
-  border: 4px #ccc solid;
+  position: absolute;
+  left: 0px; right: 0px; bottom: 0px; top: 406px;
+  overflow-y: auto;
 }
-
 
 .search-results-container {
 }
