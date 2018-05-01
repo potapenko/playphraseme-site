@@ -186,8 +186,7 @@ body{
 }
 
 .current-page-container {
-  align-self: stretch;
-  border: 4px #ccc solid;
+  display: flex;
   flex-grow: 1;
 }
 
@@ -269,12 +268,9 @@ body{
 }
 
 .search-container {
-  display: flex;
-  align-items: stretch;
-  flex-grow: 1;
   width: 600px;
+  display: flex;
   flex-direction: column;
-  align-items: stretch;
 }
 
 .search-ui-container {
@@ -286,14 +282,14 @@ body{
 .search-bottom-containter {
   flex-grow: 1;
   align-items: stretch;
-  overflow-y: auto;
+  border: 4px #ccc solid;
 }
+
 
 .search-results-container {
 }
 
 .suggestions-container {
-  flex-grow: 1;
   padding: 0px 15px;
   border: 1px #ccc solid;
 }

@@ -305,8 +305,8 @@
                    (search-phrase q))
                  (fn []
                    [:div.search-container
-                    ;; ^{:key (str "video-list- " @current-phrase-index)}
-                    #_[:div.video-player-container
+                    ^{:key (str "video-list- " @current-phrase-index)}
+                    [:div.video-player-container
                      (doall
                       (for [x     @phrases
                             :let  [{:keys [index id]} x]

@@ -86,8 +86,8 @@
 
 (defn root [current-page]
   (let-sub [scale :responsive-scale
-            :responsive-show-left-column?
-            :responsive-show-right-column?]
+                  :responsive-show-left-column?
+                  :responsive-show-right-column?]
     [:div.layout-container
      {:style (responsive/zoom-css @scale)}
      (when @responsive-show-left-column?
