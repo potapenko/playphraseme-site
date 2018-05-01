@@ -206,13 +206,13 @@
         st (-> e .-target .-scrollTop)
         oh (-> e .-target .-offsetHeight)
         th 50]
-    (println "on-scroll")
+    #_(println "on-scroll")
     (when (= st 0)
-      (println "start"))
+      #_(println "start"))
     (when (>= (+ oh st) sh)
-      (println "end"))
+      #_(println "end"))
     (when (>= (+ oh st th) sh)
-      (println "load new")
+      #_(println "load new")
       (cb))))
 
 (comment
