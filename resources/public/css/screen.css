@@ -496,7 +496,7 @@ word, word:active, word:focus{
 .stopped .video-overlay-menu {
   opacity: 1;
 }
-.video-overlay-menu:hover {
+.video-player-container:hover .video-overlay-menu {
   opacity: 1;
 }
 .video-overlay-menu-right li {

@@ -155,13 +155,9 @@
   (go (println (<! (count-all-movies))))
   (go (println (<! (video-url "543bd8c8d0430558da9bfeb1"))))
   (go (println (<! (video-download "543bd8c8d0430558da9bfeb1"))))
-
   (go (println (<! (favorites))))
-
   (go (println (<! (add-favorite "543bd8c8d0430558da9bfeb1"))))
-
   (go (println (<! (get-favorite "543bd8c8d0430558da9bfeb1"))))
-
   (go (println (<! (delete-favorite "543bd8c8d0430558da9bfeb1"))))
 
 

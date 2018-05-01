@@ -15,6 +15,8 @@
    [cljs.core.async.macros :refer [go go-loop]]
    [re-frame-macros.core :as mcr :refer [let-sub]]))
 
+(declare load-favorited)
+
 (defn play []
   (rf/dispatch [::model/stopped false])
   (player/play @(rf/subscribe [:current-phrase-index])))
@@ -44,7 +46,8 @@
           (reset! scroll-loaded 0)
           (let [res (<! (rest-api/search-phrase text 10 0))]
             (when (= id @search-id)
-              (rf/dispatch [::model/search-result res])))))))
+              (rf/dispatch-sync [::model/search-result res])
+              (load-favorited)))))))
   (rf/dispatch [:search-text text]))
 
 (defn scroll-end []
@@ -83,8 +86,16 @@
   (when-let [elem (js/document.getElementById (str "phrase-text-" index))]
     (-> elem (.scrollIntoView #js{:behavior "smooth" :block "start"}))))
 
+(defn load-favorited []
+  (when-let [{:keys [id] :as phrase} (get-current-phrase)]
+    (when-not (contains? phrase :favorited)
+      (go
+        (let [favorited (-> (<! (rest-api/get-favorite id)) nil? not)]
+          (rf/dispatch [::model/favorite-phrase id (-> favorited)]))))))
+
 (defn next-phrase []
   (rf/dispatch-sync [::model/next-phrase])
+  (load-favorited)
   (let [current @(rf/subscribe [:current-phrase-index])
         loaded  (count @(rf/subscribe [::model/phrases]))]
     (scroll-to-phrase current)
@@ -93,6 +104,7 @@
 
 (defn prev-phrase []
   (rf/dispatch-sync [::model/prev-phrase])
+  (load-favorited)
   (let [current @(rf/subscribe [:current-phrase-index])]
     (scroll-to-phrase current)))
 
@@ -151,9 +163,14 @@
         ;; 13 (toggle-play) ;; enter
         nil))))
 
-(defn favorite-current-phrase [])
-(defn show-config [])
-(defn favorite-phrase [id])
+(defn favorite-current-phrase [e]
+  (-> e .preventDefault)
+  (let [{:keys [id favorited]} (get-current-phrase)]
+    (println "favorite!" id favorited)
+    (rf/dispatch [::model/favorite-phrase id (not favorited)])
+    (if-not favorited
+      (rest-api/add-favorite id)
+      (rest-api/delete-favorite id))))
 
 (defn search-input []
   [:div.filters-container
@@ -284,87 +301,86 @@
             ::model/stopped
             ::model/suggestions
             :mobile?]
-    (r/create-class
-     {:component-will-unmount
-      (fn [this]
-        (util/remove-document-listener "keyup" work-with-keys))
-      :component-did-mount
-      (fn [this]
-        (util/add-document-listener "keyup" work-with-keys)
-        (focus-input))
-      :reagent-render
-      (fn []
-        (let [lang (util/locale-name)]
-          (let [q (some-> params :q)]
-            (search-phrase q))
-          (fn []
-            [:div.search-container
-             [:div.search-content
-              ^{:key (str "video-list- " @current-phrase-index)}
-              [:div.video-player-container
-               (doall
-                (for [x     @phrases
-                      :let  [{:keys [index id]} x]
-                      :when (<= @current-phrase-index index (inc @current-phrase-index))]
-                  ^{:key (str "phrase-" index "-" id)}
-                  [player/video-player {:phrase         x
-                                        :hide?          (not= @current-phrase-index index)
-                                        :on-play        (fn []
-                                                          (if (util/ios?)
-                                                            (rf/dispatch [::model/stopped true])
-                                                            (scroll-to-phrase index)))
-                                        :on-pause       #(rf/dispatch [::model/stopped true])
-                                        :on-play-click  toggle-play
-                                        :on-end         next-phrase
-                                        :on-pos-changed update-current-word
-                                        :stopped?       @stopped}]))
-               [:div.video-overlay {:class (util/class->str (when @stopped :stopped))}
-                [:ul.video-overlay-menu
-                 [:li
-                  {:on-click #(util/go-url! "/#/favorites")}
-                  [:i.material-icons "favorite"]
-                  [:div.info-text "Favorite"]
-                  [:div.info-text "This Phrase"]]
-                 [:li
-                  {:on-click #(util/go-url! "/#/favorites")}
-                  [:i.material-icons "favorite_border"]
-                  [:div.info-text "Favorited"]
-                  [:div.info-text "Pharases"]
-                  ]
-                 [:li
-                  {:on-click #(util/go-url! "/#/history")}
-                  [:i.material-icons "search"]
-                  [:div.info-text "Search"]
-                  [:div.info-text "History"]
-                  ]
-                 [:li
-                  {:on-click #(util/go-url! "/#/learn")}
-                  [:i.material-icons "school"]
-                  [:div.info-text "Learn"]
-                  [:div.info-text "Phrases"]
-                  ]
-                 [:li
-                  {:on-click #(util/go-url! "/#/settings")}
-                  [:i.material-icons "settings"]
-                  [:div.info-text "Your"]
-                  [:div.info-text "Settings"]]
-                 [:li
-                  {:on-click #(util/go-url!
-                               (str "/api/v1/phrases/video-download?id="
-                                    (:id (get-current-phrase)))
-                               true)}
-                  [:i.material-icons "file_download"]
-                  [:div.info-text "Download"]
-                  [:div.info-text "Video"]]]
-                (when @mobile?
-                  [:div.overlay-logo
-                   [:span.red "Play"]
-                   [:span.black "Phrase"]
-                   [:span.gray ".me"]])
-                (when @mobile?
-                  [overlay-current-phrase])]]
-              [:div.search-ui-container [search-input]]
-              (if-not (empty? @suggestions)
-                [suggestions-list @suggestions]
-                [search-results-list @phrases])]])))})))
+           (r/create-class
+            {:component-will-unmount
+             (fn [this]
+               (util/remove-document-listener "keyup" work-with-keys))
+             :component-did-mount
+             (fn [this]
+               (util/add-document-listener "keyup" work-with-keys)
+               (focus-input))
+             :reagent-render
+             (fn []
+               (let [lang (util/locale-name)]
+                 (let [q (some-> params :q)]
+                   (search-phrase q))
+                 (fn []
+                   [:div.search-container
+                    [:div.search-content
+                     ^{:key (str "video-list- " @current-phrase-index)}
+                     [:div.video-player-container
+                      (doall
+                       (for [x     @phrases
+                             :let  [{:keys [index id]} x]
+                             :when (<= @current-phrase-index index (inc @current-phrase-index))]
+                         ^{:key (str "phrase-" index "-" id)}
+                         [player/video-player {:phrase         x
+                                               :hide?          (not= @current-phrase-index index)
+                                               :on-play        (fn []
+                                                                 (if (util/ios?)
+                                                                   (rf/dispatch [::model/stopped true])
+                                                                   (scroll-to-phrase index)))
+                                               :on-pause       #(rf/dispatch [::model/stopped true])
+                                               :on-play-click  toggle-play
+                                               :on-end         next-phrase
+                                               :on-pos-changed update-current-word
+                                               :stopped?       @stopped}]))
+                      [:div.video-overlay {:class (util/class->str (when @stopped :stopped))}
+                       [:ul.video-overlay-menu
+                        [:li
+                         {:on-click favorite-current-phrase}
+                         [:i.material-icons (if (:favorited (get-current-phrase))
+                                              "favorite"
+                                              "favorite_border")]
+                         [:div.info-text "Favorite"]
+                         [:div.info-text "This Phrase"]]
+                        [:li
+                         {:on-click #(util/go-url! "/#/favorites")}
+                         [:i.material-icons "featured_play_list"]
+                         [:div.info-text "Favorited"]
+                         [:div.info-text "Pharases"]]
+                        [:li
+                         {:on-click #(util/go-url! "/#/history")}
+                         [:i.material-icons "search"]
+                         [:div.info-text "Search"]
+                         [:div.info-text "History"]]
+                        [:li
+                         {:on-click #(util/go-url! "/#/learn")}
+                         [:i.material-icons "school"]
+                         [:div.info-text "Learn"]
+                         [:div.info-text "Phrases"]]
+                        [:li
+                         {:on-click #(util/go-url! "/#/settings")}
+                         [:i.material-icons "settings"]
+                         [:div.info-text "Your"]
+                         [:div.info-text "Settings"]]
+                        [:li
+                         {:on-click #(util/go-url!
+                                      (str "/api/v1/phrases/video-download?id="
+                                           (:id (get-current-phrase)))
+                                      true)}
+                         [:i.material-icons "file_download"]
+                         [:div.info-text "Download"]
+                         [:div.info-text "Video"]]]
+                       (when @mobile?
+                         [:div.overlay-logo
+                          [:span.red "Play"]
+                          [:span.black "Phrase"]
+                          [:span.gray ".me"]])
+                       (when @mobile?
+                         [overlay-current-phrase])]]
+                     [:div.search-ui-container [search-input]]
+                     (if-not (empty? @suggestions)
+                       [suggestions-list @suggestions]
+                       [search-results-list @phrases])]])))})))
 

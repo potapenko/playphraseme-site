@@ -20,7 +20,11 @@
 (defn- add-phrases-indexes [phrases]
   (->> phrases
        add-indexes
-       (map #(update % :words add-indexes))))
+       (map #(update % :words add-indexes))
+       vec))
+
+(defn- get-phrase-by-id [db id]
+  (->> db ::phrases (drop-while #(not= (:id %) id)) first))
 
 (reg-event-db
  ::search-result
@@ -56,6 +60,14 @@
    (let [current       (:current-phrase-index db)
          count-phrases (-> db ::phrases count)]
      (assoc db :current-phrase-index (max 0 (dec current))))))
+
+(reg-event-db
+ ::favorite-phrase
+ (fn [db [_ id value]]
+   (let [index (:index (get-phrase-by-id db id))]
+     (assoc-in db
+               [::phrases index :favorited]
+               value))))
 
 (reg-event-db
  ::next-suggestion
