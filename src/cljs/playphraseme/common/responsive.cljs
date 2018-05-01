@@ -99,6 +99,10 @@
      :rigth     "0px"
      :transform (str "scale(" scale ")")}))
 
+(defn container-height [scale]
+  (let [h (window-height)]
+    (-> h (/ scale))))
+
 (defn update-layout []
   (let [w                  (window-width)
         show-left-column?  (and (not (mobile?)) (> w 960))

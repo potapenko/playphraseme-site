@@ -93,8 +93,9 @@
      (when @responsive-show-left-column?
        [left-column])
      [:div.layout-main
+      {:style {:height (str (responsive/container-height @scale) "px")}}
       [header]
-      [:div.main-content
-       [:div.current-page-container current-page]]]
+      [:div.current-page-container
+       current-page]]
      (when @responsive-show-right-column?
        [right-column])]))
