@@ -9,6 +9,7 @@
             [playphraseme.views.search.model :as model]
             [playphraseme.common.rest-api :as rest-api]
             [playphraseme.common.video-player :as player]
+            [playphraseme.views.favorites.view :as favorites-page]
             [playphraseme.common.phrases :as phrases]
             [playphraseme.common.nlp :as nlp])
   (:require-macros
@@ -68,19 +69,6 @@
            (some->> @phrases
                     (drop-while #(-> % :index (not= @current-phrase-index)))
                     first)))
-
-(defn on-phrases-scroll [e]
-  (let [sh (-> e .-target .-scrollHeight)
-        st (-> e .-target .-scrollTop)
-        oh (-> e .-target .-offsetHeight)
-        th 50]
-    (when (= st 0)
-      #_(println "start"))
-    (when (>= (+ oh st) sh)
-      #_(println "end"))
-    (when (>= (+ oh st th) sh)
-      #_(println "load new")
-      (scroll-end))))
 
 (defn scroll-to-phrase [index]
   (when-let [elem (js/document.getElementById (str "phrase-text-" index))]
@@ -166,11 +154,12 @@
 (defn favorite-current-phrase [e]
   (-> e .preventDefault)
   (let [{:keys [id favorited]} (get-current-phrase)]
-    (println "favorite!" id favorited)
     (rf/dispatch [::model/favorite-phrase id (not favorited)])
-    (if-not favorited
-      (rest-api/add-favorite id)
-      (rest-api/delete-favorite id))))
+    (go
+      (if-not favorited
+        (<! (rest-api/add-favorite id))
+        (<! (rest-api/delete-favorite id)))
+      (favorites-page/reload))))
 
 (defn search-input []
   [:div.filters-container
@@ -281,7 +270,7 @@
 
 (defn search-results-list [phrases]
   [:div#search-result.search-results-container
-   {:on-scroll #(on-phrases-scroll %)}
+   {:on-scroll #(util/on-scroll-end % scroll-end)}
    [:table.table.table-hover.phrase-table.borderless
     [:tbody
      (doall

@@ -94,6 +94,7 @@
        [left-column])
      [:div.layout-main
       [header]
-      [:div.current-page-container current-page]]
+      [:div.main-content
+       [:div.current-page-container current-page]]]
      (when @responsive-show-right-column?
        [right-column])]))

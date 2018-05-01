@@ -201,6 +201,20 @@
       (when-not (empty? t)
           (recur t)))))
 
+(defn on-scroll-end [e cb]
+  (let [sh (-> e .-target .-scrollHeight)
+        st (-> e .-target .-scrollTop)
+        oh (-> e .-target .-offsetHeight)
+        th 50]
+    (println "on-scroll")
+    (when (= st 0)
+      (println "start"))
+    (when (>= (+ oh st) sh)
+      (println "end"))
+    (when (>= (+ oh st th) sh)
+      (println "load new")
+      (cb))))
+
 (comment
   (or-str nil "" "hello" "world")
   (nil-or-blank? "hello")

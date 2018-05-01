@@ -3,6 +3,7 @@
             [cljs.pprint :refer [pprint]]
             [reagent.core :as r]
             [re-frame.core :as rf]
+            [playphraseme.common.util :as util]
             [cljs.core.async :as async :refer [<! >! put! chan timeout]]
             [playphraseme.common.util :as util]
             [playphraseme.common.rest-api :as rest-api :refer [success? error?]]
@@ -18,8 +19,7 @@
     (go
       (when-not (= @scroll-loaded skip)
         (reset! scroll-loaded skip)
-        (let [res (<! (rest-api/favorites 10 skip))]
-          (println res)
+        (let [res (<! (rest-api/favorites 30 skip))]
           (rf/dispatch [::model/favorites-append res]))))))
 
 (defn reload []
@@ -48,5 +48,6 @@
     :reagent-render
     (fn []
       [:div.page-container
-       [:h1 "Favorites page"]
-       [elements-list]])}))
+       {:on-scroll #(util/on-scroll-end % load-favotites-part)}
+       [:h1 "Favorite Phrases"]
+       #_[elements-list]])}))
