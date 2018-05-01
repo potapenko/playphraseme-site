@@ -62,9 +62,8 @@ body{
 }
 
 .layout-container {
-  position: absolute; left: 0px; right: 0px; bottom: 0px; top: 0px;
+  position: fixed; left: 0px; right: 0px; bottom: 0px; top: 0px;
   padding: 22px 0;
-  height: 100%;
   display: flex;
   margin: 0px;
   padding: 0px;

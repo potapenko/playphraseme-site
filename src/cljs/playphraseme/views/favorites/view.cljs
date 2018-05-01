@@ -50,4 +50,4 @@
       [:div.page-container
        {:on-scroll #(util/on-scroll-end % load-favotites-part)}
        [:h1 "Favorite Phrases"]
-       #_[elements-list]])}))
+       [elements-list]])}))

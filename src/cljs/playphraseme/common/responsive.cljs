@@ -94,7 +94,7 @@
     {:position  "fixed"
      :top       (str offset "px")
      :display   "flex"
-     :bottom    (str (* 4 offset) "px")
+     :bottom    (str (* -1 offset) "0px")
      :left      "0px"
      :rigth     "0px"
      :transform (str "scale(" scale ")")}))
