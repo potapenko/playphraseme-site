@@ -282,16 +282,16 @@ body{
   display: flex;
 }
 
-.search-bottom-containter {
+.search-results-container {
   position: absolute;
   left: 0px; right: 0px; bottom: 0px; top: 406px;
   overflow-y: auto;
 }
 
-.search-results-container {
-}
-
 .suggestions-container {
+  position: absolute;
+  left: 0px; right: 0px; bottom: 0px; top: 406px;
+  overflow-y: auto;
   padding: 0px 15px;
   border: 1px #ccc solid;
 }

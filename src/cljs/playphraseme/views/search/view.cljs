@@ -369,9 +369,7 @@
                         [overlay-current-phrase])]]
                     [:div.search-ui-container
                      [search-input]]
-                    [:div.search-bottom-containter
-
-                     (if-not (empty? @suggestions)
-                       [suggestions-list @suggestions]
-                       [search-results-list @phrases])]])))})))
+                    (if-not (empty? @suggestions)
+                      [suggestions-list @suggestions]
+                      [search-results-list @phrases])])))})))
 
