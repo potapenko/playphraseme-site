@@ -493,10 +493,11 @@ word, word:active, word:focus{
 }
 .pause-icon{
   padding-top: 1px;
+  /* padding-left: -1px; */
 }
 .play-icon{
   padding-top: 1px;
-  padding-left: 3px;
+  padding-left: 2px;
 }
 .play-icon2{
   padding-left: 10px;

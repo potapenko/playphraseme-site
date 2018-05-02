@@ -41,10 +41,10 @@
        (go
          (let [[err res] (<! (await (-> el .play)))]
            (when err
-             (rf/dispatch [:stopped true]))
-           (when (and play-button-state err)
-             (reset! play-button-state true))
-           (rf/dispatch [:autoplay-enabled (nil? err)])))))))
+             (rf/dispatch [:stopped true])
+             (when play-button-state
+               (reset! play-button-state true))
+             (rf/dispatch [:autoplay-enabled false]))))))))
 
 (defn jump [index position]
   (let [el (some-> index index->element)]
