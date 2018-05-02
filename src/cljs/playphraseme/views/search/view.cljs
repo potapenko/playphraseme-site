@@ -174,11 +174,10 @@
        [:div.filter-input-icon
         {:on-click toggle-play}
         [:span.fa-stack.fa-1x
-         [:i.fa.fa-circle.fa-stack-2x]
          (if (or @(rf/subscribe [:stopped])
                  (not @(rf/subscribe [:autoplay-enabled])))
-           [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon]
-           [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon])]]])]])
+           [:i.material-icons "play_circle_filled"]
+           [:i.material-icons "pause_circle_filled"])]]])]])
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
