@@ -36,10 +36,11 @@
 (defn play [index]
   (when-let [el (some-> index index->element)]
     (when-not (playing? index)
-      (go
-        (let [[err res] (<! (await (-> el .play)))]
-          (println "errr:" (not (nil? err)))
-          (rf/dispatch [:autoplay-enabled (nil? err)]))))))
+      (-> el .play
+          (.then (fn []
+                   (rf/dispatch [:autoplay-enabled true])))
+          (.catch (fn []
+                    (rf/dispatch [:autoplay-enabled false])))))))
 
 (defn jump [index position]
   (let [el (some-> index index->element)]

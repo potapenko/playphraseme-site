@@ -23,12 +23,14 @@
   (player/play @(rf/subscribe [:current-phrase-index])))
 
 (defn toggle-play []
-  (let [now-stopped? @(rf/subscribe [:stopped])
-        index @(rf/subscribe [:current-phrase-index])]
-    (if now-stopped?
+  (let [index @(rf/subscribe [:current-phrase-index])]
+    (if (not @(rf/subscribe [:autoplay-enabled]))
       (player/play index)
-      (player/stop index))
-    (rf/dispatch [:stopped (not now-stopped?)])))
+      (let [now-stopped? @(rf/subscribe [:stopped])]
+        (if now-stopped?
+          (player/play index)
+          (player/stop index))
+        (rf/dispatch [:stopped (not now-stopped?)])))))
 
 (def search-id (atom 0))
 (def scroll-loaded (atom 0))

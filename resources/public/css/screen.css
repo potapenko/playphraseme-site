@@ -709,6 +709,9 @@ h2 {
 }
 
 @media only screen and (max-device-width : 800px) and (orientation : landscape){
+  .video-overlay-menu{
+    display: none;
+  }
 	.mobile-query{
 		display: box;
 	}
