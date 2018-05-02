@@ -45,6 +45,8 @@
 (def ios? (check-navigator #"ipad|iphone"))
 (def android? (check-navigator #"android"))
 (def windows-phone? (check-navigator #"windows phone"))
+(def safari? (check-navigator #"safari"))
+(def chrome? (check-navigator #"chrome"))
 
 (defn mobile? []
   (or ios? android? windows-phone?))
@@ -91,17 +93,21 @@
 (defn zoom-css [scale]
   (let [h      (window-height)
         offset (-> h (* scale) (- h) (/ 2))]
-    {:position  "fixed"
-     :top       (str offset "px")
-     :display   "flex"
-     :bottom    (str (* -1 offset) "0px")
-     :left      "0px"
-     :rigth     "0px"
-     :transform (str "scale3d(" scale "," scale "," 1 ")")}))
+    (if (or safari? chrome?)
+      {:zoom scale}
+      {:position  "fixed"
+       :top       (str offset "px")
+       :display   "flex"
+       :bottom    (str (* -1 offset) "0px")
+       :left      "0px"
+       :rigth     "0px"
+       :transform (str "scale3d(" scale "," scale "," 1 ")")})))
 
 (defn container-height-css [scale]
   (let [h (window-height)]
-    {:height (str (-> h (/ scale)) "px")}))
+    (if (or safari? chrome?)
+      {}
+      {:height (str (-> h (/ scale)) "px")})))
 
 (defn update-layout []
   (let [w                  (window-width)

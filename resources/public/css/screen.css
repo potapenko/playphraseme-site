@@ -259,6 +259,17 @@ body{
   opacity: 0.5;
 }
 
+.auto-play-info-1 {
+  font-size: 18px;
+  color: rgba(255,255,255,1);
+}
+
+.auto-play-info {
+  font-size: 10px;
+  color: rgba(255,255,255,1);
+}
+
+
 .overlay-video-info {
   position: absolute;
   right: 20px;

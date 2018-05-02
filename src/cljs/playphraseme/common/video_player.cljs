@@ -1,8 +1,10 @@
 (ns playphraseme.common.video-player
   (:require [clojure.string :as string]
+            [cljs-await.core :refer [await]]
             [cljs.core.async :as async :refer [<! >! put! chan timeout]]
             [cljs.pprint :refer [pprint]]
             [reagent.core :as r :refer [atom]]
+            [re-frame.core :as rf]
             [playphraseme.common.util :as util]
             [clojure.data :refer [diff]])
   (:require-macros
@@ -31,10 +33,18 @@
 (defn stop [index]
   (some-> index index->element .pause))
 
-(defn play [index]
-  (when-let [el (some-> index index->element)]
-    (when-not (playing? index)
-      (-> el .play (.then #()) (.catch #())))))
+(defn play
+  ([index] (play index nil))
+  ([index play-button-state]
+   (when-let [el (some-> index index->element)]
+     (when-not (playing? index)
+       (go
+         (let [[err res] (<! (await (-> el .play)))]
+           (when err
+             (rf/dispatch [:stopped true]))
+           (when (and play-button-state err)
+             (reset! play-button-state true))
+           (rf/dispatch [:autoplay-enabled (nil? err)])))))))
 
 (defn jump [index position]
   (let [el (some-> index index->element)]
@@ -45,7 +55,7 @@
   (-> index index->element js/enableInlineVideo))
 
 (defn video-player []
-  (let [show-play-button? (r/atom (util/ios?))]
+  (let [show-play-button? (r/atom false)]
     (r/create-class
      {:component-will-receive-props
       (fn [this]
@@ -77,12 +87,13 @@
           (add-video-listener index "canplaythrough" on-load)
           (jump index 0)
           (if autoplay
-            (play index))))
+            (play index show-play-button?))))
       :reagent-render
       (fn [{:keys [phrase hide? stopped? mobile on-play-click]}]
         (let [{:keys [index video_info]} phrase]
           [:div.video-player-box
-           {:style (merge {:opacity (if hide? 0 1)} (when hide? {:display :none}))
+           {:style (merge {:opacity (if hide? 0 1)}
+                          (when hide? {:display :none}))
             :on-click (fn []
                         (reset! show-play-button? false)
                         (on-play-click))}
@@ -95,7 +106,12 @@
              [:div.overlay-play-icon
               [:span.fa-stack.fa-1x
                [:i.fa.fa-circle.fa-stack-2x]
-               [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon2]]])
+               [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon2]]
+             (when @(rf/subscribe [:desktop?])
+                [:div
+                 [:div.auto-play-info-1 "Autoplay disabled"]
+                 [:div.auto-play-info "Enable Auto-Play for our site"]
+                 [:div.auto-play-info "in your browser settings"]])])
            (let [{:keys [imdb info]} video_info]
              [:a.overlay-video-info
               {:href imdb :target "_blank"}

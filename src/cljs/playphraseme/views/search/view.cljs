@@ -19,18 +19,16 @@
 (declare load-favorited)
 
 (defn play []
-  (rf/dispatch [::model/stopped false])
+  (rf/dispatch [:stopped false])
   (player/play @(rf/subscribe [:current-phrase-index])))
 
 (defn toggle-play []
-  (if (util/ios?)
-    (play)
-    (let [now-stopped? @(rf/subscribe [::model/stopped])
-          index @(rf/subscribe [:current-phrase-index])]
-      (if now-stopped?
-        (player/play index)
-        (player/stop index))
-      (rf/dispatch [::model/stopped (not now-stopped?)]))))
+  (let [now-stopped? @(rf/subscribe [:stopped])
+        index @(rf/subscribe [:current-phrase-index])]
+    (if now-stopped?
+      (player/play index)
+      (player/stop index))
+    (rf/dispatch [:stopped (not now-stopped?)])))
 
 (def search-id (atom 0))
 (def scroll-loaded (atom 0))
@@ -175,7 +173,7 @@
         {:on-click toggle-play}
         [:span.fa-stack.fa-1x
          [:i.fa.fa-circle.fa-stack-2x]
-         (if @(rf/subscribe [::model/stopped])
+         (if @(rf/subscribe [:stopped])
            [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon]
            [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon])]]])]])
 
@@ -287,7 +285,7 @@
 (defn page [params]
   (let-sub [:current-phrase-index
             ::model/phrases
-            ::model/stopped
+            :stopped
             ::model/suggestions
             :mobile?]
            (r/create-class
@@ -314,11 +312,8 @@
                         ^{:key (str "phrase-" index "-" id)}
                         [player/video-player {:phrase         x
                                               :hide?          (not= @current-phrase-index index)
-                                              :on-play        (fn []
-                                                                (if (util/ios?)
-                                                                  (rf/dispatch [::model/stopped true])
-                                                                  (scroll-to-phrase index)))
-                                              :on-pause       #(rf/dispatch [::model/stopped true])
+                                              :on-play        #(scroll-to-phrase index)
+                                              :on-pause       #(rf/dispatch [:stopped true])
                                               :on-play-click  toggle-play
                                               :on-end         next-phrase
                                               :on-pos-changed update-current-word

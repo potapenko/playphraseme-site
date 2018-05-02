@@ -6,14 +6,13 @@
    [cljs.core.async.macros :refer [go go-loop]]
    [re-frame-macros.core :as mcr :refer [let-sub]]))
 
-(mcr/reg-sub-event ::stopped false)
-(mcr/reg-sub-event ::show-ios-play false)
 (mcr/reg-sub ::search-count 0)
 (mcr/reg-sub ::phrases nil)
 (mcr/reg-sub ::suggestions nil)
 (mcr/reg-sub-event ::current-word-index 0)
 (mcr/reg-sub ::current-suggestion-index nil)
 
+(mcr/reg-sub-event :stopped false)
 (mcr/reg-sub-event :search-text "")
 (mcr/reg-sub-event :current-phrase-index nil)
 
