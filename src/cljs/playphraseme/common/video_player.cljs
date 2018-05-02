@@ -33,18 +33,13 @@
 (defn stop [index]
   (some-> index index->element .pause))
 
-(defn play
-  ([index] (play index nil))
-  ([index play-button-state]
-   (when-let [el (some-> index index->element)]
-     (when-not (playing? index)
-       (go
-         (let [[err res] (<! (await (-> el .play)))]
-           (when err
-             (rf/dispatch [:stopped true])
-             (when play-button-state
-               (reset! play-button-state true))
-             (rf/dispatch [:autoplay-enabled false]))))))))
+(defn play [index]
+  (when-let [el (some-> index index->element)]
+    (when-not (playing? index)
+      (go
+        (let [[err res] (<! (await (-> el .play)))]
+          (println "errr:" (not (nil? err)))
+          (rf/dispatch [:autoplay-enabled (nil? err)]))))))
 
 (defn jump [index position]
   (let [el (some-> index index->element)]
@@ -55,65 +50,62 @@
   (-> index index->element js/enableInlineVideo))
 
 (defn video-player []
-  (let [show-play-button? (r/atom false)]
-    (r/create-class
-     {:component-will-receive-props
-      (fn [this]
-        (let [{:keys [hide? stopped? phrase]} (r/props this)
-              {:keys [index]}                 phrase
-              playing?                        (and (not hide?) (not stopped?))]
-          (add-video-listener index "canplaythrough"
-                              (if playing?
-                                #(play index)
-                                #(stop index)))))
-      :component-did-mount
-      (fn [this]
-        (let [{:keys [hide? stopped? phrase
-                      on-load on-pause on-play on-load-start
-                      on-end on-pos-changed]} (r/props this)
-              index                           (:index phrase)
-              autoplay                        (not (or stopped? hide?))]
+  (r/create-class
+   {:component-will-receive-props
+    (fn [this]
+      (let [{:keys [hide? stopped? phrase]} (r/props this)
+            {:keys [index]}                 phrase
+            playing?                        (and (not hide?) (not stopped?))]
+        (add-video-listener index "canplaythrough"
+                            (if playing?
+                              #(play index)
+                              #(stop index)))))
+    :component-did-mount
+    (fn [this]
+      (let [{:keys [hide? stopped? phrase
+                    on-load on-pause on-play on-load-start
+                    on-end on-pos-changed]} (r/props this)
+            index                           (:index phrase)
+            autoplay                        (not (or stopped? hide?))]
 
-          (enable-inline-video index)
-          (add-video-listener index "loadstart" on-load-start)
-          (add-video-listener index "play" on-play)
-          (add-video-listener index "pause" #(when (playing? index) on-pause))
-          (add-video-listener index "ended" on-end)
-          (add-video-listener index "timeupdate"
-                              #(on-pos-changed
-                                (-> %
-                                    .-target .-currentTime
-                                    (* 1000) js/Math.round)))
-          (add-video-listener index "canplaythrough" on-load)
-          (jump index 0)
-          (if autoplay
-            (play index show-play-button?))))
-      :reagent-render
-      (fn [{:keys [phrase hide? stopped? mobile on-play-click]}]
-        (let [{:keys [index video_info]} phrase]
-          [:div.video-player-box
-           {:style (merge {:opacity (if hide? 0 1)}
-                          (when hide? {:display :none}))
-            :on-click (fn []
-                        (reset! show-play-button? false)
-                        (on-play-click))}
-           [:video.video-player
-            {:src         (:video-url phrase)
-             :playsInline true
-             :controls    false
-             :id          (index->id index)}]
-           (when @show-play-button?
-             [:div.overlay-play-icon
-              [:span.fa-stack.fa-1x
-               [:i.fa.fa-circle.fa-stack-2x]
-               [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon2]]
-             (when @(rf/subscribe [:desktop?])
-                [:div
-                 [:div.auto-play-info-1 "Autoplay disabled"]
-                 [:div.auto-play-info "Enable Auto-Play for our site"]
-                 [:div.auto-play-info "in your browser settings"]])])
-           (let [{:keys [imdb info]} video_info]
-             [:a.overlay-video-info
-              {:href imdb :target "_blank"}
-              info])]))})))
+        (enable-inline-video index)
+        (add-video-listener index "loadstart" on-load-start)
+        (add-video-listener index "play" on-play)
+        (add-video-listener index "pause" #(when (playing? index) on-pause))
+        (add-video-listener index "ended" on-end)
+        (add-video-listener index "timeupdate"
+                            #(on-pos-changed
+                              (-> %
+                                  .-target .-currentTime
+                                  (* 1000) js/Math.round)))
+        (add-video-listener index "canplaythrough" on-load)
+        (jump index 0)
+        (if autoplay
+          (play index))))
+    :reagent-render
+    (fn [{:keys [phrase hide? stopped? mobile on-play-click]}]
+      (let [{:keys [index video_info]} phrase]
+        [:div.video-player-box
+         {:style    (merge {:opacity (if hide? 0 1)}
+                           (when hide? {:display :none}))
+          :on-click on-play-click}
+         [:video.video-player
+          {:src         (:video-url phrase)
+           :playsInline true
+           :controls    false
+           :id          (index->id index)}]
+         (when-not @(rf/subscribe [:autoplay-enabled])
+           [:div.overlay-play-icon
+            [:span.fa-stack.fa-1x
+             [:i.fa.fa-circle.fa-stack-2x]
+             [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon2]]
+            (when @(rf/subscribe [:desktop?])
+              [:div
+               [:div.auto-play-info-1 "Autoplay disabled"]
+               [:div.auto-play-info "Enable Auto-Play for our site"]
+               [:div.auto-play-info "in your browser settings"]])])
+         (let [{:keys [imdb info]} video_info]
+           [:a.overlay-video-info
+            {:href imdb :target "_blank"}
+            info])]))}))
 

@@ -146,7 +146,7 @@
         38 (prev-phrase) ;; up
         40 (next-phrase) ;; down
         27 (focus-input) ;; esc
-        ;; 13 (toggle-play) ;; enter
+        13 (toggle-play) ;; enter
         nil))))
 
 (defn favorite-current-phrase [e]
@@ -173,7 +173,8 @@
         {:on-click toggle-play}
         [:span.fa-stack.fa-1x
          [:i.fa.fa-circle.fa-stack-2x]
-         (if @(rf/subscribe [:stopped])
+         (if (or @(rf/subscribe [:stopped])
+                 (not @(rf/subscribe [:autoplay-enabled])))
            [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon]
            [:i.fa.fa-pause.fa-stack-1x.fa-inverse.pause-icon])]]])]])
 
