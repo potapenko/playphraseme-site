@@ -9,6 +9,12 @@
 	outline: none !important;
 }
 
+
+* {
+  /* backface-visibility: hidden; */
+  /* -webkit-font-smoothing: antialiased; */
+}
+
 textarea:focus, input:focus{
   outline: none;
 }

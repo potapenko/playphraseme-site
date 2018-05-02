@@ -49,5 +49,5 @@
     (fn []
       [:div.page-container
        {:on-scroll #(util/on-scroll-end % load-favotites-part)}
-       [:h1 "Favorite Phrases"]
+       [:h1 "Favorited Phrases"]
        [elements-list]])}))

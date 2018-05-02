@@ -97,11 +97,11 @@
      :bottom    (str (* -1 offset) "0px")
      :left      "0px"
      :rigth     "0px"
-     :transform (str "scale(" scale ")")}))
+     :transform (str "scale3d(" scale "," scale "," 1 ")")}))
 
-(defn container-height [scale]
+(defn container-height-css [scale]
   (let [h (window-height)]
-    (-> h (/ scale))))
+    {:height (str (-> h (/ scale)) "px")}))
 
 (defn update-layout []
   (let [w                  (window-width)
