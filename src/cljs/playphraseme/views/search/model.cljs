@@ -13,7 +13,6 @@
 (mcr/reg-sub ::current-suggestion-index nil)
 
 (mcr/reg-sub-event :stopped false)
-(mcr/reg-sub-event :show-auto-play-button false)
 (mcr/reg-sub-event :search-text "")
 (mcr/reg-sub-event :current-phrase-index nil)
 
