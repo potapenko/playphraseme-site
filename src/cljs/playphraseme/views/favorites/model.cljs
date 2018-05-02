@@ -18,3 +18,16 @@
        (update ::favorites-list concat favorites)
        (update ::favorites-list add-indexes)
        (assoc ::count count))))
+
+
+(reg-event-db
+ ::favorite-mark-delete
+ (fn [db [_ id value]]
+   (assoc db ::favorites-list
+    (->> db
+         ::favorites-list
+         (map (fn [{:keys [phrase] :as f}]
+                (if (= phrase id)
+                  (assoc f :deleted value)
+                  f)))
+         vec))))

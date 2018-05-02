@@ -334,11 +334,32 @@ body{
 
 .element {
   display: flex;
+  flex-direction: row;
 	color:rgba(0,0,0,0.8);
 	font-size: 16px;
 	cursor: pointer;
   padding: 10px;
   border-bottom: 1px rgba(0,0,0,0.1) solid;
+}
+
+.element .text{
+	color:rgba(0,0,0,0.8);
+}
+
+.element .material-icons {
+	color:rgba(0,0,0,0.3);
+}
+
+.element .material-icon:hover {
+	color:rgba(0,0,0,0.3);
+}
+.element .counter{
+	color:rgba(0,0,0,0.2);
+}
+
+.element .video-info{
+	color:rgba(0,0,0,0.3);
+  font-size: 12px;
 }
 
 .search-results-results .results .one-result{}

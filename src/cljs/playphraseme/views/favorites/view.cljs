@@ -5,7 +5,7 @@
             [re-frame.core :as rf]
             [playphraseme.common.util :as util]
             [cljs.core.async :as async :refer [<! >! put! chan timeout]]
-            [playphraseme.common.util :as util]
+            [playphraseme.common.ui :as ui :refer [spacer flexer]]
             [playphraseme.common.rest-api :as rest-api :refer [success? error?]]
             [playphraseme.views.favorites.model :as model])
   (:require-macros
@@ -31,14 +31,28 @@
   (let-sub [::model/favorites-list]
     [:div.elements-container
      (doall
-      (for [{:keys [text count index]} @favorites-list]
+      (for [{:keys [deleted phrase text index movieInfo]} @favorites-list]
         ^{:key (str "element-" index)}
-        [:a.element
-         {:id    (str "element-" index)
-          :href  (str "/#/search?q=" text)}
-         [:div.text text]
+        [:div.element
+         [:div.counter (-> index inc str)]
+         [spacer 22]
+         [:div
+          [:a.text {:href  (str "/#/search?q=" text)}
+           (str "\"" text "\"")]
+          [:div.video-info movieInfo]]
          [:div.grow]
-         [:div.counter (str count)]]))]))
+         (if-not deleted
+           [:div.icon
+            {:on-click (fn []
+                         (rf/dispatch [::model/favorite-mark-delete phrase true])
+                         (rest-api/delete-favorite phrase))}
+            [:i.material-icons "close"]]
+           [:div.icon
+            {:on-click (fn []
+                         (rf/dispatch [::model/favorite-mark-delete phrase false])
+                         (rest-api/add-favorite phrase))}
+            [:i.material-icons "favorite_border"]])
+         ]))]))
 
 (defn page []
   (r/create-class
