@@ -54,12 +54,15 @@
   (util/go-url! "/#/search"))
 
 (secretary/defroute "/search" [query-params]
-  (route/goto-page! :search (merge
-                             query-params
-                             {:q (or-str
-                                  (:q query-params)
-                                  @(rf/subscribe [:search-text])
-                                  (phrases/random-phrase))})))
+  (let [{:keys [q p]} query-params]
+    (println ">>>>" q p)
+   (route/goto-page! :search (merge
+                              query-params
+                              (when-not p
+                                {:q (or-str
+                                     q
+                                     @(rf/subscribe [:search-text])
+                                     (phrases/random-phrase))})))))
 
 
 (secretary/defroute "/phrase" []

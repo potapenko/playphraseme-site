@@ -105,7 +105,7 @@
              login-md :body)))
 
 (defn get-phrase [phrase-id]
-  (call-api http/get (str "/phrases/" phrase-id)
+  (call-api http/get (str "/phrases/phrase/" phrase-id)
             (api-headers) login-md :body))
 
 (defn count-phrase [text]
@@ -163,4 +163,11 @@
   (go (println (<! (add-favorite "543bd8c8d0430558da9bfeb1"))))
   (go (println (<! (get-favorite "543bd8c8d0430558da9bfeb1"))))
   (go (println (<! (delete-favorite "543bd8c8d0430558da9bfeb1"))))
-  (go (println (<! ("543bd8c8d0430558da9bfeb1")))))
+  (go (println (<! (get-phrase "543bd8c8d0430558da9bfeb1"))))
+
+
+
+
+
+
+  )

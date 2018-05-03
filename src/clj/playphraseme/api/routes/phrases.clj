@@ -17,13 +17,6 @@
       :summary       "Return phrases search result"
       (search-response q skip limit))
 
-    (GET "/:id"         [id :as request]
-         :tags          ["Phrases"]
-         :return        s/Any
-         :middleware    [cors-mw]
-         :summary       "Return phrase by id"
-         (phrase-response id))
-
     (GET "/count"    request
       :tags          ["Phrases"]
       :return        s/Num
@@ -75,5 +68,12 @@
       :middleware    [cors-mw]
       :query-params  [id :- s/Str]
       :summary       "Download phrase video file"
-      (video-download-response id))))
+      (video-download-response id))
+
+    (GET "/phrase/:id"         [id :as request]
+         :tags          ["Phrases"]
+         :return        s/Any
+         :middleware    [cors-mw]
+         :summary       "Return phrase by id"
+         (phrase-response id))))
 

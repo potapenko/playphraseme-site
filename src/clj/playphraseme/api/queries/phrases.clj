@@ -35,3 +35,4 @@
 (defn get-movies-count []
   322
   #_(count-docs "movie" {}))
+
