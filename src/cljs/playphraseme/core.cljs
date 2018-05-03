@@ -55,7 +55,6 @@
 
 (secretary/defroute "/search" [query-params]
   (let [{:keys [q p]} query-params]
-    (println ">>>>" q p)
    (route/goto-page! :search (merge
                               query-params
                               (when-not p

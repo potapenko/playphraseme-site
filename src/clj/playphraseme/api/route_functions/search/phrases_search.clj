@@ -30,11 +30,11 @@
       (dissoc :shifts)))
 
 (defn get-phrase-data [id]
-  (-> (db/get-phrase-by-id id)
-      (util/remove-keys [:random :haveVideo :__v :state])
-      (util/remove-keys :words [:id])
-      (assoc :video-url (get-video-url id))
-      use-shifts))
+  (some-> (db/get-phrase-by-id id)
+          (util/remove-keys [:random :haveVideo :__v :state])
+          (util/remove-keys :words [:id])
+          (assoc :video-url (get-video-url id))
+          use-shifts))
 
 (defn- get-phrases [phrases-ids]
   (pmap get-phrase-data phrases-ids))
