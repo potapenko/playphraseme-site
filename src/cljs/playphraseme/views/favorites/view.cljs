@@ -37,7 +37,7 @@
          [:div.counter (-> index inc str)]
          [spacer 22]
          [:div
-          [:a.text {:href  (str "/#/search?q=" text)}
+          [:a.text {:href  (str "/#/search?q=&p=" phrase)}
            (str "\"" text "\"")]
           [:div.video-info movieInfo]]
          [:div.grow]

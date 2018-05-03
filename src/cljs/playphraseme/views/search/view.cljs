@@ -38,10 +38,11 @@
 (defn search-phrase
   ([text] (search-phrase text nil))
   ([text first-phrase]
-   (println "s:" text first-phrase)
    (when text
-     (when-not (= (some-> text string/trim)
-                  (some-> @(rf/subscribe [:search-text]) string/trim))
+     (when (or
+            first-phrase
+            (not= (some-> text string/trim)
+                  (some-> @(rf/subscribe [:search-text]) string/trim)))
        (util/set-url! "search" (merge {:q text} (when first-phrase {:p first-phrase})))
        (let [id  (swap! search-id inc)]
          (rf/dispatch [::model/search-result []])

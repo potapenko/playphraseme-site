@@ -25,6 +25,14 @@
 
 (defn playing? [index]
   (when-let [el (index->element index)]
+    (println
+     {
+      :current-time (-> el .-currentTime)
+      :paused (-> el .-paused)
+      :ended (-> el .-ended)
+      :ready-state (-> el .-readyState)
+      }
+     )
     (and (pos? (-> el .-currentTime))
          (not (-> el .-paused))
          (not (-> el .-ended))
@@ -39,7 +47,8 @@
       (-> el .play
           (.then (fn []
                    (rf/dispatch [:autoplay-enabled true])))
-          (.catch (fn []
+          (.catch (fn [e]
+                    (println ">>> error!" e (type e))
                     (rf/dispatch [:autoplay-enabled false])))))))
 
 (defn jump [index position]
@@ -92,6 +101,7 @@
           :on-click on-play-click}
          [:video.video-player
           {:src         (:video-url phrase)
+           :autoplay    false
            :playsInline true
            :controls    false
            :id          (index->id index)}]
