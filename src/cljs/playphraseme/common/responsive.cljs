@@ -109,6 +109,12 @@
       {}
       {:height (str (-> h (/ scale)) "px")})))
 
+(defn fb-button-css [scale]
+  (cond
+    (= scale 1)                {:margin-top "7px"}
+    (and (or safari? chrome?)) {:margin-top "6px" :width "60px"}
+    :else                      {:transform (str "scale(" (/ 1 scale) ")")}))
+
 (defn update-layout []
   (let [w                  (window-width)
         show-left-column?  (and (not (mobile?)) (> w 960))

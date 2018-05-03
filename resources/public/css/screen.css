@@ -244,6 +244,7 @@ body{
   user-select: none;
   cursor: pointer;
   overflow: hidden;
+  display: none;
 }
 
 .overlay-logo .red {color: red}
@@ -786,6 +787,9 @@ h2 {
   .s-word-played {
     color: rgba(255,255,255,0.7) !important;
     background-color: rgba(0,0,0,0.8) !important;
+  }
+  .overlay-logo {
+    display: block;
   }
 }
 

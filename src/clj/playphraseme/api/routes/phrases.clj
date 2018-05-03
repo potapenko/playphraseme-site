@@ -9,7 +9,7 @@
   (context "/api/v1/phrases" []
     :tags ["Phrases"]
 
-    (GET "/search"     request
+    (GET "/search"   request
       :tags          ["Phrases"]
       :return        s/Any
       :middleware    [cors-mw]
@@ -17,7 +17,14 @@
       :summary       "Return phrases search result"
       (search-response q skip limit))
 
-    (GET "/count"       request
+    (GET "/:id"         [id :as request]
+         :tags          ["Phrases"]
+         :return        s/Any
+         :middleware    [cors-mw]
+         :summary       "Return phrase by id"
+         (phrase-response id))
+
+    (GET "/count"    request
       :tags          ["Phrases"]
       :return        s/Num
       :middleware    [cors-mw]

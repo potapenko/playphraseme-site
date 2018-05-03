@@ -44,6 +44,9 @@
         res (http/get url {:query-params {:q q :skip skip :limit limit} :accept :json})]
     (ok (some-> res :body (parse-string true) (update :phrases get-phrases)))))
 
+(defn phrase-response [id]
+  (ok (get-phrase-data id)))
+
 (defn count-response [q]
   (let [url (str (:indexer-url env) "/count")
         res (http/get url {:query-params {:q q} :accept :json})]

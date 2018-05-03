@@ -23,7 +23,7 @@
 (defn facebook-like-button []
   (let-sub [scale :responsive-scale]
     [:div.fb-like
-     {:style {:transform (str "scale(" (/ 1 @scale) ")")}
+     {:style (responsive/fb-button-css @scale)
       :data-share      "false"
       :data-show-faces "false"
       :data-size       "small"

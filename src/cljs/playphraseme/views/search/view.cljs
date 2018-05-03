@@ -173,7 +173,7 @@
       [:li
        [:div.filter-input-icon
         {:on-click toggle-play}
-        [:span.fa-stack.fa-1x
+        [:span.fa-stack
          (if (or @(rf/subscribe [:stopped])
                  (not @(rf/subscribe [:autoplay-enabled])))
            [:i.material-icons "play_circle_filled"]
@@ -357,11 +357,10 @@
                         [:i.material-icons "file_download"]
                         [:div.info-text "Download"]
                         [:div.info-text "Video"]]]
-                      (when @mobile?
-                        [:div.overlay-logo
-                         [:span.red "Play"]
-                         [:span.black "Phrase"]
-                         [:span.gray ".me"]])
+                      [:div.overlay-logo
+                       [:span.red "Play"]
+                       [:span.black "Phrase"]
+                       [:span.gray ".me"]]
                       (when @mobile?
                         [overlay-current-phrase])]]
                     [:div.search-ui-container
