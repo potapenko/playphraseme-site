@@ -80,6 +80,22 @@ body{
   flex-grow: 1;
 }
 
+.form-page {
+  display: flex;
+  flex-grow: 1;
+}
+
+form {
+  flex-grow: 1;
+  margin: 0px auto;
+  flex-direction: column;
+}
+
+form h1 {
+  margin-top: 20px;
+  text-align: center;
+}
+
 .layout-container {
   position: fixed; left: 0px; right: 0px; bottom: 0px; top: 0px;
   padding: 22px 0;

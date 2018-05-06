@@ -32,27 +32,28 @@
   false)
 
 (defn page []
-  [:form {:on-submit on-password-reset}
-   [:div.page-title "Reset password"]
-   [:div
-    (when-let [error-message @(rf/subscribe [::model/error-message])]
-      [:div.alert.alert-danger {:role "alert"} error-message])
-    (when-let [message @(rf/subscribe [::model/message])]
-      [:div.alert.alert-success {:role "alert"} message])
+  [:div.form-page
+   [:form {:on-submit on-password-reset}
+    [:h1 "Reset password"]
+    [:div
+     (when-let [error-message @(rf/subscribe [::model/error-message])]
+       [:div.alert.alert-danger {:role "alert"} error-message])
+     (when-let [message @(rf/subscribe [::model/message])]
+       [:div.alert.alert-success {:role "alert"} message])
+     [:div.d-flex
+      [:input.input {:type        "email"         :id       "input-email"
+                     :placeholder "Email address"
+                     :value       (-> (form-data) first)
+                     :on-change   (fn [e]
+                                    (clear-error!)
+                                    (rf/dispatch [::model/name (-> e .-target .-value)]))
+                     :auto-focus  true}]]]
     [:div.d-flex
-     [:input.input {:type        "email"         :id       "input-email"
-                           :placeholder "Email address"
-                           :value       (-> (form-data) first)
-                    :on-change   (fn [e]
-                                   (clear-error!)
-                                   (rf/dispatch [::model/name (-> e .-target .-value)]))
-                           :auto-focus  true}]]]
-   [:div.d-flex
-    [:div.grow]
-    [:button.form-button {:type "submit" :disabled (not (form-completed?))} "Send email with reset code"]
-    [:div.grow]]
-   [:div.page-footer-links
-    [:p.text-center
-     [:a {:href "/#/login"} "Remember password?"]
-     " New to us? " [:a {:href "/#/register"} "Register."]]]])
+     [:div.grow]
+     [:button.form-button {:type "submit" :disabled (not (form-completed?))} "Send email with reset code"]
+     [:div.grow]]
+    [:div.page-footer-links
+     [:p.text-center
+      [:a {:href "/#/login"} "Remember password?"]
+      " New to us? " [:a {:href "/#/register"} "Register."]]]]])
 

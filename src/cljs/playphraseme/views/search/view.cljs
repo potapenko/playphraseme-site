@@ -196,12 +196,13 @@
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
-  (let [phrase (nth @(rf/subscribe [::model/phrases]) phrase-index)
+  (let [{:keys [index] :as phrase} (nth @(rf/subscribe [::model/phrases]) phrase-index)
         word (-> phrase :words (nth word-index))]
+    (rf/dispatch [:stopped false])
     (rf/dispatch-sync [::model/current-word-index] (:index phrase))
-    (player/jump (:index phrase) (+ 400 (:start word)))
+    (player/jump index (+ 400 (:start word)))
     (highlite-word word)
-    (player/play (:index phrase))))
+    (player/play index)))
 
 (defn get-searched-words [current-words]
   (let [text             @(rf/subscribe [:search-text])

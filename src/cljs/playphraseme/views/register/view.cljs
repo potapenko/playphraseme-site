@@ -70,48 +70,49 @@
   (and (valid-email?) (valid-password?)))
 
 (defn page []
-  [:form {:on-submit on-register}
-   [:h1 "Register"]
-   (when-let [error-message @(rf/subscribe [::model/error-message])]
-     [:div.alert.alert-danger
-      {:role "alert"} error-message])
-   [:div.d-flex
-    [:input.input {:type        "text" :id "input-name"
-                   :on-change   (fn [e]
-                                  (clear-error!)
-                                  (rf/dispatch [::model/full-name (-> e .-target .-value)]))
-                   :placeholder "Full Name"
-                   :class       (util/class->str (when (valid-full-name?) :is-valid)
-                                                 (when (invalid-full-name?) :is-invalid))
-                   :auto-focus  true}]]
-   [:div.d-flex
-    [:input.input {:type        "email" :id "input-email"
-                   :on-change   (fn [e]
-                                  (clear-error!)
-                                  (rf/dispatch [::model/email (-> e .-target .-value)]))
-                   :placeholder "Email Address"
-                   :class       (util/class->str (when (valid-email?) :is-valid)
-                                                 (when (invalid-email?) :is-invalid))}]]
-   [:div.d-flex
-    [:input.input {:type        "password" :id "input-password"
-                   :on-change   (fn [e]
-                                  (clear-error!)
-                                  (rf/dispatch [::model/password (-> e .-target .-value)]))
-                   :class       (util/class->str (when (valid-password?) :is-valid)
-                                                 (when (invalid-password?) :is-invalid))
-                   :placeholder "Password"}]]
-   [:div.d-flex
-    [:input.input {:id          "input-confirm-password" :type "password"
-                   :on-change   (fn [e]
-                                  (clear-error!)
-                                  (rf/dispatch [::model/confirm-password (-> e .-target .-value)]))
-                   :class       (util/class->str (when (valid-password?) :is-valid)
-                                                 (when (invalid-password?) :is-invalid))
-                   :placeholder "Confirm Password"      }]]
-   [:div.d-flex
-    [:div.grow]
-    [:button.form-button {:type "submit" :disabled (not (form-completed?))} "Register"]
-    [:div.grow]]
-   [:div.page-footer-links
-    [:p.text-center "Already registered? " [:a {:href "/#/login"} "Sign in."]]]]
+  [:div.form-page
+   [:form {:on-submit on-register}
+    [:h1 "Register"]
+    (when-let [error-message @(rf/subscribe [::model/error-message])]
+      [:div.alert.alert-danger
+       {:role "alert"} error-message])
+    [:div.d-flex
+     [:input.input {:type        "text" :id "input-name"
+                    :on-change   (fn [e]
+                                   (clear-error!)
+                                   (rf/dispatch [::model/full-name (-> e .-target .-value)]))
+                    :placeholder "Full Name"
+                    :class       (util/class->str (when (valid-full-name?) :is-valid)
+                                                  (when (invalid-full-name?) :is-invalid))
+                    :auto-focus  true}]]
+    [:div.d-flex
+     [:input.input {:type        "email" :id "input-email"
+                    :on-change   (fn [e]
+                                   (clear-error!)
+                                   (rf/dispatch [::model/email (-> e .-target .-value)]))
+                    :placeholder "Email Address"
+                    :class       (util/class->str (when (valid-email?) :is-valid)
+                                                  (when (invalid-email?) :is-invalid))}]]
+    [:div.d-flex
+     [:input.input {:type        "password" :id "input-password"
+                    :on-change   (fn [e]
+                                   (clear-error!)
+                                   (rf/dispatch [::model/password (-> e .-target .-value)]))
+                    :class       (util/class->str (when (valid-password?) :is-valid)
+                                                  (when (invalid-password?) :is-invalid))
+                    :placeholder "Password"}]]
+    [:div.d-flex
+     [:input.input {:id          "input-confirm-password" :type "password"
+                    :on-change   (fn [e]
+                                   (clear-error!)
+                                   (rf/dispatch [::model/confirm-password (-> e .-target .-value)]))
+                    :class       (util/class->str (when (valid-password?) :is-valid)
+                                                  (when (invalid-password?) :is-invalid))
+                    :placeholder "Confirm Password"      }]]
+    [:div.d-flex
+     [:div.grow]
+     [:button.form-button {:type "submit" :disabled (not (form-completed?))} "Register"]
+     [:div.grow]]
+    [:div.page-footer-links
+     [:p.text-center "Already registered? " [:a {:href "/#/login"} "Sign in."]]]]]
   )

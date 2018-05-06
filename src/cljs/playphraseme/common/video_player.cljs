@@ -23,20 +23,21 @@
   (when cb
     (-> index index->element (.addEventListener event-name cb))))
 
+(defn ended? [index]
+  (when-let [el (index->element index)]
+    (-> el .-ended)))
+
 (defn playing? [index]
   (when-let [el (index->element index)]
-    (println
-     {
-      :current-time (-> el .-currentTime)
-      :paused (-> el .-paused)
-      :ended (-> el .-ended)
-      :ready-state (-> el .-readyState)
-      }
-     )
     (and (pos? (-> el .-currentTime))
          (not (-> el .-paused))
          (not (-> el .-ended))
          (> (-> el .-readyState) 2))))
+
+(defn jump [index position]
+  (let [el (some-> index index->element)]
+    (when el
+      (aset el "currentTime" (/ position 1000)))))
 
 (defn stop [index]
   (some-> index index->element .pause))
@@ -44,17 +45,14 @@
 (defn play [index]
   (when-let [el (some-> index index->element)]
     (when-not (playing? index)
+      (when (ended? index)
+        (jump index 0))
       (-> el .play
           (.then (fn []
                    (rf/dispatch [:autoplay-enabled true])))
           (.catch (fn [e]
                     (println ">>> error!" e (type e))
                     (rf/dispatch [:autoplay-enabled false])))))))
-
-(defn jump [index position]
-  (let [el (some-> index index->element)]
-    (when el
-      (aset el "currentTime" (/ position 1000)))))
 
 (defn enable-inline-video [index]
   (-> index index->element js/enableInlineVideo))
