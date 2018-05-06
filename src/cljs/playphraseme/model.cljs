@@ -3,6 +3,7 @@
             [playphraseme.common.localstorage :as localstorage])
   (:require-macros [re-frame-macros.core :as mcr]))
 
+(mcr/reg-sub-event :layout nil)
 (mcr/reg-sub-event :responsive-scale 1)
 (mcr/reg-sub-event :responsive-show-left-column? true)
 (mcr/reg-sub-event :responsive-show-right-column? true)
@@ -17,7 +18,6 @@
 (mcr/reg-sub-event :all-movies-count nil)
 (mcr/reg-sub :auth-data {})
 (mcr/reg-sub-event :autoplay-enabled true)
-(mcr/reg-sub-event :layout-trigger 1)
 
 (reg-event-db
  :initialize-db

@@ -383,8 +383,8 @@
                 [:span.red "Play"]
                 [:span.black "Phrase"]
                 [:span.gray ".me"]]
-               (when (and (resp/landscape?)
-                          @(rf/subscribe [:layout-trigger]))
+               (when (resp/landscape?)
+                 ^{:key [@(rf/subscribe [:layout])]}
                  [overlay-current-phrase])]]
              [:div.search-ui-container
               [search-input]]
