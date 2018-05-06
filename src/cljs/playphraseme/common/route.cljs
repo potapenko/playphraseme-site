@@ -22,6 +22,7 @@
   @(rf/subscribe [:page-params]))
 
 (defn goto-page-or-login!
+  ([page] (goto-page-or-login! page nil :basic))
   ([page checked-role] (goto-page-or-login! page nil checked-role))
   ([page params checked-role]
    (go

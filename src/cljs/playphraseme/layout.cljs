@@ -49,8 +49,7 @@
           (if (rest-api/authorized?)
             [header-button
              (str (ls :navigation.logout) " (" (:name @(rf/subscribe [:auth-data])) ")")
-             "/#/logout"
-             "fas fa-user-circle"]
+             "/#/logout" "fas fa-user-circle"]
             [header-button (ls :navigation.login.register) "/#/login" "fas fa-user-circle"]))
         (when-not (= @page :support)
           [header-button (ls :navigation.support) "/#/support" "far fa-envelope"])

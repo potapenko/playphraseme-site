@@ -66,6 +66,10 @@ body{
   box-sizing: inherit;
 }
 
+.underline {
+  text-decoration: underline;
+}
+
 .left-column {
   background-color: rgba(0,0,0,0.3);
   flex-grow: 1;

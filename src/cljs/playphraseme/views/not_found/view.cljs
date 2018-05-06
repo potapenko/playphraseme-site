@@ -1,5 +1,11 @@
-(ns playphraseme.views.not-found.view)
+(ns playphraseme.views.not-found.view
+  (:require [reagent.core :as r]))
 
 (defn page []
-  [:div "url not found"])
-
+  (r/create-class
+   {:component-did-mount
+    (fn [])
+    :reagent-render
+    (fn []
+      [:div.page-container
+       [:h1 "Page not found."]])}))

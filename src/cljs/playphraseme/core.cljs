@@ -89,19 +89,19 @@
   (route/goto-page! :article))
 
 (secretary/defroute "/support" []
-  (route/goto-page! :support))
+  (route/goto-page-or-login! :support))
 
 (secretary/defroute "/history" []
-  (route/goto-page! :history))
+  (route/goto-page-or-login! :history))
 
 (secretary/defroute "/favorites" []
-  (route/goto-page! :favorites))
+  (route/goto-page-or-login! :favorites))
 
 (secretary/defroute "/learn" []
   (route/goto-page! :learn))
 
 (secretary/defroute "/settings" []
-  (route/goto-page! :settings))
+  (route/goto-page-or-login! :settings))
 
 (secretary/defroute "/guest-tour" []
   (route/goto-page! :guest-tour))
