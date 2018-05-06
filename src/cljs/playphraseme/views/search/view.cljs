@@ -6,6 +6,7 @@
             [re-frame.core :as rf]
             [goog.crypt.base64 :as base-64]
             [playphraseme.common.util :as util]
+            [playphraseme.common.responsive :as resp]
             [playphraseme.views.search.model :as model]
             [playphraseme.common.rest-api :as rest-api]
             [playphraseme.common.video-player :as player]
@@ -180,13 +181,13 @@
         (favorites-page/reload)))))
 
 (defn play-button []
-  (if (or @(rf/subscribe [:stopped])
-          (not @(rf/subscribe [:autoplay-enabled])))
-   [:div.filter-input-icon
-    {:on-click toggle-play}
-    [:span.fa-stack
-     [:i.material-icons "play_circle_filled"]
-     [:i.material-icons "pause_circle_filled"]]]))
+  [:div.filter-input-icon
+   {:on-click toggle-play}
+   [:span.fa-stack
+    (if (or @(rf/subscribe [:stopped])
+            (not @(rf/subscribe [:autoplay-enabled])))
+      [:i.material-icons "play_circle_filled"]
+      [:i.material-icons "pause_circle_filled"])]])
 
 (defn search-input []
   [:div.filters-container
@@ -382,12 +383,15 @@
                 [:span.red "Play"]
                 [:span.black "Phrase"]
                 [:span.gray ".me"]]
-               (when @mobile?
+               (when (and (resp/landscape?)
+                          @(rf/subscribe [:layout-trigger]))
                  [overlay-current-phrase])]]
              [:div.search-ui-container
               [search-input]]
              (if-not (empty? @suggestions)
                [suggestions-list @suggestions]
                [search-results-list @phrases])
-             (when util/ios? "hello")])))})))
+             (when util/ios?
+               [:div.overlay-play-icon-bottom
+                [play-button]])])))})))
 

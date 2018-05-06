@@ -91,6 +91,7 @@
      {:style (responsive/zoom-css @scale)}
      (when @responsive-show-left-column?
        [left-column])
+     [:div.mobile-query]
      [:div.layout-main
       {:style (responsive/container-height-css @scale)}
       [header]

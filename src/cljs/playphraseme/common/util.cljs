@@ -100,9 +100,10 @@
 (defn selector [s]
   (-> s js/document.querySelector))
 
-(defn selector->elem [s]
-  (-> s selector first))
-
+(defn get-computed-style-property [el prop]
+  (-> el
+      js/window.getComputedStyle
+      (.getPropertyValue (name prop))))
 
 (defn id->elem [id]
   (-> id js/document.getElementById))

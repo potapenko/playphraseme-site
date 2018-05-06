@@ -282,6 +282,13 @@ form h1 {
 
 .overlay-play-icon-bottom {
   display: none;
+  position: absolute;
+  bottom: 200px;
+  right: 200px;
+  opacity: 0.4;
+}
+.overlay-play-icon-bottom .material-icons {
+  font-size: 225px;
 }
 
 .auto-play-info-1 {
@@ -700,6 +707,10 @@ h2 {
   padding-top: 4px;
 }
 
+.mobile-query{
+  display: none;
+}
+
 @media only screen and (max-device-width: 800px) and (orientation : portrait){
   .header-button {
     padding: 8px 12px;
@@ -765,7 +776,7 @@ h2 {
     display: none;
   }
 	.mobile-query{
-		display: box;
+		display: block;
 	}
   .header {
     display: none !important;

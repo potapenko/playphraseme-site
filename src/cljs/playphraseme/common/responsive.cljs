@@ -105,25 +105,32 @@
     (and (or util/safari? util/chrome?)) {:margin-top "6px" :width "60px"}
     :else                                {:transform (str "scale(" (/ 1 scale) ")")}))
 
+(defn landscape? []
+  (some->
+   (util/selector ".mobile-query")
+   (util/get-computed-style-property :display)
+   (= "block")))
+
 (defn update-layout []
   (let [w                  (window-width)
         show-left-column?  (and (not (mobile?)) (> w 960))
         show-right-column? (and (not (mobile?)) (> w 960))
         column-width       (if (> w 1400) 150 75)]
     (when-not (mobile?)
-        (dispatch [:responsive-scale
-                   (calculate-window-scale
-                    (+ (when show-left-column? column-width) 600 (when show-right-column? column-width))
-                    700)]))
-   (dispatch [:responsive-show-left-column? show-left-column?])
-   (dispatch [:responsive-show-right-column? show-right-column?]))
+      (dispatch [:responsive-scale
+                 (calculate-window-scale
+                  (+ (when show-left-column? column-width) 600 (when show-right-column? column-width))
+                  700)]))
+    (dispatch [:responsive-show-left-column? show-left-column?])
+    (dispatch [:responsive-show-right-column? show-right-column?]))
+  (dispatch [:layout-trigger (inc (rand-int 100000))])
   (when-not (= @(subscribe [:mobile?]) (mobile?))
     (load-local-css (if (mobile?) "mobile" "desktop"))
     (remove-local-css (if-not (mobile?) "mobile" "desktop"))
     (dispatch [:mobile? (mobile?)])))
 
-
 (defn start []
   (update-layout)
   (-> js/window (.addEventListener "resize" update-layout true))
   (util/add-prefixed-listener js/document "fullscreenchange" #(dispatch [:fullscreen (util/fullscreen?)])))
+

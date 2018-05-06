@@ -17,6 +17,7 @@
 (mcr/reg-sub-event :all-movies-count nil)
 (mcr/reg-sub :auth-data {})
 (mcr/reg-sub-event :autoplay-enabled true)
+(mcr/reg-sub-event :layout-trigger 1)
 
 (reg-event-db
  :initialize-db
