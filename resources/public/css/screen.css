@@ -280,6 +280,10 @@ form h1 {
   opacity: 0.5;
 }
 
+.overlay-play-icon-bottom {
+  display: none;
+}
+
 .auto-play-info-1 {
   font-size: 18px;
   color: rgba(255,255,255,1);
@@ -747,6 +751,12 @@ h2 {
   {
     font-size: 36px;
     color: rgba(0,0,0,0.3);
+  }
+  .overlay-play-icon {
+    display: none;
+  }
+  .overlay-play-icon-bottom {
+    display: block;
   }
 }
 

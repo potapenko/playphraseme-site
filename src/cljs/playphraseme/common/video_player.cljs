@@ -98,11 +98,10 @@
                            (when hide? {:display :none}))
           :on-click on-play-click}
          [:video.video-player
-          {:src         (:video-url phrase)
-           :autoplay    false
-           :playsInline true
-           :controls    false
-           :id          (index->id index)}]
+          {:src          (:video-url phrase)
+           :plays-inline true
+           :controls     false
+           :id           (index->id index)}]
          (when-not @(rf/subscribe [:autoplay-enabled])
            [:div.overlay-play-icon
             [:span.fa-stack.fa-1x

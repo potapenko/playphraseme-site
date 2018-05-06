@@ -127,9 +127,15 @@
   (let [classes (.-classList elem)]
     (-> classes (.remove class))))
 
-(defn ios? []
+(defn- check-navigator [rx]
   (when-let [user-agent (some-> js/window .-navigator .-userAgent)]
-    (some->> user-agent string/lower-case (re-find #"ipad|iphone") nil? not)))
+    (some->> user-agent string/lower-case (re-find rx) nil? not)))
+
+(def ios? (check-navigator #"ipad|iphone"))
+(def android? (check-navigator #"android"))
+(def windows-phone? (check-navigator #"windows phone"))
+(def safari? (check-navigator #"safari"))
+(def chrome? (check-navigator #"chrome"))
 
 (defn capitalize-first-letter [s]
   (str (-> s first string/capitalize)

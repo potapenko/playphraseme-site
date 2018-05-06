@@ -38,18 +38,8 @@
    (-> js/window .-inerHeight)
    (-> js/document.body .-clientHeight)))
 
-(defn- check-navigator [rx]
-  (when-let [user-agent (some-> js/window .-navigator .-userAgent)]
-    (some->> user-agent string/lower-case (re-find rx) nil? not)))
-
-(def ios? (check-navigator #"ipad|iphone"))
-(def android? (check-navigator #"android"))
-(def windows-phone? (check-navigator #"windows phone"))
-(def safari? (check-navigator #"safari"))
-(def chrome? (check-navigator #"chrome"))
-
 (defn mobile? []
-  (or ios? android? windows-phone?))
+  (or util/ios? util/android? util/windows-phone?))
 
 (defn get-head-html []
   (aget (js/document.querySelector "head") "innerText"))
@@ -93,7 +83,7 @@
 (defn zoom-css [scale]
   (let [h      (window-height)
         offset (-> h (* scale) (- h) (/ 2))]
-    (if (or safari? chrome?)
+    (if (or util/safari? util/chrome?)
       {:zoom scale}
       {:position  "fixed"
        :top       (str offset "px")
@@ -105,15 +95,15 @@
 
 (defn container-height-css [scale]
   (let [h (window-height)]
-    (if (or safari? chrome?)
+    (if (or util/safari? util/chrome?)
       {}
       {:height (str (-> h (/ scale)) "px")})))
 
 (defn fb-button-css [scale]
   (cond
-    (= scale 1)                {:margin-top "7px"}
-    (and (or safari? chrome?)) {:margin-top "6px" :width "60px"}
-    :else                      {:transform (str "scale(" (/ 1 scale) ")")}))
+    (= scale 1)                          {:margin-top "7px"}
+    (and (or util/safari? util/chrome?)) {:margin-top "6px" :width "60px"}
+    :else                                {:transform (str "scale(" (/ 1 scale) ")")}))
 
 (defn update-layout []
   (let [w                  (window-width)

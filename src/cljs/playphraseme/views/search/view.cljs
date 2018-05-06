@@ -88,11 +88,12 @@
     (-> elem (.scrollIntoView #js{:behavior "smooth" :block "start"}))))
 
 (defn load-favorited []
-  (when-let [{:keys [id] :as phrase} (get-current-phrase)]
-    (when-not (contains? phrase :favorited)
-      (go
-        (let [favorited (-> (<! (rest-api/get-favorite id)) nil? not)]
-          (rf/dispatch [::model/favorite-phrase id (-> favorited)]))))))
+  (when (rest-api/authorized?)
+   (when-let [{:keys [id] :as phrase} (get-current-phrase)]
+     (when-not (contains? phrase :favorited)
+       (go
+         (let [favorited (-> (<! (rest-api/get-favorite id)) nil? not)]
+           (rf/dispatch [::model/favorite-phrase id (-> favorited)])))))))
 
 (defn next-phrase []
   (rf/dispatch-sync [::model/next-phrase])
@@ -178,6 +179,15 @@
           (<! (rest-api/delete-favorite id)))
         (favorites-page/reload)))))
 
+(defn play-button []
+  (if (or @(rf/subscribe [:stopped])
+          (not @(rf/subscribe [:autoplay-enabled])))
+   [:div.filter-input-icon
+    {:on-click toggle-play}
+    [:span.fa-stack
+     [:i.material-icons "play_circle_filled"]
+     [:i.material-icons "pause_circle_filled"]]]))
+
 (defn search-input []
   [:div.filters-container
    [:input#search-input.filter-input.form-control.input-lg
@@ -186,15 +196,9 @@
      :on-change #(search-phrase (-> % .-target .-value))}]
    [:ul.filter-input-icons
     [:li [:div.search-result-count @(rf/subscribe [::model/search-count])]]
-    (when-not (util/ios?)
+    (when-not util/ios?
       [:li
-       [:div.filter-input-icon
-        {:on-click toggle-play}
-        [:span.fa-stack
-         (if (or @(rf/subscribe [:stopped])
-                 (not @(rf/subscribe [:autoplay-enabled])))
-           [:i.material-icons "play_circle_filled"]
-           [:i.material-icons "pause_circle_filled"])]]])]])
+       [play-button]])]])
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
@@ -384,5 +388,6 @@
               [search-input]]
              (if-not (empty? @suggestions)
                [suggestions-list @suggestions]
-               [search-results-list @phrases])])))})))
+               [search-results-list @phrases])
+             (when util/ios? "hello")])))})))
 
