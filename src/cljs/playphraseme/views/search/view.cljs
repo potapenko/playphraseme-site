@@ -168,13 +168,15 @@
 
 (defn favorite-current-phrase [e]
   (-> e .preventDefault)
-  (let [{:keys [id favorited]} (get-current-phrase)]
-    (rf/dispatch [::model/favorite-phrase id (not favorited)])
-    (go
-      (if-not favorited
-        (<! (rest-api/add-favorite id))
-        (<! (rest-api/delete-favorite id)))
-      (favorites-page/reload))))
+  (if-not (rest-api/authorized?)
+    (util/go-url! "/#/login")
+    (let [{:keys [id favorited]} (get-current-phrase)]
+      (rf/dispatch [::model/favorite-phrase id (not favorited)])
+      (go
+        (if-not favorited
+          (<! (rest-api/add-favorite id))
+          (<! (rest-api/delete-favorite id)))
+        (favorites-page/reload)))))
 
 (defn search-input []
   [:div.filters-container
