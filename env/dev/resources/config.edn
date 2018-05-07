@@ -1,11 +1,3 @@
-{:dev true
- ;;Twitter used as an example, replace these URIs with the OAuth provider of your choice
- :request-token-uri "https://api.twitter.com/oauth/request_token"
- :access-token-uri "https://api.twitter.com/oauth/access_token"
- :authorize-uri "https://api.twitter.com/oauth/authenticate"
- :port 3000
- :nrepl-port 7000
- :database-url "mongodb://127.0.0.1/playphraseme"
- :phrases-database-url "mongodb://127.0.0.1/playphraseme"
- :indexer-url "http://localhost:9093"
- }
+{:dev        true
+ :port       3000
+ :nrepl-port 7000}
