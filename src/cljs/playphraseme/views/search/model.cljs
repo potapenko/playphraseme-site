@@ -28,24 +28,37 @@
 (defn- get-phrase-by-id [db id]
   (->> db ::phrases (drop-while #(not= (:id %) id)) first))
 
+(defn- remove-first-phrase [phrases first-phrase]
+  (let [{:keys [id index]} first-phrase]
+    (->>
+     phrases
+     (remove (fn [e]
+               (and
+                (-> e :id (= id))
+                (-> e :index (not= 0)))))
+     vec)))
+
 (reg-event-db
  ::search-result
- (fn [db [_ value]]
+ (fn [db [_ {:keys [phrases count suggestions]}]]
    (-> db
        (assoc
-        ::phrases (:phrases value)
-        ::search-count (:count value)
+        ::phrases phrases
+        ::search-count count
         :current-phrase-index 0
         ::current-suggestion-index nil
-        ::suggestions (:suggestions value))
+        ::suggestions suggestions)
        (update ::suggestions add-indexes)
-       (update ::phrases add-phrases-indexes))))
+       (update ::phrases add-phrases-indexes)
+       (update ::phrases remove-first-phrase (first phrases)))))
 
 (reg-event-db
  ::search-result-append
  (fn [db [_ value]]
    (-> db
-       (update ::phrases concat (:phrases value))
+       (update ::phrases concat (-> value
+                                    :phrases
+                                    (remove-first-phrase (-> db :phrases first))))
        (update ::phrases add-phrases-indexes))))
 
 (reg-event-db

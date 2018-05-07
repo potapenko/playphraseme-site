@@ -25,7 +25,7 @@
 
 (defn toggle-play []
   (let [index @(rf/subscribe [:current-phrase-index])]
-    (if (not @(rf/subscribe [:autoplay-enabled]))
+    (if (false? @(rf/subscribe [:autoplay-enabled]))
       (player/play index)
       (let [now-stopped? @(rf/subscribe [:stopped])]
         (if now-stopped?
@@ -185,7 +185,7 @@
    {:on-click toggle-play}
    [:span.fa-stack
     (if (or @(rf/subscribe [:stopped])
-            (not @(rf/subscribe [:autoplay-enabled])))
+            (false? @(rf/subscribe [:autoplay-enabled])))
       [:i.material-icons "play_circle_filled"]
       [:i.material-icons "pause_circle_filled"])]])
 

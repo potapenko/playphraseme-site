@@ -51,8 +51,10 @@
           (.then (fn []
                    (rf/dispatch [:autoplay-enabled true])))
           (.catch (fn [e]
-                    (println ">>> error!" e (type e))
-                    (rf/dispatch [:autoplay-enabled false])))))))
+                    (go
+                      (<! (timeout 1000))
+                      (when-not @(rf/subscribe [:autoplay-enabled])
+                        (rf/dispatch [:autoplay-enabled false])))))))))
 
 (defn enable-inline-video [index]
   (-> index index->element js/enableInlineVideo))
@@ -102,7 +104,7 @@
            :plays-inline true
            :controls     false
            :id           (index->id index)}]
-         (when-not @(rf/subscribe [:autoplay-enabled])
+         (when (false? @(rf/subscribe [:autoplay-enabled]))
            [:div.overlay-play-icon
             [:span.fa-stack.fa-1x
              [:i.fa.fa-circle.fa-stack-2x]
