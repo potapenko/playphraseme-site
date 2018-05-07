@@ -244,6 +244,7 @@ form h1 {
   height: 340px;
   text-align: center;
   overflow: hidden;
+	transition: opacity 0.4s ease-in-out;
 }
 
 .video-player {

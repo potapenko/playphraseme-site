@@ -75,7 +75,7 @@
       (let [{:keys [hide? stopped? phrase
                     on-load on-pause on-play on-load-start
                     on-end on-pos-changed]} (r/props this)
-            index                           (:index phrase)
+            {:keys [index]}                 phrase
             autoplay                        (not (or stopped? hide?))]
 
         (enable-inline-video index)
@@ -93,11 +93,12 @@
         (if autoplay
           (play index))))
     :reagent-render
-    (fn [{:keys [phrase hide? stopped? mobile on-play-click]}]
+    (fn [{:keys [phrase hide? stopped? mobile on-play-click] :as props}]
+      (println "render:" (dissoc props :phrase))
       (let [{:keys [index video_info]} phrase]
         [:div.video-player-box
          {:style    (merge {:opacity (if hide? 0 1)}
-                           (when hide? {:display :none}))
+                           #_(when hide? {:display :none}))
           :on-click on-play-click}
          [:video.video-player
           {:src          (:video-url phrase)
