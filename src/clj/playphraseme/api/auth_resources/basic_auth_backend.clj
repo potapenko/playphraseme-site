@@ -9,9 +9,7 @@
    eiter name or email as an identifier we will query for both and check
    for a match."
   [identifier]
-  (let [registered-user-name (users/get-registered-user-by-name identifier)
-        registered-user-email    (users/get-registered-user-by-email identifier)
-        registered-user          (first (remove nil? [registered-user-name registered-user-email]))]
+  (let [registered-user (users/get-registered-user-by-email identifier)]
     (when-not (nil? registered-user)
       {:user-data (-> registered-user
                       (assoc-in [:name] (str (:name registered-user)))
@@ -27,10 +25,8 @@
    valid user email in the name field. It is a little strange but to adhere
    to legacy basic auth api of using name:password we have to make the
    field do double duty."
-  [request, auth-data]
-  (let [identifier  (:name auth-data)
-        password    (:password auth-data)
-        user-info   (get-user-info identifier)]
+  [request {:keys [username password]}]
+  (let [user-info   (get-user-info username)]
     (if (and user-info (hashers/check password (:password user-info)))
       (:user-data user-info)
       false)))

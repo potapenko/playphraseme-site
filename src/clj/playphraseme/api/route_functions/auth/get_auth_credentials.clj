@@ -12,7 +12,7 @@
         refresh-token (str (java.util.UUID/randomUUID))
         _             (users/update-registered-user-refresh-token! (:id user) refresh-token)]
     (respond/ok {:id            (:id user)
-                 :name      (:name user)
+                 :name          (:name user)
                  :permissions   (:permissions user)
                  :token         (create-token user)
                  :refresh-token refresh-token})))

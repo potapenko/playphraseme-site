@@ -13,7 +13,7 @@
    [re-frame-macros.core :as mcr :refer [let-sub]]))
 
 (defn form-data []
-  [@(rf/subscribe [::model/name])
+  [@(rf/subscribe [::model/email])
    @(rf/subscribe [::model/password])])
 
 (defn form-completed? []
@@ -26,11 +26,13 @@
   (-> e .preventDefault)
   (clear-error!)
   (when (form-completed?)
-    (let [[name password] (form-data)]
+    (let [[email password] (form-data)]
       (go
-        (let [res (<! (rest-api/auth name password))]
+        (let [res (<! (rest-api/auth email password))]
           (if (error? res)
-            (rf/dispatch [::model/error-message (-> res :body :error)]))))))
+            (rf/dispatch [::model/error-message
+                          (-> res :body :error)])
+            (util/go-url! "/#/"))))))
   false)
 
 (defn page []
@@ -52,7 +54,7 @@
                      :value       (-> (form-data) first)
                      :on-change   (fn [e]
                                     (clear-error!)
-                                    (rf/dispatch [::model/name (-> e .-target .-value)]))
+                                    (rf/dispatch [::model/email (-> e .-target .-value)]))
                      :auto-focus  true}]]]
     [:div.d-flex
      [:input.input {:type        "password"

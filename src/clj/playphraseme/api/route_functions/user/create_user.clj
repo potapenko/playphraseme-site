@@ -18,15 +18,13 @@
 (defn create-user-response
   "Generate response for user creation"
   [email name password]
-  (let [name-query   (users/get-registered-user-by-name name)
-        email-query      (users/get-registered-user-by-email email)
-        email-exists?    (not-empty email-query)
-        name-exists? (not-empty name-query)]
+  (let [name-query    (users/get-registered-user-by-name name)
+        email-query   (users/get-registered-user-by-email email)
+        email-exists? (not-empty email-query)]
     (cond
-      (and name-exists? email-exists?) (respond/conflict {:error "name and Email already exist"})
-      name-exists?                     (respond/conflict {:error "name already exists"})
-      (-> password count (< 5))            (respond/conflict {:error "Password - 5 symbols minimum"})
-      (-> password string/blank?)          (respond/conflict {:error "Password is empty"})
-      email-exists?                        (respond/conflict {:error "Email already exists"})
-      :else                                (create-new-user email name password))))
+      email-exists?               (respond/conflict {:error "Email already exist"})
+      (-> password count (< 5))   (respond/conflict {:error "Password - 5 symbols minimum"})
+      (-> password string/blank?) (respond/conflict {:error "Password is empty"})
+      email-exists?               (respond/conflict {:error "Email already exists"})
+      :else                       (create-new-user email name password))))
 

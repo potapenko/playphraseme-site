@@ -12,13 +12,13 @@
   "Specify routes for Authentication functions"
   (context "/api/v1/auth" []
 
-           (GET "/"             {:as request}
+           (GET "/"       {:as request}
            :tags          ["Auth"]
            :return        {:id String :name String :permissions [String] :token String :refresh-token String}
            :header-params [authorization :- String]
            :middleware    [basic-auth-mw cors-mw authenticated-mw]
            :summary       "Returns auth info given a name and password in the '`Authorization`' header."
-           :description   "Authorization header expects '`Basic name:password`' where `name:password`
+           :description   "Authorization header expects '`Basic username:password`' where `name:password`
                            is base64 encoded. To adhere to basic auth standards we have to use a field called
                            `name` however we will accept a valid name or email as a value for this key."
            (auth-credentials-response request))

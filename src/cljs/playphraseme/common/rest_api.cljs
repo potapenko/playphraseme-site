@@ -64,7 +64,7 @@
    (auth* (http/get "/api/v1/session" (api-headers))))
   ([name password]
    (logout)
-   (auth* (http/get "/api/v1/auth" {:basic-auth {:name name :password password}}))))
+   (auth* (http/get "/api/v1/auth" {:basic-auth {:username name :password password}}))))
 
 (defn authorized? []
   @(rf/subscribe [:logged?]))
