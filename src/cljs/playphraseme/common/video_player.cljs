@@ -94,7 +94,6 @@
           (play index))))
     :reagent-render
     (fn [{:keys [phrase hide? stopped? mobile on-play-click] :as props}]
-      (println "render:" (dissoc props :phrase))
       (let [{:keys [index video_info]} phrase]
         [:div.video-player-box
          {:style    (merge {:opacity (if hide? 0 1)}
