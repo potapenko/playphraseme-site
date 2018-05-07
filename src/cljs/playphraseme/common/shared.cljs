@@ -6,7 +6,7 @@
             [reagent.core :as r]
             [re-frame.core :as rf]
             [playphraseme.common.util :as util]
-            [playphraseme.common.ui :as ui]
+            [playphraseme.common.ui :as ui :refer [flexer spacer]]
             [playphraseme.views.search.model :as model]
             [playphraseme.common.rest-api :as rest-api]
             [playphraseme.views.favorites.view :as favorites-page]
@@ -16,10 +16,25 @@
    [cljs.core.async.macros :refer [go go-loop]]
    [re-frame-macros.core :as mcr :refer [let-sub]]))
 
+(defn facebook-like-button []
+  (let-sub [scale :responsive-scale]
+    [:div.fb-like
+     {:style {:transform "scale3d(3,3,1)"
+              :margin "70px 22px 70px 77px"}
+      :data-share      "false"
+      :data-show-faces "false"
+      :data-size       "large"
+      :data-width      "100"
+      :data-action     "like"
+      :data-layout     "button"
+      :data-href       "https://www.facebook.com/playphrase/"}]))
+
 (defn under-construction []
   [:div.under-contsuction
    "Page Under Construction."
    [ui/spacer 16]
-   [:div "At the moment, this functionality is available on the "
-    [:a.underline {:href ""}
-     "old version of our site."]]])
+   [:div "Functionality will be ready for several days. You can support us with like :)"]
+   [:div {:style {:display "flex" :flex-direction "row"}}
+    [flexer]
+    [facebook-like-button]
+    [flexer]]])
