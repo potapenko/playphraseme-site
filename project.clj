@@ -82,7 +82,6 @@
   :resource-paths ["resources" "target/cljsbuild"]
   :target-path "target/%s/"
   :main ^:skip-aot playphraseme.core
-
   :plugins [[lein-cprop "1.0.3"]
             [lein-cljsbuild "1.1.5"]
             [lein-figwheel "0.5.14"]
