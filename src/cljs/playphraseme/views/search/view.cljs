@@ -307,6 +307,7 @@
   [:div#search-result.search-results-container
    {:on-scroll #(util/on-scroll-end % scroll-end)}
    [:table.table.phrase-table.borderless
+    {:class (util/class->str (when-not (resp/mobile?) "table-hover"))}
     [:tbody
      (doall
       (for [x phrases]
