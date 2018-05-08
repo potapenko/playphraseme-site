@@ -306,7 +306,7 @@
 (defn search-results-list [phrases]
   [:div#search-result.search-results-container
    {:on-scroll #(util/on-scroll-end % scroll-end)}
-   [:table.table.table-hover.phrase-table.borderless
+   [:table.table.phrase-table.borderless
     [:tbody
      (doall
       (for [x phrases]
