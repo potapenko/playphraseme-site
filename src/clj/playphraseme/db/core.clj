@@ -8,7 +8,9 @@
             [mount.core :as mount]))
 
 (defstate db*
-  :start (-> env :database-url mg/connect-via-uri)
+  :start (do
+           (println "db url:" (-> env :database-url))
+          (-> env :database-url mg/connect-via-uri))
   :stop (-> db* :conn mg/disconnect))
 
 (defstate db
