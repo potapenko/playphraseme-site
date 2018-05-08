@@ -49,11 +49,13 @@
         (jump index 0))
       (-> el .play
           (.then (fn []
+                   (rf/dispatch [:playing true])
                    (rf/dispatch [:autoplay-enabled true])))
           (.catch (fn [e]
                     (go
-                      (<! (timeout 1000))
+                      (<! (timeout 400))
                       (when-not @(rf/subscribe [:autoplay-enabled])
+                        (rf/dispatch [:playing false])
                         (rf/dispatch [:autoplay-enabled false])))))))))
 
 (defn enable-inline-video [index]
@@ -93,11 +95,13 @@
         (if autoplay
           (play index))))
     :reagent-render
-    (fn [{:keys [phrase hide? stopped? mobile on-play-click] :as props}]
+    (fn [{:keys [hide? stopped? phrase
+                 on-load on-pause on-play on-load-start
+                 on-end on-pos-changed on-play-click]}]
       (let [{:keys [index video_info]} phrase]
         [:div.video-player-box
          {:style    (merge {:opacity (if hide? 0 1)}
-                           #_(when hide? {:display :none}))
+                           (when hide? {:display :none}))
           :on-click on-play-click}
          [:video.video-player
           {:src          (:video-url phrase)

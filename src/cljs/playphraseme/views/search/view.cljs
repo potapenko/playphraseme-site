@@ -12,6 +12,7 @@
             [playphraseme.common.video-player :as player]
             [playphraseme.views.favorites.view :as favorites-page]
             [playphraseme.common.phrases :as phrases]
+            [playphraseme.common.ga :as ga]
             [playphraseme.common.nlp :as nlp])
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]
@@ -22,6 +23,10 @@
 (defn play []
   (rf/dispatch [:stopped false])
   (player/play @(rf/subscribe [:current-phrase-index])))
+
+(defn play-ios []
+  (let [index @(rf/subscribe [:current-phrase-index])]
+    (player/play index)))
 
 (defn toggle-play []
   (let [index @(rf/subscribe [:current-phrase-index])]
@@ -51,6 +56,7 @@
          (go
            (reset! scroll-loaded 0)
            (let [res (<! (rest-api/search-phrase text 10 0))]
+             (ga/track (str "/#/search=q=" text))
              (when (= id @search-id)
                (rf/dispatch-sync [::model/search-result
                                   (if first-phrase
@@ -188,6 +194,12 @@
             (false? @(rf/subscribe [:autoplay-enabled])))
       [:i.material-icons "play_circle_filled"]
       [:i.material-icons "pause_circle_filled"])]])
+
+(defn play-button-mobile []
+  [:div.filter-input-icon
+   {:on-click play-ios}
+   [:span.fa-stack
+    [:i.material-icons "play_circle_filled"]]])
 
 (defn search-input []
   [:div.filters-container
@@ -336,10 +348,14 @@
                  ^{:key (str "phrase-" index "-" id)}
                  [player/video-player {:phrase         x
                                        :hide?          (not= @current-phrase-index index)
-                                       :on-play        #(scroll-to-phrase index)
-                                       :on-pause       #(rf/dispatch [:stopped true])
+                                       :on-play        (fn []
+                                                         (scroll-to-phrase index))
+                                       :on-pause       (fn []
+                                                         (rf/dispatch [:stopped true]))
                                        :on-play-click  toggle-play
-                                       :on-end         next-phrase
+                                       :on-end         (fn []
+                                                         (rf/dispatch [:playing false])
+                                                         (next-phrase))
                                        :on-pos-changed update-current-word
                                        :stopped?       @stopped}]))
               [:div.video-overlay {:class (util/class->str (when @stopped :stopped))}
@@ -391,7 +407,7 @@
              (if-not (empty? @suggestions)
                [suggestions-list @suggestions]
                [search-results-list @phrases])
-             (when util/ios?
+             (when (and util/ios? (not @(rf/subscribe [:playing])))
                [:div.overlay-play-icon-bottom
-                [play-button]])])))})))
+                [play-button-mobile]])])))})))
 

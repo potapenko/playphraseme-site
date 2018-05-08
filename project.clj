@@ -86,6 +86,7 @@
             [lein-cljsbuild "1.1.5"]
             [lein-figwheel "0.5.14"]
             [lein-immutant "2.1.0"]
+            [lein-dotenv "RELEASE"]
             [lein-midje "3.1.3"]]
   :clean-targets ^{:protect false}
   [:target-path [:cljsbuild :builds :app :compiler :output-dir] [:cljsbuild :builds :app :compiler :output-to]]

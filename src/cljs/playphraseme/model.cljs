@@ -18,6 +18,7 @@
 (mcr/reg-sub-event :all-movies-count nil)
 (mcr/reg-sub :auth-data {})
 (mcr/reg-sub-event :autoplay-enabled nil)
+(mcr/reg-sub-event :playing false)
 
 (reg-event-db
  :initialize-db

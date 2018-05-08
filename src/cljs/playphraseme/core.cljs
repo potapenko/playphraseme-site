@@ -20,6 +20,7 @@
             [playphraseme.views.learn.view :as learn-page]
             [playphraseme.layout :as layout]
             [playphraseme.model]
+            [playphraseme.common.ga :as ga]
             [playphraseme.common.responsive :as responsive]
             [playphraseme.common.phrases :as phrases]
             [playphraseme.common.rest-api :as rest-api])
@@ -130,5 +131,6 @@
   (rf/dispatch-sync [:initialize-db])
   (hook-browser-navigation!)
   (responsive/start)
+  (ga/start)
   (rest-api/authorize!)
   (mount-components))
