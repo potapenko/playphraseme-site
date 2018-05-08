@@ -56,7 +56,7 @@
          (go
            (reset! scroll-loaded 0)
            (let [res (<! (rest-api/search-phrase text 10 0))]
-             (ga/track (str "/#/search=q=" text))
+             ;; (ga/track (str "/#/search=q=" text))
              (when (= id @search-id)
                (rf/dispatch-sync [::model/search-result
                                   (if first-phrase

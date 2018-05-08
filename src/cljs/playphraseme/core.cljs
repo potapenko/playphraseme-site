@@ -131,6 +131,6 @@
   (rf/dispatch-sync [:initialize-db])
   (hook-browser-navigation!)
   (responsive/start)
-  (ga/start)
+  ;; (ga/start)
   (rest-api/authorize!)
   (mount-components))
