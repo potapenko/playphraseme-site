@@ -12,6 +12,7 @@
   (some-> object-id .getTime c/from-long))
 
 (defn str->id [s]
+  (println ">>>>" s)
   (ObjectId. s))
 
 (defn stringify-id [obj]
