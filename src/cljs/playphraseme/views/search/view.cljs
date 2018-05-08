@@ -24,10 +24,6 @@
   (rf/dispatch [:stopped false])
   (player/play @(rf/subscribe [:current-phrase-index])))
 
-(defn play-ios []
-  (let [index @(rf/subscribe [:current-phrase-index])]
-    (player/play index)))
-
 (defn toggle-play []
   (let [index @(rf/subscribe [:current-phrase-index])]
     (if (false? @(rf/subscribe [:autoplay-enabled]))
@@ -197,7 +193,7 @@
 
 (defn play-button-mobile []
   [:div.filter-input-icon
-   {:on-click play-ios}
+   {:on-click play}
    [:span.fa-stack
     [:i.material-icons "play_circle_filled"]]])
 
@@ -408,7 +404,8 @@
              (if-not (empty? @suggestions)
                [suggestions-list @suggestions]
                [search-results-list @phrases])
-             (when (and util/ios? (not @(rf/subscribe [:playing])))
+             (when (and (resp/mobile?)
+                        (not @(rf/subscribe [:playing])))
                [:div.overlay-play-icon-bottom
                 [play-button-mobile]])])))})))
 
