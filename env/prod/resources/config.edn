@@ -1,2 +1,9 @@
 {:production true
- :port       8080}
+ :port       8080
+
+ :facebook-client-id     "<env variable>"
+ :facebook-client-secret "<env variable>"
+ :facebook-callback-uri  "<env variable>"
+ :database-url           "<env variable>"
+ :phrases-database-url   "<env variable>"
+ :indexer-url            "<env variable>"}

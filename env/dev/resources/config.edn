@@ -1,3 +1,10 @@
 {:dev        true
- :port       8080
- :nrepl-port 7000}
+ :port       3000
+ :nrepl-port 7000
+
+ :facebook-client-id     "<env variable>"
+ :facebook-client-secret "<env variable>"
+ :facebook-callback-uri  "<env variable>"
+ :database-url           "<env variable>"
+ :phrases-database-url   "<env variable>"
+ :indexer-url            "<env variable>"}
