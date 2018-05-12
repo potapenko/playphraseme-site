@@ -8,4 +8,4 @@ Server - Luminus (Clojure).
 
 Client - reagent/re-frame (ClojureScript).
 
-Old site built on angular.js and node.js (2014)
+Old site was built on angular.js and node.js (2014)
