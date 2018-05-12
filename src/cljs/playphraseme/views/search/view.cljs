@@ -198,12 +198,6 @@
       [:i.material-icons "play_circle_filled"]
       [:i.material-icons "pause_circle_filled"])]])
 
-(defn play-button-mobile []
-  [:div.filter-input-icon
-   {:on-click play}
-   [:span.fa-stack
-    [:i.material-icons "play_circle_filled"]]])
-
 (defn search-input []
   [:div.filters-container
    [:input#search-input.filter-input.form-control.input-lg
@@ -414,5 +408,5 @@
              (when (and (resp/mobile?)
                         (not @(rf/subscribe [:playing])))
                [:div.overlay-play-icon-bottom
-                [play-button-mobile]])])))})))
+                [play-button]])])))})))
 

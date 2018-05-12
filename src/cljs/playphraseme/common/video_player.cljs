@@ -51,12 +51,12 @@
           (.then (fn []
                    (rf/dispatch [:playing true])
                    (rf/dispatch [:autoplay-enabled true])))
-          (.catch (fn [e]
-                    (go
-                      (<! (timeout 400))
-                      (when-not @(rf/subscribe [:autoplay-enabled])
-                        (rf/dispatch [:playing false])
-                        (rf/dispatch [:autoplay-enabled false])))))))))
+          (.catch (fn [e])))
+      (go
+        (<! (timeout 400))
+        (when-not @(rf/subscribe [:autoplay-enabled])
+          (rf/dispatch [:playing false])
+          (rf/dispatch [:autoplay-enabled false]))))))
 
 (defn enable-inline-video [index]
   (-> index index->element js/enableInlineVideo))
