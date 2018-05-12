@@ -43,20 +43,25 @@
   (some-> index index->element .pause))
 
 (defn play [index]
-  (when-let [el (some-> index index->element)]
-    (when-not (playing? index)
-      (when (ended? index)
-        (jump index 0))
-      (-> el .play
-          (.then (fn []
-                   (rf/dispatch [:playing true])
-                   (rf/dispatch [:autoplay-enabled true])))
-          (.catch (fn [e])))
-      (go
-        (<! (timeout 400))
-        (when-not @(rf/subscribe [:autoplay-enabled])
-          (rf/dispatch [:playing false])
-          (rf/dispatch [:autoplay-enabled false]))))))
+  (let [success (atom false)]
+    (when-let [el (some-> index index->element)]
+      (when-not (playing? index)
+        (when (ended? index)
+          (jump index 0))
+        (println "play")
+
+        (-> el .play
+            (.then (fn []
+                     (println "play success")
+                     (reset! success true)
+                     (rf/dispatch [:playing true])
+                     (rf/dispatch [:autoplay-enabled true])))
+            (.catch (fn [e])))
+        (go
+          (when-not @success
+            (println "play error")
+            (rf/dispatch [:playing false])
+            (rf/dispatch [:autoplay-enabled false])))))))
 
 (defn enable-inline-video [index]
   (-> index index->element js/enableInlineVideo))
