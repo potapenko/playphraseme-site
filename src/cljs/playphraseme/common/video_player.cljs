@@ -48,18 +48,14 @@
       (when-not (playing? index)
         (when (ended? index)
           (jump index 0))
-        (println "play")
-
         (-> el .play
             (.then (fn []
-                     (println "play success")
                      (reset! success true)
                      (rf/dispatch [:playing true])
                      (rf/dispatch [:autoplay-enabled true])))
             (.catch (fn [e])))
         (go
           (when-not @success
-            (println "play error")
             (rf/dispatch [:playing false])
             (rf/dispatch [:autoplay-enabled false])))))))
 
