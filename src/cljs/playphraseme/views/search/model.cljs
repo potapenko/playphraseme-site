@@ -12,9 +12,14 @@
 (mcr/reg-sub-event ::current-word-index 0)
 (mcr/reg-sub ::current-suggestion-index nil)
 
-(mcr/reg-sub-event :stopped false)
+(mcr/reg-sub-event :playing false)
+(mcr/reg-sub-event :stopped true)
 (mcr/reg-sub-event :search-text "")
 (mcr/reg-sub-event :current-phrase-index nil)
+(mcr/reg-sub-event :autoplay-enabled nil)
+(mcr/reg-sub-event :first-search true)
+(mcr/reg-event-update :search-count 0 inc)
+(mcr/reg-sub :search-count 0)
 
 (defn- add-indexes [coll]
   (->> coll (map-indexed (fn [i e] (assoc e :index i))) vec))

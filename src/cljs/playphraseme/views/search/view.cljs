@@ -54,6 +54,13 @@
            (let [res (<! (rest-api/search-phrase text 10 0))]
              ;; (ga/track (str "/#/search=q=" text))
              (when (= id @search-id)
+               (when (= id @search-id)
+                 (when (and
+                        @(rf/subscribe [:first-search])
+                        (pos? @(rf/subscribe [:search-count])))
+                   (rf/dispatch [:first-search false])
+                   (rf/dispatch [:stopped false])))
+               (rf/dispatch [:search-count])
                (rf/dispatch-sync [::model/search-result
                                   (if first-phrase
                                     (if-let [first-phrase-info (<! (rest-api/get-phrase first-phrase))]
