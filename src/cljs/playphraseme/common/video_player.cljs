@@ -29,6 +29,11 @@
 
 (defn playing? [index]
   (when-let [el (index->element index)]
+    #_(println
+     {:current-time (-> el .-currentTime)
+      :paused       (-> el .-paused)
+      :ended        (-> el .-ended)
+      :ready-state  (-> el .-readyState)})
     (and (pos? (-> el .-currentTime))
          (not (-> el .-paused))
          (not (-> el .-ended))
@@ -42,19 +47,28 @@
 (defn stop [index]
   (some-> index index->element .pause))
 
+(def play-count (atom 0))
+
 (defn play [index]
-  (let [success (atom false)]
+  (let [success (r/atom false)
+        c       (swap! play-count inc)]
     (when-let [el (some-> index index->element)]
       (when-not (playing? index)
         (when (ended? index)
           (jump index 0))
+        (println c "play")
         (-> el .play
             (.then (fn []
                      (reset! success true)
                      (rf/dispatch [:playing true])
                      (rf/dispatch [:autoplay-enabled true])))
-            (.catch (fn [e])))
+            (.catch (fn [e]
+                      (if (->> e .-message (re-find #"pause"))
+                        (do
+                         (reset! success true))
+                        (reset! success false)))))
         (go
+          (<! (timeout 1000))
           (when-not @success
             (rf/dispatch [:playing false])
             (rf/dispatch [:autoplay-enabled false])))))))
