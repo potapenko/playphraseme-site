@@ -56,17 +56,16 @@
       (when-not (playing? index)
         (when (ended? index)
           (jump index 0))
-        (println c "play")
         (-> el .play
             (.then (fn []
                      (reset! success true)
                      (rf/dispatch [:playing true])
                      (rf/dispatch [:autoplay-enabled true])))
             (.catch (fn [e]
-                      (if (->> e .-message (re-find #"pause"))
-                        (do
-                         (reset! success true))
-                        (reset! success false)))))
+                      (reset! success
+                              (->> e .-message
+                                   (re-find #"pause")
+                                   nil? not)))))
         (go
           (<! (timeout 1000))
           (when-not @success

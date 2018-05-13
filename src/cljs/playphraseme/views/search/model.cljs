@@ -70,9 +70,11 @@
  ::next-phrase
  (fn [db [_]]
    (let [current       (:current-phrase-index db)
-         count-phrases (-> db ::phrases count)]
+         count-phrases (-> db ::phrases count)
+         next-current  (inc current)]
      (assoc db
-            :current-phrase-index (min (dec count-phrases) (inc current))))))
+            :current-phrase-index (if (> next-current (dec count-phrases))
+                                    0 next-current)))))
 
 (reg-event-db
  ::prev-phrase
