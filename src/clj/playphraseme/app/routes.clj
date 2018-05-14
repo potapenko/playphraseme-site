@@ -7,7 +7,7 @@
 
 (defn home-page []
   (layout/render "home.html"
-                 {:facebook-app-id (:facebook-client-id env)}))
+                {:facebook-app-id (:facebook-client-id env)}))
 
 (defroutes home-routes
   (GET "/" []

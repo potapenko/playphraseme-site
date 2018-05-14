@@ -773,43 +773,43 @@ h2 {
 }
 
 @media only screen and (max-device-width : 800px) and (orientation : landscape){
-  .video-overlay-menu{
-    display: none;
-  }
-	.mobile-query{
-		display: block;
-	}
-  .header {
-    display: none !important;
-  }
-  .search-ui-container{
-    display: none !important;
-  }
-  body {
+  body.ios {
     background-color: black !important;
     position: relative !important;
     overflow: hidden !important;
   }
-  .search-container {
+  .ios .video-overlay-menu{
+    display: none;
+  }
+  .ios .mobile-query{
+    display: block;
+  }
+  .ios .header {
+    display: none !important;
+  }
+  .ios .search-ui-container{
+    display: none !important;
+  }
+  .ios .search-container {
     position: absolute;
     left: 0px; right: 0px; bottom: 0px; top: 0px !important;
     background-color: white;
     overflow: hidden !important;
   }
-  .video-player-container {
+  .ios .video-player-container {
     position: absolute;
     left: 0px; right: 0px; bottom: 0px; top: 0px !important;
   }
-  .video-player {
+  .ios .video-player {
     height: 100% !important;
     margin: 0px auto !important;
-	  transition: opacity 0.4s ease-in-out;
+    transition: opacity 0.4s ease-in-out;
   }
-  .overlay-play-icon {
+  .ios .overlay-play-icon {
     font-size: 35px !important;
     top: 40px;
   }
-  .currrent-pharase-container-landscape {
+  .ios .currrent-pharase-container-landscape {
     display: block !important;
     position: absolute;
     bottom: 45px;
@@ -820,18 +820,17 @@ h2 {
     background-color: rgba(255,255,255,0.3);
     box-shadow: 0 0 5px 0 rgba(0,0,0,0.3);
   }
-  .s-word {
+  .ios .s-word {
     color: black !important;
   }
-  .s-word {
+  .ios .s-word {
     color: rgba(0,0,0,0.7) !important;
   }
-  .s-word-played {
+  .ios .s-word-played {
     color: rgba(255,255,255,0.7) !important;
     background-color: rgba(0,0,0,0.8) !important;
   }
-  .overlay-logo {
+  .ios .overlay-logo {
     display: block;
   }
 }
-

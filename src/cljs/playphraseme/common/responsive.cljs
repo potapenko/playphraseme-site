@@ -38,8 +38,7 @@
    (-> js/window .-inerHeight)
    (-> js/document.body .-clientHeight)))
 
-(defn mobile? []
-  (or util/ios? util/android? util/windows-phone?))
+(def mobile? (or util/ios? util/android? util/windows-phone?))
 
 (defn get-head-html []
   (aget (js/document.querySelector "head") "innerText"))

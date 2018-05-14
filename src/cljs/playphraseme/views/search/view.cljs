@@ -206,7 +206,7 @@
      :on-change #(search-phrase (-> % .-target .-value))}]
    [:ul.filter-input-icons
     [:li [:div.search-result-count @(rf/subscribe [::model/search-count])]]
-    (when-not util/ios?
+    (when-not resp/mobile?
       [:li
        [play-button]])]])
 
@@ -304,7 +304,7 @@
   [:div#search-result.search-results-container
    {:on-scroll #(util/on-scroll-end % scroll-end)}
    [:table.table.phrase-table.borderless
-    {:class (util/class->str (when-not (resp/mobile?) "table-hover"))}
+    {:class (util/class->str (when-not resp/mobile? "table-hover"))}
     [:tbody
      (doall
       (for [x phrases]
@@ -405,8 +405,10 @@
              (if-not (empty? @suggestions)
                [suggestions-list @suggestions]
                [search-results-list @phrases])
-             (when (and (resp/mobile?)
+             (when (and resp/mobile?
                         (not @(rf/subscribe [:playing])))
                [:div.overlay-play-icon-bottom
                 [play-button]])])))})))
+
+
 

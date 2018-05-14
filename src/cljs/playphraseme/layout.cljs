@@ -99,3 +99,10 @@
        current-page]]
      (when @responsive-show-right-column?
        [right-column])]))
+
+(comment
+  (rf/subscribe [:responsive-scale])
+
+
+
+  )
