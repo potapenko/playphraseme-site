@@ -90,10 +90,10 @@
            [:div.layout-container
             {:style (resp/zoom-css @scale)
              :class (util/class->str
+                     (when resp/ios? :ios)
                      (when resp/android? :android)
                      (when resp/safari? :safari)
-                     (when resp/chrome? :chrome)
-                     (when resp/ios? :ios))}
+                     (when resp/chrome? :chrome))}
             (when @responsive-show-left-column?
               [left-column])
             [:div.mobile-query]
