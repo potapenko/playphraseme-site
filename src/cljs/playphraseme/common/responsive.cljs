@@ -126,7 +126,7 @@
         show-left-column?  (and (not mobile?) (> w 960))
         show-right-column? (and (not mobile?) (> w 960))
         column-width       (if (> w 1400) 150 75)
-        scale              (if (mobile?)
+        scale              (if mobile?
                              1
                              (calculate-window-scale
                               (+ (when show-left-column? column-width) 600 (when show-right-column? column-width))
@@ -135,10 +135,10 @@
     (dispatch [:layout {:width w :hight h :scale scale}])
     (dispatch [:responsive-show-left-column? show-left-column?])
     (dispatch [:responsive-show-right-column? show-right-column?]))
-  (when-not (= @(subscribe [:mobile?]) (mobile?))
-    (load-local-css (if (mobile?) "mobile" "desktop"))
-    (remove-local-css (if-not (mobile?) "mobile" "desktop"))
-    (dispatch [:mobile? (mobile?)])))
+  (when-not (= @(subscribe [:mobile?]) mobile?)
+    (load-local-css (if mobile? "mobile" "desktop"))
+    (remove-local-css (if-not mobile? "mobile" "desktop"))
+    (dispatch [:mobile? mobile?])))
 
 (defn start []
   (update-layout)
