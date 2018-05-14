@@ -38,7 +38,17 @@
    (-> js/window .-inerHeight)
    (-> js/document.body .-clientHeight)))
 
-(def mobile? (or util/ios? util/android? util/windows-phone?))
+(defn- check-navigator [rx]
+  (when-let [user-agent (some-> js/window .-navigator .-userAgent)]
+    (some->> user-agent string/lower-case (re-find rx) nil? not)))
+
+(def ios? (check-navigator #"ipad|iphone"))
+(def android? (check-navigator #"android"))
+(def windows-phone? (check-navigator #"windows phone"))
+(def safari? (check-navigator #"safari"))
+(def chrome? (check-navigator #"chrome"))
+
+(def mobile? (or ios? android? windows-phone?))
 
 (defn get-head-html []
   (aget (js/document.querySelector "head") "innerText"))

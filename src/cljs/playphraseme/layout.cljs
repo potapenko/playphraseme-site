@@ -9,7 +9,7 @@
             [playphraseme.common.phrases :as phrases]
             [playphraseme.common.rest-api :as rest-api]
             [playphraseme.model]
-            [playphraseme.common.responsive :as responsive])
+            [playphraseme.common.responsive :as resp])
   (:require-macros
    [re-frame-macros.core :as mcr :refer [let-sub]]
    [cljs.core.async.macros :refer [go go-loop]]))
@@ -23,7 +23,7 @@
 (defn facebook-like-button []
   (let-sub [scale :responsive-scale]
            [:div.fb-like
-            {:style (responsive/fb-button-css @scale)
+            {:style (resp/fb-button-css @scale)
              :data-share      "false"
              :data-show-faces "false"
              :data-size       "small"
@@ -88,17 +88,20 @@
             :responsive-show-left-column?
             :responsive-show-right-column?]
            [:div.layout-container
-            {:style (responsive/zoom-css @scale)}
+            {:style (resp/zoom-css @scale)
+             :class (util/class->str
+                     (when resp/android? :android)
+                     (when resp/safari? :safari)
+                     (when resp/chrome? :chrome)
+                     (when resp/ios? :ios))}
             (when @responsive-show-left-column?
               [left-column])
             [:div.mobile-query]
             [:div.layout-main
-             {:style (responsive/container-height-css @scale)}
+             {:style (resp/container-height-css @scale)}
              [header]
              [:div.current-page-container
               current-page]]
             (when @responsive-show-right-column?
               [right-column])]))
 
-(comment
-  (rf/subscribe [:responsive-scale]))
