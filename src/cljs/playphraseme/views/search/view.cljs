@@ -405,8 +405,10 @@
              (if-not (empty? @suggestions)
                [suggestions-list @suggestions]
                [search-results-list @phrases])
-             (when (and resp/mobile?
-                        (not @(rf/subscribe [:playing])))
+             (when-not
+                 (or
+                  (not resp/mobile?)
+                  (and util/ios? (rf/subscribe [:playing])))
                [:div.overlay-play-icon-bottom
                 [play-button]])])))})))
 
