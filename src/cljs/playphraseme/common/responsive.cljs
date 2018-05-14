@@ -123,8 +123,8 @@
 (defn update-layout []
   (let [w                  (window-width)
         h                  (window-height)
-        show-left-column?  (and (not (mobile?)) (> w 960))
-        show-right-column? (and (not (mobile?)) (> w 960))
+        show-left-column?  (and (not mobile?) (> w 960))
+        show-right-column? (and (not mobile?) (> w 960))
         column-width       (if (> w 1400) 150 75)
         scale              (if (mobile?)
                              1
