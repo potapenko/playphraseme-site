@@ -5,6 +5,7 @@
             [re-frame.core :as rf]
             [cljs.core.async :as async :refer [<! >! put! chan timeout]]
             [playphraseme.common.util :as util]
+            [playphraseme.common.shared :as shared]
             [playphraseme.common.rest-api :as rest-api :refer [success? error?]]
             [playphraseme.views.support.model :as model])
   (:require-macros
@@ -31,7 +32,8 @@
           (rf/dispatch [::model/error-message (:error res)])))))
   false)
 
-(defn page []
+
+#_(defn page []
   [:form {:on-submit on-send}
    [:div.page-title "Send message to us"]
    [:div
@@ -52,3 +54,12 @@
     [:button.form-button {:type "submit" :disabled (not (form-completed?))} "Send message"]
     [:div.grow]]])
 
+(defn page []
+  (r/create-class
+   {:component-did-mount
+    (fn [])
+    :reagent-render
+    (fn []
+      [:div.page-container
+       [:h1 "Support page"]
+       [shared/under-construction]])}))
