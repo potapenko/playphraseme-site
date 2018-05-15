@@ -778,7 +778,7 @@ h2 {
 
 @media only screen and (max-device-width : 800px) and (orientation : landscape){
   body.ios{
-    background-color: black;
+    background-color: black !important;
   }
   .ios .layout-container {
     background-color: black !important;
