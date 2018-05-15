@@ -67,9 +67,7 @@
                                       (if (phrases/phrase? first-phrase-info)
                                        (update res :phrases
                                                (fn [ex]
-                                                 (if first-phrase-info
-                                                   (concat [first-phrase-info] ex)
-                                                   ex)))
+                                                 (concat [first-phrase-info] ex)))
                                        res))
                                     res)])
                (load-favorited)))))))

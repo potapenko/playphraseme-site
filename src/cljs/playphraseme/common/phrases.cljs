@@ -34,7 +34,7 @@
   (util/go-url! (str "#/search?q=" (random-bad-phrase))))
 
 (defn phrase? [obj]
-  (contains? obj :words))
+  (some-> obj (contains? :words)))
 
 (comment
   (search-random-phrase)
