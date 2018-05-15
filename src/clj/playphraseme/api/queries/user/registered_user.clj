@@ -1,6 +1,6 @@
 (ns playphraseme.api.queries.user.registered-user
   (:require [playphraseme.api.general-functions.doc-id :refer :all]
-            [playphraseme.db.core :refer :all]))
+            [playphraseme.db.users-db :refer :all]))
 
 (def coll "users")
 

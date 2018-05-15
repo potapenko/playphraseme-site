@@ -1,7 +1,7 @@
 (ns playphraseme.api.queries.user.link-auth-tokens
   (:require [monger.collection :as mc]
             [mount.core :as mount]
-            [playphraseme.db.core :refer :all]))
+            [playphraseme.db.users-db :refer :all]))
 
 (declare migrations)
 

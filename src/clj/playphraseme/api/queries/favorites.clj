@@ -1,11 +1,11 @@
 (ns playphraseme.api.queries.favorites
-  (:require [monger.core :as mg]
-            [mount.core :as mount]
-            [monger.collection :as mc]
+  (:require [monger.collection :as mc]
+            [monger.core :as mg]
             [monger.operators :refer :all]
+            [mount.core :as mount]
             [playphraseme.api.general-functions.doc-id :refer :all]
-            [playphraseme.db.core :refer :all]
-            [playphraseme.api.queries.phrases :as phrases]))
+            [playphraseme.api.queries.phrases :as phrases]
+            [playphraseme.db.users-db :refer :all]))
 
 (def coll "favoritePhrase")
 

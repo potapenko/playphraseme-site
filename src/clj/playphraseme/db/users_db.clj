@@ -1,4 +1,4 @@
-(ns playphraseme.db.core
+(ns playphraseme.db.users-db
   (:require [monger.core :as mg]
             [monger.collection :as mc]
             [monger.query :as q]

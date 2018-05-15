@@ -1,6 +1,6 @@
 (ns playphraseme.common.debug-util
   (:require [clojure.string :as string]
-            [playphraseme.db.core :as db]))
+            [playphraseme.db.users-db :as db]))
 
 (defmacro ... [& vars]
   (let [vars (if (-> vars first vector?) (first vars) vars)]

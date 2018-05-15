@@ -1,15 +1,15 @@
 (ns playphraseme.core
-  (:require [playphraseme.app.handler :as handler]
-            [luminus.repl-server :as repl]
-            [luminus.http-server :as http]
-            [playphraseme.app.config :refer [env]]
-            [cider.nrepl :refer [cider-nrepl-handler]]
+  (:gen-class)
+  (:require [cider.nrepl :refer [cider-nrepl-handler]]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.tools.logging :as log]
-            [playphraseme.api.core]
-            [playphraseme.db.core]
-            [mount.core :as mount])
-  (:gen-class))
+            [luminus.http-server :as http]
+            [luminus.repl-server :as repl]
+            [mount.core :as mount]
+            playphraseme.api.core
+            [playphraseme.app.config :refer [env]]
+            [playphraseme.app.handler :as handler]
+            playphraseme.db.users-db))
 
 (def cli-options
   [["-p" "--port PORT" "Port number"

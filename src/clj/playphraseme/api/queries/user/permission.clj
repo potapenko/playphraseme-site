@@ -1,5 +1,5 @@
 (ns playphraseme.api.queries.user.permission
-  (:require [playphraseme.db.core :refer :all]))
+  (:require [playphraseme.db.users-db :refer :all]))
 
 (def coll "permissions")
 

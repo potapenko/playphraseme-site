@@ -2,7 +2,7 @@
   (:require [clj-time.coerce :as c]
             [clj-time.core :as t]
             [playphraseme.common.dates-util :as date-util]
-            [playphraseme.db.core :refer :all]))
+            [playphraseme.db.users-db :refer :all]))
 
 (def coll "password_reset_keys")
 
