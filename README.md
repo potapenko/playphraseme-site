@@ -42,4 +42,4 @@ Old site was built on angular.js and node.js (2014)
 
 ## Лицензия
 
-Copy rights © Playphrase.me
+Copyrights © Playphrase.me
