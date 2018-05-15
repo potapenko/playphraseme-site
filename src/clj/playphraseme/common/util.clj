@@ -30,3 +30,8 @@
                     (if (and (map? x) (contains? x scope))
                       (update x :words remove-keys [:id])
                       x)) obj)))
+
+(defn update-dafault [m k v]
+  (if-not (contains? m k)
+    (assoc m k v)
+    m))
