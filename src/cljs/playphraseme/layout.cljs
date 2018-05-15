@@ -83,25 +83,32 @@
 (defn right-column []
   [:div.right-column ""])
 
-(defn root [current-page]
+(defn root []
   (let-sub [scale :responsive-scale
             :responsive-show-left-column?
             :responsive-show-right-column?]
-           [:div.layout-container
-            {:style (resp/zoom-css @scale)
-             :class (util/class->str
-                     (when resp/ios? :ios)
-                     (when resp/android? :android)
-                     (when resp/safari? :safari)
-                     (when resp/chrome? :chrome))}
-            (when @responsive-show-left-column?
-              [left-column])
-            [:div.mobile-query]
-            [:div.layout-main
-             {:style (resp/container-height-css @scale)}
-             [header]
-             [:div.current-page-container
-              current-page]]
-            (when @responsive-show-right-column?
-              [right-column])]))
+    (r/create-class
+     {:component-did-mount
+      (fn []
+        (when resp/ios?
+         (util/add-class (util/selector "body") "ios")))
+      :reagent-render
+      (fn [current-page]
+       [:div.layout-container
+        {:style (resp/zoom-css @scale)
+         :class (util/class->str
+                 (when resp/ios? :ios)
+                 (when resp/android? :android)
+                 (when resp/safari? :safari)
+                 (when resp/chrome? :chrome))}
+        (when @responsive-show-left-column?
+          [left-column])
+        [:div.mobile-query]
+        [:div.layout-main
+         {:style (resp/container-height-css @scale)}
+         [header]
+         [:div.current-page-container
+          current-page]]
+        (when @responsive-show-right-column?
+          [right-column])])})))
 

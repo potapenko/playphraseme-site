@@ -33,6 +33,9 @@
 (defn search-random-bad-phrase []
   (util/go-url! (str "#/search?q=" (random-bad-phrase))))
 
+(defn phrase? [obj]
+  (contains? obj :words))
+
 (comment
   (search-random-phrase)
 

@@ -63,13 +63,14 @@
                (rf/dispatch [:search-count])
                (rf/dispatch-sync [::model/search-result
                                   (if first-phrase
-                                    (if-let [first-phrase-info (<! (rest-api/get-phrase first-phrase))]
-                                      (update res :phrases
-                                              (fn [ex]
-                                                (if first-phrase-info
-                                                  (concat [first-phrase-info] ex)
-                                                  ex)))
-                                      res)
+                                    (let [first-phrase-info (<! (rest-api/get-phrase first-phrase))]
+                                      (if (phrases/phrase? first-phrase-info)
+                                       (update res :phrases
+                                               (fn [ex]
+                                                 (if first-phrase-info
+                                                   (concat [first-phrase-info] ex)
+                                                   ex)))
+                                       res))
                                     res)])
                (load-favorited)))))))
    (rf/dispatch [:search-text text])))
@@ -193,8 +194,10 @@
   [:div.filter-input-icon
    {:on-click toggle-play}
    [:span.fa-stack
-    (if (or @(rf/subscribe [:stopped])
-            (false? @(rf/subscribe [:autoplay-enabled])))
+    (if (or
+         resp/ios?
+         @(rf/subscribe [:stopped])
+         (false? @(rf/subscribe [:autoplay-enabled])))
       [:i.material-icons "play_circle_filled"]
       [:i.material-icons "pause_circle_filled"])]])
 
@@ -408,7 +411,7 @@
              (when-not
                  (or
                   (not resp/mobile?)
-                  (and util/ios? (rf/subscribe [:playing])))
+                  (and util/ios? @(rf/subscribe [:playing])))
                [:div.overlay-play-icon-bottom
                 [play-button]])])))})))
 

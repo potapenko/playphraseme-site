@@ -60,6 +60,9 @@ body{
   left: 0px; right: 0px; bottom: 0px; top: 0px;
 }
 
+#app{
+}
+
 *,
 *:before,
 *:after {
@@ -104,6 +107,7 @@ form h1 {
   display: flex;
   flex-direction: row;
   align-items: stretch;
+  background-color: white;
 }
 
 .layout-main {
@@ -773,6 +777,9 @@ h2 {
 }
 
 @media only screen and (max-device-width : 800px) and (orientation : landscape){
+  body.ios{
+    background-color: black;
+  }
   .ios .layout-container {
     background-color: black !important;
     position: relative !important;
