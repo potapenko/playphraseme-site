@@ -33,7 +33,7 @@ Server - Luminus (Clojure). Client - reagent/re-frame (ClojureScript).
 
 ## Оптимизация для мобильных устройств
 
-
+todo
 
 ## Старая версия
 
