@@ -9,7 +9,8 @@
             [playphraseme.app.config :refer [env]]
             [playphraseme.api.route-functions.user.create-user :refer [create-new-user]]
             [playphraseme.api.general-functions.user.create-token :refer [create-token]]
-            [playphraseme.api.queries.user.registered-user :as users]))
+            [playphraseme.api.queries.user.registered-user :as users]
+            [clojure.tools.logging :as log]))
 
 (defn facebook-auth-response []
   (resp/redirect
@@ -26,6 +27,7 @@
              :grant-type         "authorization_code"})))))
 
 (defn facebook-auth-callback-response [code]
+  (log/info "Facebook callback:" code)
   (let [{:keys [facebook-callback-uri
                 facebook-client-id
                 facebook-client-secret]} env
@@ -36,16 +38,20 @@
                                                      :client_secret facebook-client-secret
                                                      :code          code}})
                          :body (parser/parse-string keyword) :access_token)
+        _            (log/info "   access token:" access-token)
         user-details (-> (client/get "https://graph.facebook.com/me"
                                      {:query-params {:access_token access-token
                                                      :fields       "id,name,email"}})
                          :body (parser/parse-string keyword))]
 
+    (log/info "   user details:" user-details)
     (let [{:keys [id email name]} user-details]
       (when-not (users/get-registered-user-by-email email)
+        (log/info "   register new user")
         (create-new-user email name (str (java.util.UUID/randomUUID))))
 
       (let [user  (users/get-registered-user-by-email email)
             token (create-token user)]
+        (log/info "   redirect" token)
         (resp/redirect (str "/#/auth?auth-token=" token))))))
 
