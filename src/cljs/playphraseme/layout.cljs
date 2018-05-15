@@ -21,7 +21,7 @@
    [:a.header-button {:href href} label]))
 
 (defn facebook-like-button []
-  (let-sub [scale :responsive-scale]
+  #_(let-sub [scale :responsive-scale]
            [:div.fb-like
             {:style (resp/fb-button-css @scale)
              :data-share      "false"
