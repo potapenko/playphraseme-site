@@ -1,4 +1,1 @@
-{:sources {:media   ["https://cdn.playphrase.me"
-                     "http://uk7.internet-radio.com"
-                     "http://uk7.internet-radio.com:8000"
-                     "http://uk7.internet-radio.com:8000/stream"]}}
+{:sources {:media   "*"}}
