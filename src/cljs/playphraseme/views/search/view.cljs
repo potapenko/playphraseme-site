@@ -208,15 +208,19 @@
   (update-music-volume)
   [:div.d-flex.d-row
    [:div
-    {:style {:opacity 0.3}}
+    {:on-click #(rf/dispatch [::model/audio-muted (not muted)])
+     :style {:opacity .3}}
     [:i.material-icons "audiotrack"]]
-   [:div
-    {:on-click #(rf/dispatch [::model/audio-volume (max 0 (- volume .1))])}
-    [:i.material-icons.audio-control "volume_down"]]
-   [:div.music-volume (util/format "%10.1f" volume)]
-   [:div
-    {:on-click #(rf/dispatch [::model/audio-volume (min 1 (+ volume .1))])}
-    [:i.material-icons.audio-control "volume_up"]]])
+   (when-not muted
+    [:div
+     {:on-click #(rf/dispatch [::model/audio-volume (max 0 (- volume .1))])}
+     [:i.material-icons.audio-control "volume_down"]])
+   (when-not muted
+    [:div.music-volume (util/format "%10.1f" volume)])
+   (when-not muted
+    [:div
+     {:on-click #(rf/dispatch [::model/audio-volume (min 1 (+ volume .1))])}
+     [:i.material-icons.audio-control "volume_up"]])])
 
 (defn search-input []
   [:div.filters-container
