@@ -20,6 +20,8 @@
 (mcr/reg-sub-event :first-search true)
 (mcr/reg-event-update :search-count 0 inc)
 (mcr/reg-sub :search-count 0)
+(mcr/reg-sub-event ::audio-muted false)
+(mcr/reg-sub-event ::audio-volume .5)
 
 (defn- add-indexes [coll]
   (->> coll (map-indexed (fn [i e] (assoc e :index i))) vec))

@@ -2,6 +2,8 @@
   (:require [clojure.string :as string]
             [cljs.core.async :as async :refer [<! >! put! chan timeout]]
             [clojure.walk :as walk]
+            [goog.string :as gstring]
+            [goog.string.format]
             [camel-snake-kebab.core :as keb :refer [->camelCase ->kebab-case ->kebab-case-keyword]]
             [cljs.pprint :refer [pprint]]
             [goog.crypt.base64 :as base-64]
@@ -221,6 +223,12 @@
     (when (>= (+ oh st th) sh)
       #_(println "load new")
       (cb))))
+
+(defn format
+  "Formats a string using goog.string.format.
+   e.g: (format \"Cost: %.2f\" 10.0234)"
+  [fmt & args]
+  (apply gstring/format fmt args))
 
 (comment
   (or-str nil "" "hello" "world")

@@ -189,15 +189,34 @@
         (favorites-page/reload)))))
 
 (defn play-button []
-  [:div.filter-input-icon
+  [:div
    {:on-click toggle-play}
-   [:span.fa-stack
-    (if (or
-         resp/ios?
-         @(rf/subscribe [:stopped])
-         (false? @(rf/subscribe [:autoplay-enabled])))
-      [:i.material-icons "play_circle_filled"]
-      [:i.material-icons "pause_circle_filled"])]])
+   (if (or
+        resp/ios?
+        @(rf/subscribe [:stopped])
+        (false? @(rf/subscribe [:autoplay-enabled])))
+     [:i.material-icons "play_circle_filled"]
+     [:i.material-icons "pause_circle_filled"])])
+
+(defn- update-music-volume []
+  (let-sub [::model/audio-volume
+            ::model/audio-muted]
+   (some-> (util/selector "#music-player")
+           (aset "volume" (if @audio-muted 0 @audio-volume)))))
+
+(defn audio-volume-control [muted volume]
+  (update-music-volume)
+  [:div.d-flex.d-row
+   [:div
+    {:style {:opacity 0.3}}
+    [:i.material-icons "audiotrack"]]
+   [:div
+    {:on-click #(rf/dispatch [::model/audio-volume (max 0 (- volume .1))])}
+    [:i.material-icons.audio-control "volume_down"]]
+   [:div.music-volume (util/format "%10.1f" volume)]
+   [:div
+    {:on-click #(rf/dispatch [::model/audio-volume (min 1 (+ volume .1))])}
+    [:i.material-icons.audio-control "volume_up"]]])
 
 (defn search-input []
   [:div.filters-container
@@ -206,10 +225,19 @@
      :value     @(rf/subscribe [:search-text])
      :on-change #(search-phrase (-> % .-target .-value))}]
    [:ul.filter-input-icons
-    [:li [:div.search-result-count @(rf/subscribe [::model/search-count])]]
+    [:li
+     [:div.search-result-count @(rf/subscribe [::model/search-count])]]
     (when-not resp/mobile?
       [:li
-       [play-button]])]])
+       [play-button]])
+    [:li
+     [audio-volume-control
+      @(rf/subscribe [::model/audio-muted])
+      @(rf/subscribe [::model/audio-volume])]
+     [:audio {:id        "music-player"
+              :src       "http://uk7.internet-radio.com:8000/stream"
+              :auto-play true
+              :controls  false}]]]])
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
@@ -331,6 +359,7 @@
       :component-did-mount
       (fn [this]
         (util/add-document-listener "keyup" work-with-keys)
+        (update-music-volume)
         (focus-input))
       :reagent-render
       (fn []

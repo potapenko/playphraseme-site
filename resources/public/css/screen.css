@@ -282,7 +282,10 @@ form h1 {
   right: 20px;
   top: 20px;
   color: black;
-  opacity: 0.5;
+}
+
+.overlay-play-icon .material-icons{
+  opacity: 0.3 !important;
 }
 
 .overlay-play-icon-bottom {
@@ -294,6 +297,16 @@ form h1 {
 }
 .overlay-play-icon-bottom .material-icons {
   font-size: 225px;
+}
+
+.audio-control {
+  padding-top: 4px;
+  font-size: 18px !important;
+}
+
+.music-volume {
+  padding: 4px;
+  opacity: 0.3;
 }
 
 .auto-play-info-1 {
@@ -524,7 +537,7 @@ word, word:active, word:focus{
 }
 
 .search-result-count{
-	margin-right: 6px;
+	margin: 0px 6px 4px;
 	font-weight: bold;
 	opacity: .3;
 }
