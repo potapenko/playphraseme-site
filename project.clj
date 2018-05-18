@@ -61,6 +61,7 @@
                  [ring-basic-authentication "1.0.5"]
                  [lib-noir "0.9.9"]
                  [clj-oauth2 "0.2.0"]
+                 [malcontent "0.1.0-SNAPSHOT"]
 
                  ;; custom cljs
 

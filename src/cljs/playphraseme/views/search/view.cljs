@@ -201,26 +201,30 @@
 (defn- update-music-volume []
   (let-sub [::model/audio-volume
             ::model/audio-muted]
-   (some-> (util/selector "#music-player")
-           (aset "volume" (if @audio-muted 0 @audio-volume)))))
+    (let [audio-muted (or @audio-muted @(rf/subscribe [:stopped]))]
+     (some-> (util/selector "#music-player")
+             (aset "volume" (if audio-muted 0 @audio-volume))))))
 
 (defn audio-volume-control [muted volume]
   (update-music-volume)
-  [:div.d-flex.d-row
-   [:div
-    {:on-click #(rf/dispatch [::model/audio-muted (not muted)])
-     :style {:opacity .3}}
-    [:i.material-icons "audiotrack"]]
-   (when-not muted
+  (let [muted (or muted @(rf/subscribe [:stopped]))]
+   [:div.d-flex.d-row
     [:div
-     {:on-click #(rf/dispatch [::model/audio-volume (max 0 (- volume .1))])}
-     [:i.material-icons.audio-control "volume_down"]])
-   (when-not muted
-    [:div.music-volume (util/format "%10.1f" volume)])
-   (when-not muted
-    [:div
-     {:on-click #(rf/dispatch [::model/audio-volume (min 1 (+ volume .1))])}
-     [:i.material-icons.audio-control "volume_up"]])])
+     {:on-click (fn []
+                  (when-not @(rf/subscribe [:stopped])
+                    (rf/dispatch [::model/audio-muted (not muted)])))
+      :style {:opacity .3}}
+     [:i.material-icons "audiotrack"]]
+    (when-not muted
+      [:div
+       {:on-click #(rf/dispatch [::model/audio-volume (max 0 (- volume .1))])}
+       [:i.material-icons.audio-control "volume_down"]])
+    (when-not muted
+      [:div.music-volume (util/format "%10.1f" volume)])
+    (when-not muted
+      [:div
+       {:on-click #(rf/dispatch [::model/audio-volume (min 1 (+ volume .1))])}
+       [:i.material-icons.audio-control "volume_up"]])]))
 
 (defn search-input []
   [:div.filters-container
@@ -239,7 +243,7 @@
       @(rf/subscribe [::model/audio-muted])
       @(rf/subscribe [::model/audio-volume])]
      [:audio {:id        "music-player"
-              :src       "http://uk7.internet-radio.com:8000/stream"
+              :src "http://uk7.internet-radio.com:8000/stream"
               :auto-play true
               :controls  false}]]]])
 

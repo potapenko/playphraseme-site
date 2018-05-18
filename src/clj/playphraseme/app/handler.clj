@@ -8,7 +8,9 @@
             [playphraseme.app.middleware :as middleware]
             [playphraseme.app.routes :refer [home-routes]]
             [playphraseme.env :refer [defaults]]
-            [ring.middleware.gzip :refer :all]))
+            [malcontent.middleware :refer [add-content-security-policy]]
+            [ring.middleware.gzip :refer :all]
+            [clojure.java.io :as io]))
 
 (mount/defstate init-app
   :start ((or (:init defaults) identity))
@@ -24,10 +26,14 @@
    (-> #'home-routes
        (wrap-routes middleware/wrap-csrf)
        (wrap-routes middleware/wrap-formats)
-       middleware/wrap-base)
+       middleware/wrap-base
+       (add-content-security-policy :config-path "policy.edn"))
    (route/not-found
     (:body
      (error-page {:status 404
                   :title  "page not found"})))))
 
 (defn app [] #'app-routes)
+
+
+
