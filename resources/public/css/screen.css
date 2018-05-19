@@ -291,8 +291,8 @@ form h1 {
 .overlay-play-icon-bottom {
   display: none;
   position: absolute;
-  bottom: 200px;
-  right: 200px;
+  bottom: 10px;
+  right: 10px;
   opacity: 0.4;
 }
 .overlay-play-icon-bottom .material-icons {

@@ -244,7 +244,7 @@
        @(rf/subscribe [::model/audio-muted])
        @(rf/subscribe [::model/audio-volume])]
       [:audio {:id        "music-player"
-               :src "http://uk7.internet-radio.com:8000/stream"
+               :src       "http://uk7.internet-radio.com:8000/stream"
                :auto-play true
                :controls  false}]])]])
 
