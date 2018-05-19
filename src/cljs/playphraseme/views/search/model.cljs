@@ -1,6 +1,7 @@
 (ns playphraseme.views.search.model
   (:require [re-frame.core :refer [dispatch reg-event-db reg-sub]]
             [playphraseme.common.localstorage :refer [model-store-md]]
+            [playphraseme.common.util :as util]
             [cljs.core.async :as async :refer [<! >! put! chan timeout]])
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]
@@ -20,7 +21,7 @@
 (mcr/reg-sub-event :first-search true)
 (mcr/reg-event-update :search-count 0 inc)
 (mcr/reg-sub :search-count 0)
-(mcr/md-reg-sub-event [model-store-md] ::audio-muted false)
+(mcr/md-reg-sub-event [model-store-md] ::audio-muted util/mobile?)
 (mcr/md-reg-sub-event [model-store-md] ::audio-volume .5)
 
 (defn- add-indexes [coll]

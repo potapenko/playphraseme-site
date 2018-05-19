@@ -238,14 +238,15 @@
     (when-not resp/mobile?
       [:li
        [play-button]])
-    [:li
-     [audio-volume-control
-      @(rf/subscribe [::model/audio-muted])
-      @(rf/subscribe [::model/audio-volume])]
-     [:audio {:id        "music-player"
-              :src "http://uk7.internet-radio.com:8000/stream"
-              :auto-play true
-              :controls  false}]]]])
+    (when-not util/mobile?
+     [:li
+      [audio-volume-control
+       @(rf/subscribe [::model/audio-muted])
+       @(rf/subscribe [::model/audio-volume])]
+      [:audio {:id        "music-player"
+               :src "http://uk7.internet-radio.com:8000/stream"
+               :auto-play true
+               :controls  false}]])]])
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)

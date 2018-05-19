@@ -140,6 +140,8 @@
 (def safari? (check-navigator #"safari"))
 (def chrome? (check-navigator #"chrome"))
 
+(def mobile? (or ios? android? windows-phone?))
+
 (defn capitalize-first-letter [s]
   (str (-> s first string/capitalize)
        (->> s rest (apply str))))
