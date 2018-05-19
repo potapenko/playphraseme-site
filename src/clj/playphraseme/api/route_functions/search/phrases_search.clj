@@ -45,7 +45,8 @@
     (ok (some-> res :body (parse-string true) (update :phrases get-phrases)))))
 
 (defn phrase-response [id]
-  (ok (get-phrase-data id)))
+  (ok (util/nil-when-throw
+       (get-phrase-data id))))
 
 (defn count-response [q]
   (let [url (str (:indexer-url env) "/count")

@@ -35,3 +35,9 @@
   (if-not (contains? m k)
     (assoc m k v)
     m))
+
+(defmacro nil-when-throw [& body]
+  `(try
+    ~@body
+    (catch Throwable e#
+      nil)))

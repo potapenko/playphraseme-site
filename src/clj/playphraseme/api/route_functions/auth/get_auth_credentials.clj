@@ -1,7 +1,8 @@
 (ns playphraseme.api.route-functions.auth.get-auth-credentials
   (:require [playphraseme.api.general-functions.user.create-token :refer [create-token]]
             [playphraseme.api.queries.user.registered-user :as users]
-            [ring.util.http-response :as respond]))
+            [ring.util.http-response :as respond]
+            [playphraseme.common.util :as util]))
 
 (defn auth-credentials-response
   "Generate response for get requests to /api/v1/auth. This route requires basic
@@ -22,6 +23,7 @@
   "Generate response for get requests to /api/v1/session."
   [request]
   (let [user (:identity request)]
-    (respond/ok (assoc (select-keys user [:id :name :permissions :refresh-token])
-                       :token (create-token user)))))
+    (respond/ok (util/nil-when-throw
+                 (assoc (select-keys user [:id :name :permissions :refresh-token])
+                        :token (create-token user))))))
 
