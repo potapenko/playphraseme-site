@@ -409,17 +409,17 @@
                  [:i.material-icons "featured_play_list"]
                  [:div.info-text "Favorited"]
                  [:div.info-text "Pharases"]]
-                [:li
+                #_[:li
                  {:on-click #(util/go-url! "/#/history")}
                  [:i.material-icons "search"]
                  [:div.info-text "Search"]
                  [:div.info-text "History"]]
-                [:li
+                #_[:li
                  {:on-click #(util/go-url! "/#/learn")}
                  [:i.material-icons "school"]
                  [:div.info-text "Learn"]
                  [:div.info-text "Phrases"]]
-                [:li
+                #_[:li
                  {:on-click #(util/go-url! "/#/settings")}
                  [:i.material-icons "settings"]
                  [:div.info-text "Your"]
