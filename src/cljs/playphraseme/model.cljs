@@ -21,7 +21,9 @@
 (reg-event-db
  :initialize-db
  (fn [_ _]
-   {:page :search}))
+   (merge
+    {:page :search}
+    (localstorage/load-model))))
 
 (reg-event-db
  :set-active-page

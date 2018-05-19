@@ -31,7 +31,7 @@
                   before  (-> context :coeffects :db)
                   after   (-> context :effects :db)
                   [_ d _] (clojure.data/diff before after)]
-              (set-item! :model-storage
+              (set-item! ::model-storage
                          (transit/write (transit/writer :json)
                                         (merge stored d))))
             context)))
