@@ -97,16 +97,18 @@
 (reg-event-db
  ::next-suggestion
  (fn [db [_]]
-   (let [current       (::current-suggestion-index db)
+   (let [current           (::current-suggestion-index db)
          count-suggestions (-> db ::suggestions count)]
      (if (nil? current)
        (assoc db ::current-suggestion-index 0)
-       (assoc db ::current-suggestion-index (min (dec count-suggestions) (inc current)))))))
+       (assoc db ::current-suggestion-index (min
+                                             (dec count-suggestions)
+                                             (inc current)))))))
 
 (reg-event-db
  ::prev-suggestion
  (fn [db [_]]
-   (let [current       (::current-suggestion-index db)
+   (let [current           (::current-suggestion-index db)
          count-suggestions (-> db ::suggestions count)]
      (if (nil? current)
        (assoc db ::current-suggestion-index 0)
