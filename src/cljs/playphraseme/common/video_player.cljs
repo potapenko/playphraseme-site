@@ -56,7 +56,11 @@
       (when-not (playing? index)
         (when (ended? index)
           (jump index 0))
-        (some-> "#music-player" util/selector .play)
+        (when-let [audio (some-> "#music-player" util/selector)]
+          (aset audio "volume" 1)
+          (-> audio .play
+              (.then (fn [] (println "audio success") ))
+              (.catch (fn [e] (println "audio error" e)))))
         (-> el .play
             (.then (fn []
                      (reset! success true)

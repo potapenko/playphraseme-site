@@ -22,7 +22,7 @@
 (mcr/reg-event-update :search-count 0 inc)
 (mcr/reg-sub :search-count 0)
 (mcr/md-reg-sub-event [model-store-md] ::audio-muted util/mobile?)
-(mcr/md-reg-sub-event [model-store-md] ::audio-volume 0.4)
+(mcr/md-reg-sub-event [model-store-md] ::audio-volume 0.3)
 
 (defn- add-indexes [coll]
   (->> coll (map-indexed (fn [i e] (assoc e :index i))) vec))
