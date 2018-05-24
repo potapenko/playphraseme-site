@@ -56,6 +56,7 @@
       (when-not (playing? index)
         (when (ended? index)
           (jump index 0))
+        (some-> "#music-player" util/selector .play)
         (-> el .play
             (.then (fn []
                      (reset! success true)
