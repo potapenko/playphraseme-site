@@ -1,9 +1,5 @@
 (ns playphraseme.api.queries.favorites
-  (:require [monger.collection :as mc]
-            [monger.core :as mg]
-            [monger.operators :refer :all]
-            [mount.core :as mount]
-            [playphraseme.api.general-functions.doc-id :refer :all]
+  (:require [playphraseme.api.general-functions.doc-id :refer :all]
             [playphraseme.api.queries.phrases :as phrases]
             [playphraseme.db.users-db :refer :all]))
 
@@ -36,7 +32,6 @@
   (update-doc-by-id coll (str->id favorite-id) user-data))
 
 (defn delete-favorite!
-  "Delete a single user matching provided id"
   [^String favorite-id]
   (delete-doc-by-id coll (str->id favorite-id)))
 

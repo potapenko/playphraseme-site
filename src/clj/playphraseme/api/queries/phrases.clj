@@ -1,11 +1,6 @@
 (ns playphraseme.api.queries.phrases
-  (:require [monger.core :as mg]
-            [mount.core :as mount]
-            [monger.collection :as mc]
-            [monger.operators :refer :all]
-            [playphraseme.app.config :refer [env]]
-            [playphraseme.db.phrases-db :refer :all]
-            [playphraseme.api.general-functions.doc-id :refer :all]))
+  (:require [playphraseme.api.general-functions.doc-id :refer :all]
+            [playphraseme.db.phrases-db :refer :all]))
 
 (def coll "phrases")
 
@@ -24,7 +19,6 @@
   (update-doc-by-id coll (str->id phrase-id) user-data))
 
 (defn delete-phrase!
-  "Delete a single user matching provided id"
   [^String phrase-id]
   (delete-doc-by-id coll (str->id phrase-id)))
 
