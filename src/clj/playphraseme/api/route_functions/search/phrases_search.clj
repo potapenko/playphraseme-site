@@ -6,6 +6,7 @@
             [cheshire.core :refer :all]
             [playphraseme.common.util :as util]
             [playphraseme.api.queries.phrases :as db]
+            [playphraseme.api.queries.search-strings :as search-strings]
             [clojure.string :as string]
             [clojure.pprint :refer [pprint]]
             [noir.response :as resp]
@@ -71,11 +72,6 @@
 ;;     (fn [out-stream]
 ;;       ))))
 
-(defn fix-search-phrase
-  ""
-  []
-  )
-
 (defn video-download-response [id]
   (-> id
       get-video-url
@@ -83,7 +79,29 @@
       (assoc-in [:headers "Content-Disposition"]
                 (format "attachment; filename=\"%s\"" (get-video-file id)))))
 
+(defn fix-search-string [id]
+  (let [doc (search-strings/get-search-string-by-id id)]
+    (-> doc
+        (update :text (fn [t]
+                        (-> t
+                            (string/replace "\"" "")
+                            (string/trim))))
+        search-strings/update-search-string!)))
+
+(defn update-all-search-strings []
+  (let [c (search-strings/count-all)]
+
+
+    ))
+
 (comment
+
+  (fix-search-string "55bf95c5d18e85856832e9d0")
+
+
+
+
+
   (time (count-response "hello"))
   (time (search-response "hello" 0 10))
   (-> (search-response "hello" 0 1) :body)
