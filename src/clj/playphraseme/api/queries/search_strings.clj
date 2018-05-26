@@ -1,6 +1,7 @@
 (ns playphraseme.api.queries.search-strings
   (:require [playphraseme.api.general-functions.doc-id :refer :all]
             [mount.core :as mount]
+            [monger.collection :as mc]
             [playphraseme.db.phrases-db :refer :all]))
 
 (def coll "searchString")
@@ -8,6 +9,7 @@
 (defn start []
   (mc/ensure-index db coll {:validCount 1})
   (mc/ensure-index db coll {:text 1})
+  (mc/ensure-index db coll {:needRecalculate 1})
   (mc/ensure-index db coll {:text 1 :validCount 1}))
 
 (mount/defstate migrations
@@ -38,4 +40,5 @@
 (defn find-search-strings
   ([pred] (find-search-strings pred 0 10))
   ([pred skip limit]
-   (find-docs {:pred pred :skip skip :limit limit :sort {:validCount -1}})))
+   (stringify-id
+    (find-docs coll {:pred pred :skip skip :limit limit :sort {:validCount -1}}))))

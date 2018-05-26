@@ -86,18 +86,26 @@
                         (-> t
                             (string/replace "\"" "")
                             (string/trim))))
+        (assoc :needRecalculate true)
         search-strings/update-search-string!)))
 
-(defn update-all-search-strings []
-  (let [c (search-strings/count-all)]
-
-
-    ))
+(defn fix-all-search-strings []
+  (let [part-size 1000]
+    (loop [position 0]
+      (let [part (search-strings/find-search-strings {:needRecalculate false} part-size position)]
+        (when-not (empty? part)
+          (doseq [{:keys [id]} part]
+            (fix-search-string id))
+          (recur (+ position part-size)))))))
 
 (comment
 
-  (fix-search-string "55bf95c5d18e85856832e9d0")
+  (fix-all-search-strings)
 
+
+
+
+  (fix-search-string "55bf95c5d18e85856832e9d0")
 
 
 
