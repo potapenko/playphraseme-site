@@ -48,13 +48,9 @@
           (recur (+ pos part-size)))))
     (log/info "done")))
 
-
-(defn migrate []
-  (future
-    (fix-all-search-strings)))
-
 (mount/defstate search-phrases-fixes
-  :start (migrate))
+  :start (future
+           (fix-all-search-strings)))
 
 (defn- get-video-file [id]
   (let [phrase (db/get-phrase-by-id id)]
