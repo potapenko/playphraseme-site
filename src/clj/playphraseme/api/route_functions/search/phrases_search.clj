@@ -69,14 +69,16 @@
          result)))))
 
 (defn update-phrases-suggestions [{:keys [count suggestions] :as search-result} text]
-  (if (and (= count 0)
-           (empty? suggestions))
-    (assoc search-result
-           :suggestions (search-next-word-search-string text true)
-           :next-world-complete nil)
-    (assoc
-     search-result
-     :next-world-complete (-> text search-next-word-search-string first :text))))
+  (if (string/blank? text)
+    search-result
+   (if (and (= count 0)
+            (empty? suggestions))
+     (assoc search-result
+            :suggestions (search-next-word-search-string text true)
+            :next-world-complete nil)
+     (assoc
+      search-result
+      :next-world-complete (-> text search-next-word-search-string first :text)))))
 
 (defn search-response [q skip limit]
   (let [url (str (:indexer-url env) "/search")
@@ -84,7 +86,7 @@
     (ok (some-> res
                 :body (parse-string true)
                 (update :phrases get-phrases)
-                #_(update-phrases-suggestions q)))))
+                (update-phrases-suggestions q)))))
 
 (defn phrase-response [id]
   (ok (util/nil-when-throw
@@ -135,7 +137,7 @@
   (log/info "count search strings without searchPred:" (search-strings/count-search-string {:searchPred nil}))
   (let [part-size 1000]
     (loop [pos 0]
-      (log/info "pos:" pos)
+      (println "pos:" pos)
       (let [part (search-strings/find-search-strings {:searchPred nil} pos part-size)]
         (when-not (empty? part)
           (pmap (fn [{:keys [id]}]
@@ -143,8 +145,8 @@
           (recur (+ pos part-size)))))
     (println "done")))
 
-(future
-  (fix-all-search-strings))
+;; (future
+;;   (fix-all-search-strings))
 
 (comment
 
