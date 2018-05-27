@@ -11,9 +11,11 @@
             [clojure.pprint :refer [pprint]]
             [noir.response :as resp]
             [clojure.walk :as walk]
+            [monger.operators :refer :all]
             [clojure.java.io :as io]
             [ring.util.io :as ring-io]
-            [ring.util.response :refer [response]]))
+            [ring.util.response :refer [response]]
+            [playphraseme.common.debug-util :as debug-util :refer [...]]))
 
 (defn- get-video-file [id]
   (let [phrase (db/get-phrase-by-id id)]
@@ -39,6 +41,30 @@
 
 (defn- get-phrases [phrases-ids]
   (pmap get-phrase-data phrases-ids))
+
+(defn drop-last-word [s]
+  (-> s
+      (string/split #" +")
+      drop-last
+      (->> (string/join " "))))
+
+(defn search-next-word-search-string
+  ([text] (search-next-word-search-string text false))
+  ([text word-end?]
+   (let [text-pred (if word-end? (drop-last-word text) text)
+         rx        (str "^" text (if-not word-end? " " "") "\\S+$")
+         strings   (->>
+                    (search-strings/find-search-strings
+                     {:searchPred text-pred
+                      :text       {$regex rx}} 10)
+                    (map #(select-keys % [:text :validCount])))]
+     (loop [[v & t] strings
+            result  []]
+       (if v
+         (recur
+          (remove #(-> % :text (= (:text v))) t)
+          (conj result v))
+         result)))))
 
 (defn search-response [q skip limit]
   (let [url (str (:indexer-url env) "/search")
@@ -89,34 +115,37 @@
         (assoc :needRecalculate true)
         search-strings/update-search-string!)))
 
+(defn add-search-string-search-pred [id]
+  (let [doc (search-strings/get-search-string-by-id id)]
+    (-> doc
+        (assoc :searchPred (-> doc
+                               :text
+                               drop-last-word))
+        search-strings/update-search-string!)))
+
 (defn fix-all-search-strings []
   (let [part-size 1000]
-    (loop []
-      (let [part (search-strings/find-search-strings {:needRecalculate false} 0 part-size)]
+    (loop [pos 1403000]
+      (println "pos:" pos)
+      (let [part (search-strings/find-search-strings {} pos part-size)]
         (when-not (empty? part)
-          (doseq [{:keys [id]} part]
-            (fix-search-string id))
-          (recur))))))
+          (pmap (fn [{:keys [id]}]
+                  (fix-search-string id)
+                  (add-search-string-search-pred id)) part)
+          (recur (+ pos part-size)))))))
+
 
 (comment
 
-  (fix-all-search-strings)
+  (search-next-word-search-string "are you")
 
+  (search-next-word-search-string "are you s" true)
 
-
-
+  (future
+    (fix-all-search-strings))
+  (add-search-string-search-pred "55bf95c5d18e85856832e9d0")
   (fix-search-string "55bf95c5d18e85856832e9d0")
-
-
-
-
   (time (count-response "hello"))
   (time (search-response "hello" 0 10))
   (-> (search-response "hello" 0 1) :body)
-
-  (get-phrase-data "543bd8c8d0430558da9bfeb1")
-
-
-
-
-  )
+  (get-phrase-data "543bd8c8d0430558da9bfeb1"))

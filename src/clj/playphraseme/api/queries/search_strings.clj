@@ -10,7 +10,8 @@
   (mc/ensure-index db coll {:validCount 1})
   (mc/ensure-index db coll {:text 1})
   (mc/ensure-index db coll {:needRecalculate 1})
-  (mc/ensure-index db coll {:text 1 :validCount 1}))
+  (mc/ensure-index db coll {:text 1 :validCount 1})
+  (mc/ensure-index db coll {:searchPred 1 :text 1 :validCount 1}))
 
 (mount/defstate migrations
   :start (start))
@@ -39,6 +40,7 @@
 
 (defn find-search-strings
   ([pred] (find-search-strings pred 0 10))
+  ([pred limit] (find-search-strings pred 0 limit))
   ([pred skip limit]
    (stringify-id
     (find-docs coll {:pred pred :skip skip :limit limit :sort {:validCount -1}}))))
