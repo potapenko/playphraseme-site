@@ -73,9 +73,10 @@
     search-result
    (if (and (= count 0)
             (empty? suggestions))
-     (assoc search-result
-            :suggestions (search-next-word-search-string text true)
-            :next-word-suggestion nil)
+     (let [suggestions (search-next-word-search-string text true)]
+      (assoc search-result
+             :suggestions suggestions
+             :next-word-suggestion (-> suggestions first :text)))
      (assoc
       search-result
       :next-word-suggestion (-> text search-next-word-search-string first :text)))))
@@ -145,8 +146,8 @@
           (recur (+ pos part-size)))))
     (println "done")))
 
-(future
-  (fix-all-search-strings))
+;; (future
+;;   (fix-all-search-strings))
 
 (comment
 
