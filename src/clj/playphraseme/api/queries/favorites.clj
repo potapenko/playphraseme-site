@@ -1,9 +1,15 @@
 (ns playphraseme.api.queries.favorites
   (:require [playphraseme.api.general-functions.doc-id :refer :all]
             [playphraseme.api.queries.phrases :as phrases]
+            [monger.collection :as mc]
             [playphraseme.db.users-db :refer :all]))
 
 (def coll "favoritePhrase")
+
+(defn start [])
+
+(mount/defstate migrations
+  :start (start))
 
 (defn get-favorite-by-id
   [^String favorite-id]

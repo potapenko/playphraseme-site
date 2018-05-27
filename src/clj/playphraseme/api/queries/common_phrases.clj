@@ -1,8 +1,14 @@
 (ns playphraseme.api.queries.common-phrases
   (:require [playphraseme.api.general-functions.doc-id :refer :all]
+            [monger.collection :as mc]
             [playphraseme.db.phrases-db :refer :all]))
 
 (def coll "searchStrings")
+
+(defn start [])
+
+(mount/defstate migrations
+  :start (start))
 
 (defn get-search-string-by-id
   [^String search-string-id]

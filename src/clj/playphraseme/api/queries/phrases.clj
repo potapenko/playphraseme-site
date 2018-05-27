@@ -1,8 +1,14 @@
 (ns playphraseme.api.queries.phrases
   (:require [playphraseme.api.general-functions.doc-id :refer :all]
+            [monger.collection :as mc]
             [playphraseme.db.phrases-db :refer :all]))
 
 (def coll "phrases")
+
+(defn start [])
+
+(mount/defstate migrations
+  :start (start))
 
 (defn get-phrase-by-id
   [^String phrase-id]
