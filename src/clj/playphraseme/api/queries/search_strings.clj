@@ -38,6 +38,9 @@
 (defn count-all []
   (count-docs coll {}))
 
+(defn count-search-string [pred]
+  (count-docs coll pred))
+
 (defn find-search-strings
   ([pred] (find-search-strings pred 0 10))
   ([pred limit] (find-search-strings pred 0 limit))

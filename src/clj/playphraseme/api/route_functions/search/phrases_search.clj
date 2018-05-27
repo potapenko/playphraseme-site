@@ -15,7 +15,8 @@
             [clojure.java.io :as io]
             [ring.util.io :as ring-io]
             [ring.util.response :refer [response]]
-            [playphraseme.common.debug-util :as debug-util :refer [...]]))
+            [playphraseme.common.debug-util :as debug-util :refer [...]]
+            [clojure.tools.logging :as log]))
 
 (defn- get-video-file [id]
   (let [phrase (db/get-phrase-by-id id)]
@@ -131,9 +132,10 @@
          search-strings/update-search-string!))))
 
 (defn fix-all-search-strings []
+  (log/info "count search strings without searchPred:" (search-strings/count-search-string {:searchPred nil}))
   (let [part-size 1000]
     (loop [pos 0]
-      (println "pos:" pos)
+      (log/info "pos:" pos)
       (let [part (search-strings/find-search-strings {:searchPred nil} pos part-size)]
         (when-not (empty? part)
           (pmap (fn [{:keys [id]}]
