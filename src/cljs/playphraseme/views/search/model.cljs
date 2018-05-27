@@ -23,6 +23,8 @@
 (mcr/reg-sub :search-count 0)
 (mcr/md-reg-sub-event [model-store-md] ::audio-muted true)
 (mcr/md-reg-sub-event [model-store-md] ::audio-volume 0.3)
+(mcr/reg-sub-event ::input-focused? false)
+(mcr/reg-sub-event ::next-word-suggestion nil)
 
 (defn- add-indexes [coll]
   (->> coll (map-indexed (fn [i e] (assoc e :index i))) vec))
@@ -48,13 +50,14 @@
 
 (reg-event-db
  ::search-result
- (fn [db [_ {:keys [phrases count suggestions]}]]
+ (fn [db [_ {:keys [phrases count suggestions next-word-suggestion]}]]
    (-> db
        (assoc
         ::phrases phrases
         ::search-count count
         :current-phrase-index 0
         ::current-suggestion-index nil
+        ::next-word-suggestion next-word-suggestion
         ::suggestions suggestions)
        (update ::suggestions add-indexes)
        (update ::phrases add-phrases-indexes)

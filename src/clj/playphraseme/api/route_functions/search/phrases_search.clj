@@ -75,10 +75,10 @@
             (empty? suggestions))
      (assoc search-result
             :suggestions (search-next-word-search-string text true)
-            :next-world-complete nil)
+            :next-word-suggestion nil)
      (assoc
       search-result
-      :next-world-complete (-> text search-next-word-search-string first :text)))))
+      :next-word-suggestion (-> text search-next-word-search-string first :text)))))
 
 (defn search-response [q skip limit]
   (let [url (str (:indexer-url env) "/search")

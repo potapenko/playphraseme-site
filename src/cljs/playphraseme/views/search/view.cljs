@@ -40,6 +40,7 @@
 (defn search-phrase
   ([text] (search-phrase text nil))
   ([text first-phrase]
+   (println "text:" text)
    (when text
      (when (or
             first-phrase
@@ -157,10 +158,30 @@
   (when-let [elem (some-> "search-input" js/document.getElementById)]
     (-> elem .focus)))
 
-(defn work-with-keys [e]
+(defn set-input-cursor []
+  (when-let [elem (some-> "search-input" js/document.getElementById)]
+    (-> elem .-selectionStart (set! (-> elem .-value count)))))
+
+(defn next-word-search [e]
+  (let-sub [::model/next-word-suggestion
+            ::model/input-focused?]
+    (when (and @next-word-suggestion
+               @input-focused?)
+      (-> e .preventDefault)
+      (search-phrase @next-word-suggestion))))
+
+(defn work-with-keys-down [e]
   (let [key-code    (-> e .-keyCode)
         suggestions @(rf/subscribe [::model/suggestions])]
-    ;; (println "key:" key-code)
+    (println "key-down:" key-code)
+    (case key-code
+      9 (next-word-search e)
+      nil)))
+
+(defn work-with-keys-up [e]
+  (let [key-code    (-> e .-keyCode)
+        suggestions @(rf/subscribe [::model/suggestions])]
+    ;; (println "key-up:" key-code)
     (if-not (empty? suggestions)
       (case key-code
         38 (prev-suggestion) ;; up
@@ -231,7 +252,17 @@
    [:input#search-input.filter-input.form-control.input-lg
     {:type      "text" :placeholder "Search Phrase"
      :value     @(rf/subscribe [:search-text])
+     :on-focus (fn []
+                 (rf/dispatch [::model/input-focused? true])
+                 (set-input-cursor))
+     :on-blur #(rf/dispatch [::model/input-focused? false])
      :on-change #(search-phrase (-> % .-target .-value))}]
+   (when
+       (and
+        @(rf/subscribe [::model/next-word-suggestion])
+        @(rf/subscribe [::model/input-focused?]))
+    [:div.next-word-suggestion
+     @(rf/subscribe [::model/next-word-suggestion])])
    [:ul.filter-input-icons
     [:li
      [:div.search-result-count @(rf/subscribe [::model/search-count])]]
@@ -243,10 +274,11 @@
       [audio-volume-control
        @(rf/subscribe [::model/audio-muted])
        @(rf/subscribe [::model/audio-volume])]
-      [:audio {:id        "music-player"
-               :src       "http://uk7.internet-radio.com:8000/stream"
-               :auto-play true
-               :controls  false}]])]])
+      (when-not @(rf/subscribe [::model/audio-muted])
+       [:audio {:id        "music-player"
+                :src       "http://uk7.internet-radio.com:8000/stream"
+                :auto-play true
+                :controls  false}])])]])
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
@@ -364,10 +396,12 @@
     (r/create-class
      {:component-will-unmount
       (fn [this]
-        (util/remove-document-listener "keyup" work-with-keys))
+        (util/remove-document-listener "keyup" work-with-keys-up)
+        (util/remove-document-listener "keydown" work-with-keys-down))
       :component-did-mount
       (fn [this]
-        (util/add-document-listener "keyup" work-with-keys)
+        (util/add-document-listener "keyup" work-with-keys-up)
+        (util/add-document-listener "keydown" work-with-keys-down)
         (update-music-volume)
         (focus-input))
       :reagent-render
