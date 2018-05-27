@@ -767,6 +767,12 @@ h2 {
     padding: 20px !important;
   }
 
+  .next-word-suggestion {
+    top: 37px;
+    left: 31px;
+    font-size: 38px;
+  }
+
   .search-result-count{
 	  margin-right: 6px !important;
 	  font-weight: bold !important;

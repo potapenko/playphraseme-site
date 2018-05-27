@@ -41,7 +41,7 @@
   (let [part-size 1000]
     (loop [pos 0]
       (log/info "pos:" pos)
-      (let [part (search-strings/find-search-strings {:searchPred nil} pos part-size)]
+      (let [part (search-strings/find-search-strings {:searchPred nil} part-size)]
         (when-not (empty? part)
           (pmap (fn [{:keys [id]}]
                   (fix-search-string id)) part)
