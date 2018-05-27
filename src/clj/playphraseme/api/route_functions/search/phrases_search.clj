@@ -145,8 +145,8 @@
           (recur (+ pos part-size)))))
     (println "done")))
 
-;; (future
-;;   (fix-all-search-strings))
+(future
+  (fix-all-search-strings))
 
 (comment
 
