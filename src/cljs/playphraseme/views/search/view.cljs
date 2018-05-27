@@ -40,7 +40,6 @@
 (defn search-phrase
   ([text] (search-phrase text nil))
   ([text first-phrase]
-   (println "text:" text)
    (when text
      (when (or
             first-phrase
@@ -173,7 +172,7 @@
 (defn work-with-keys-down [e]
   (let [key-code    (-> e .-keyCode)
         suggestions @(rf/subscribe [::model/suggestions])]
-    (println "key-down:" key-code)
+    ;; (println "key-down:" key-code)
     (case key-code
       9 (next-word-search e)
       nil)))
