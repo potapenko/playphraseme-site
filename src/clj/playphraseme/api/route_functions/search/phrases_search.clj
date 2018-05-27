@@ -134,7 +134,7 @@
          search-strings/update-search-string!))))
 
 (defn fix-all-search-strings []
-  (log/info "count search strings without searchPred:" (search-strings/count-search-string {:searchPred nil}))
+  (println "count search strings without searchPred:" (search-strings/count-search-string {:searchPred nil}))
   (let [part-size 1000]
     (loop [pos 0]
       (println "pos:" pos)
