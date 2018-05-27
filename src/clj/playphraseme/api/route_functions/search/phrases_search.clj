@@ -83,7 +83,7 @@
     (ok (some-> res
                 :body (parse-string true)
                 (update :phrases get-phrases)
-                (update-phrases-suggestions q)))))
+                #_(update-phrases-suggestions q)))))
 
 (defn phrase-response [id]
   (ok (util/nil-when-throw
@@ -121,35 +121,32 @@
 
 (defn fix-search-string [id]
   (let [doc (search-strings/get-search-string-by-id id)]
-    (-> doc
-        (update :text (fn [t]
-                        (-> t
-                            (string/replace "\"" "")
-                            (string/trim))))
-        (assoc :needRecalculate true)
-        search-strings/update-search-string!)))
-
-(defn add-search-string-search-pred [id]
-  (let [doc (search-strings/get-search-string-by-id id)]
-    (-> doc
-        (assoc :searchPred (-> doc
-                               :text
-                               drop-last-word))
-        search-strings/update-search-string!)))
+    (let [new-text (-> doc
+                       :text
+                       (string/replace "\"" "")
+                       (string/trim))]
+     (-> doc
+         (assoc :text new-text)
+         (assoc :searchPred (drop-last-word new-text))
+         search-strings/update-search-string!))))
 
 (defn fix-all-search-strings []
   (let [part-size 1000]
-    (loop [pos 1403000]
+    (loop [pos 0]
       (println "pos:" pos)
-      (let [part (search-strings/find-search-strings {} pos part-size)]
+      (let [part (search-strings/find-search-strings {:searchPred nil} pos part-size)]
         (when-not (empty? part)
           (pmap (fn [{:keys [id]}]
-                  (fix-search-string id)
-                  (add-search-string-search-pred id)) part)
-          (recur (+ pos part-size)))))))
+                  (fix-search-string id)) part)
+          (recur (+ pos part-size)))))
+    (println "done")))
+
+(future
+  (fix-all-search-strings))
 
 (comment
 
+  (fix-search-string "55da1457c6384911f4a22bbe")
   (search-next-word-search-string "are you")
 
   (search-next-word-search-string "are you s" true)
