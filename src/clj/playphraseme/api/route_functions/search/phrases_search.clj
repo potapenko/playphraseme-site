@@ -10,6 +10,7 @@
             [clojure.string :as string]
             [clojure.pprint :refer [pprint]]
             [noir.response :as resp]
+            [mount.core :as mount]
             [clojure.walk :as walk]
             [monger.operators :refer :all]
             [clojure.java.io :as io]
@@ -17,6 +18,43 @@
             [ring.util.response :refer [response]]
             [playphraseme.common.debug-util :as debug-util :refer [...]]
             [clojure.tools.logging :as log]))
+
+(defn drop-last-word [s]
+  (-> s
+      (string/split #" +")
+      drop-last
+      (->> (string/join " "))))
+
+(defn fix-search-string [id]
+  (let [doc (search-strings/get-search-string-by-id id)]
+    (let [new-text (-> doc
+                       :text
+                       (string/replace "\"" "")
+                       (string/trim))]
+      (-> doc
+          (assoc :text new-text)
+          (assoc :searchPred (drop-last-word new-text))
+          search-strings/update-search-string!))))
+
+(defn fix-all-search-strings []
+  (log/info "count search strings without searchPred:" (search-strings/count-search-string {:searchPred nil}))
+  (let [part-size 1000]
+    (loop [pos 0]
+      (log/info "pos:" pos)
+      (let [part (search-strings/find-search-strings {:searchPred nil} pos part-size)]
+        (when-not (empty? part)
+          (pmap (fn [{:keys [id]}]
+                  (fix-search-string id)) part)
+          (recur (+ pos part-size)))))
+    (log/info "done")))
+
+
+(defn start []
+  (future
+    (fix-all-search-strings)))
+
+(mount/defstate migrations
+  :start (start))
 
 (defn- get-video-file [id]
   (let [phrase (db/get-phrase-by-id id)]
@@ -43,12 +81,6 @@
 (defn- get-phrases [phrases-ids]
   (pmap get-phrase-data phrases-ids))
 
-(defn drop-last-word [s]
-  (-> s
-      (string/split #" +")
-      drop-last
-      (->> (string/join " "))))
-
 (defn search-next-word-search-string
   ([text] (search-next-word-search-string text false))
   ([text word-end?]
@@ -58,6 +90,7 @@
                     (search-strings/find-search-strings
                      {:searchPred text-pred
                       :text       {$regex rx}} 10)
+                    (remove #(-> % :validCount (= 0)))
                     (map #(select-keys % [:text :validCount])))]
      (loop [[v & t] strings
             result  []]
@@ -123,31 +156,6 @@
       (assoc-in [:headers "Content-Disposition"]
                 (format "attachment; filename=\"%s\"" (get-video-file id)))))
 
-(defn fix-search-string [id]
-  (let [doc (search-strings/get-search-string-by-id id)]
-    (let [new-text (-> doc
-                       :text
-                       (string/replace "\"" "")
-                       (string/trim))]
-     (-> doc
-         (assoc :text new-text)
-         (assoc :searchPred (drop-last-word new-text))
-         search-strings/update-search-string!))))
-
-(defn fix-all-search-strings []
-  (println "count search strings without searchPred:" (search-strings/count-search-string {:searchPred nil}))
-  (let [part-size 1000]
-    (loop [pos 0]
-      (println "pos:" pos)
-      (let [part (search-strings/find-search-strings {:searchPred nil} pos part-size)]
-        (when-not (empty? part)
-          (pmap (fn [{:keys [id]}]
-                  (fix-search-string id)) part)
-          (recur (+ pos part-size)))))
-    (println "done")))
-
-;; (future
-;;   (fix-all-search-strings))
 
 (comment
 
