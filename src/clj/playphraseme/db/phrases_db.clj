@@ -5,7 +5,8 @@
             [monger.operators :refer :all]
             [mount.core :refer [defstate]]
             [playphraseme.app.config :refer [env]]
-            [mount.core :as mount]))
+            [mount.core :as mount]
+            [playphraseme.common.debug-util :as debug-util :refer [...]]))
 
 (defstate db*
   :start (-> env :phrases-database-url mg/connect-via-uri)
