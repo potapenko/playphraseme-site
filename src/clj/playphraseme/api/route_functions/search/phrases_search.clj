@@ -63,13 +63,27 @@
        (if v
          (recur
           (remove #(-> % :text (= (:text v))) t)
-          (conj result v))
+          (conj result {:text (:text v)
+                        :count (:validCount v)}))
          result)))))
+
+(defn update-phrases-suggestions [{:keys [count suggestions] :as search-result} text]
+  (if (and (= count 0)
+           (empty? suggestions))
+    (assoc search-result
+           :suggestions (search-next-word-search-string text true)
+           :next-world-complete nil)
+    (assoc
+     search-result
+     :next-world-complete (-> text search-next-word-search-string first :text))))
 
 (defn search-response [q skip limit]
   (let [url (str (:indexer-url env) "/search")
         res (http/get url {:query-params {:q q :skip skip :limit limit} :accept :json})]
-    (ok (some-> res :body (parse-string true) (update :phrases get-phrases)))))
+    (ok (some-> res
+                :body (parse-string true)
+                (update :phrases get-phrases)
+                (update-phrases-suggestions q)))))
 
 (defn phrase-response [id]
   (ok (util/nil-when-throw
@@ -133,7 +147,6 @@
                   (fix-search-string id)
                   (add-search-string-search-pred id)) part)
           (recur (+ pos part-size)))))))
-
 
 (comment
 
