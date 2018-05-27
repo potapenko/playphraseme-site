@@ -92,7 +92,7 @@
 (defn fix-all-search-strings []
   (let [part-size 1000]
     (loop []
-      (let [part (search-strings/find-search-strings {:needRecalculate false})]
+      (let [part (search-strings/find-search-strings {:needRecalculate false} part-size 0)]
         (when-not (empty? part)
           (doseq [{:keys [id]} part]
             (fix-search-string id))
