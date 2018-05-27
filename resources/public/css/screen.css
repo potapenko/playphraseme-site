@@ -771,6 +771,7 @@ h2 {
     top: 37px;
     left: 31px;
     font-size: 38px;
+    color: rgba(0,0,0,0.2);
   }
 
   .search-result-count{
