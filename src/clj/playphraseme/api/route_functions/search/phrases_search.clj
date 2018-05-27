@@ -49,12 +49,12 @@
     (log/info "done")))
 
 
-(defn start []
+(defn migrate []
   (future
     (fix-all-search-strings)))
 
-(mount/defstate migrations
-  :start (start))
+(mount/defstate search-phrases-fixes
+  :start (migrate))
 
 (defn- get-video-file [id]
   (let [phrase (db/get-phrase-by-id id)]

@@ -6,10 +6,10 @@
 
 (def coll "searchStrings")
 
-(defn start [])
+(defn migrate [])
 
-(mount/defstate migrations
-  :start (start))
+(mount/defstate migrations-common-phrases
+  :start (migrate))
 
 (defn get-search-string-by-id
   [^String search-string-id]

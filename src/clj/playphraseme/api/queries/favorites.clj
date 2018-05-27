@@ -7,10 +7,10 @@
 
 (def coll "favoritePhrase")
 
-(defn start [])
+(defn migrate [])
 
-(mount/defstate migrations
-  :start (start))
+(mount/defstate migrations-favorites
+  :start (migrate))
 
 (defn get-favorite-by-id
   [^String favorite-id]

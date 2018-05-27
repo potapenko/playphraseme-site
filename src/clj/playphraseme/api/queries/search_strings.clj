@@ -6,15 +6,16 @@
 
 (def coll "searchString")
 
-(defn start []
+(defn migrate []
   (mc/ensure-index db coll {:validCount 1})
   (mc/ensure-index db coll {:text 1})
   (mc/ensure-index db coll {:needRecalculate 1})
   (mc/ensure-index db coll {:text 1 :validCount 1})
   (mc/ensure-index db coll {:searchPred 1 :text 1 :validCount 1}))
 
-(mount/defstate migrations
-  :start (start))
+(mount/defstate migrations-search-phrases
+  :start
+  (migrate))
 
 (defn get-search-string-by-id
   [^String search-string-id]

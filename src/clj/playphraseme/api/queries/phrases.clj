@@ -6,10 +6,10 @@
 
 (def coll "phrases")
 
-(defn start [])
+(defn migrate [])
 
-(mount/defstate migrations
-  :start (start))
+(mount/defstate migrations-phrases
+  :start (migrate))
 
 (defn get-phrase-by-id
   [^String phrase-id]
