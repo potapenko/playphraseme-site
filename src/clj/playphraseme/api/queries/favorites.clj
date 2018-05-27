@@ -1,6 +1,7 @@
 (ns playphraseme.api.queries.favorites
   (:require [playphraseme.api.general-functions.doc-id :refer :all]
             [playphraseme.api.queries.phrases :as phrases]
+            [mount.core :as mount]
             [monger.collection :as mc]
             [playphraseme.db.users-db :refer :all]))
 

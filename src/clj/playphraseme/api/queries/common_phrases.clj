@@ -1,5 +1,6 @@
 (ns playphraseme.api.queries.common-phrases
   (:require [playphraseme.api.general-functions.doc-id :refer :all]
+            [mount.core :as mount]
             [monger.collection :as mc]
             [playphraseme.db.phrases-db :refer :all]))
 
