@@ -853,7 +853,6 @@ h2 {
   }
   .ios .layout-container {
     background-color: black !important;
-    position: relative !important;
     overflow: hidden !important;
   }
   .ios .video-overlay-menu{
