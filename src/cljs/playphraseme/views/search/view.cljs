@@ -277,7 +277,15 @@
        [:audio {:id        "music-player"
                 :src       "http://uk7.internet-radio.com:8000/stream"
                 :auto-play true
-                :controls  false}])])]])
+                :controls  false}])])]
+   (when @(rf/subscribe [::model/input-focused?])
+    [:div.shortcuts-info {}
+     [:div "Next word completion" ] [:i.material-icons "keyboard_tab"]
+     [:div "Next word select:" ] [:i.material-icons "keyboard_arrow_right"]
+     [:div "Navigate result/suggestions list:" ]
+     [:i.material-icons "keyboard_arrow_up"]
+     [:i.material-icons "keyboard_arrow_down"]
+     [:div "Pause/Stop/Select suggestion:" ] [:i.material-icons "keyboard_return"]])])
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
@@ -477,7 +485,9 @@
                  [overlay-current-phrase])]]
              [:div.search-ui-container
               [search-input]]
-             (if-not (empty? @suggestions)
+             (if (and
+                  (not (empty? @suggestions))
+                  (empty? @phrases))
                [suggestions-list @suggestions]
                [search-results-list @phrases])
              (when-not

@@ -22,7 +22,7 @@
 (mcr/reg-event-update :search-count 0 inc)
 (mcr/reg-sub :search-count 0)
 (mcr/md-reg-sub-event [model-store-md] ::audio-muted true)
-(mcr/md-reg-sub-event [model-store-md] ::audio-volume 0.2)
+(mcr/md-reg-sub-event [model-store-md] ::audio-volume 0.3)
 (mcr/reg-sub-event ::input-focused? false)
 (mcr/reg-sub-event ::next-word-suggestion nil)
 
