@@ -445,20 +445,20 @@
             ::model/suggestions
             :mobile?]
            (r/create-class
-            {:component-will-unmount
+            {:component-did-mount
              (fn [this]
                (when-not @(rf/subscribe [::model/inited])
+                 (util/add-document-listener "keyup" work-with-keys-up)
+                 (util/add-document-listener "keydown" work-with-keys-down)
+                 (rf/dispatch [::model/inited false]))
+               (update-music-volume)
+               (focus-input))
+             :component-will-unmount
+             (fn [this]
+               (when @(rf/subscribe [::model/inited])
                 (util/remove-document-listener "keyup" work-with-keys-up)
                 (util/remove-document-listener "keydown" work-with-keys-down)
                 (rf/dispatch [::model/inited true])))
-             :component-did-mount
-             (fn [this]
-               (when @(rf/subscribe [::model/inited])
-                (util/add-document-listener "keyup" work-with-keys-up)
-                (util/add-document-listener "keydown" work-with-keys-down)
-                (rf/dispatch [::model/inited false]))
-               (update-music-volume)
-               (focus-input))
              :reagent-render
              (fn []
                (let [lang (util/locale-name)]
