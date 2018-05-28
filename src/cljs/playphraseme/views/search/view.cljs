@@ -205,27 +205,31 @@
       9 (next-word-search e)
       nil)))
 
+(defn prevent-call [e f]
+  (-> e .preventDefault)
+  (f))
+
 (defn work-with-keys-up [e]
   (let [key-code    (-> e .-keyCode)
         suggestions @(rf/subscribe [::model/suggestions])]
-    ;; (println "key-up:" key-code)
-    (when (and @(rf/subscribe [::model/input-focused?]))
+    (println "key-up:" key-code)
+    (when @(rf/subscribe [::model/input-focused?])
      (case key-code
        39 (go-next-word-suggestion)
        nil))
     (if-not (empty? suggestions)
       (case key-code
-        38 (prev-suggestion) ;; up
-        40 (next-suggestion) ;; down
-        13 (goto-suggestion) ;; enter
-        32 (goto-suggestion) ;; space
-        27 (focus-input) ;; esc
+        38 (prevent-call e prev-suggestion) ;; up
+        40 (prevent-call e next-suggestion) ;; down
+        13 (prevent-call e goto-suggestion) ;; enter
+        32 (prevent-call e goto-suggestion) ;; space
+        27 (prevent-call e focus-input) ;; esc
         nil)
       (case key-code
-        38 (prev-phrase) ;; up
-        40 (next-phrase) ;; down
-        27 (focus-input) ;; esc
-        13 (toggle-play) ;; enter
+        38 (prevent-call e prev-phrase) ;; up
+        40 (prevent-call e next-phrase) ;; down
+        27 (prevent-call e focus-input) ;; esc
+        13 (prevent-call e toggle-play) ;; enter
         nil))))
 
 (defn favorite-current-phrase [e]
