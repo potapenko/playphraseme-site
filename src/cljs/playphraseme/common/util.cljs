@@ -137,8 +137,8 @@
 (def ios? (check-navigator #"ipad|iphone"))
 (def android? (check-navigator #"android"))
 (def windows-phone? (check-navigator #"windows phone"))
-(def safari? (check-navigator #"safari"))
 (def chrome? (check-navigator #"chrome"))
+(def safari? (and (check-navigator #"safari") (not chrome?)))
 
 (def mobile? (or ios? android? windows-phone?))
 
