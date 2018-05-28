@@ -538,8 +538,10 @@ word, word:active, word:focus{
   color: rgba(0,0,0,0.4);
   margin-top: 4px;
   align-items: center;
-  padding-left: 4px;
+  padding-left: 5px;
 	transition: opacity 0.4s ease-in-out;
+  flex-wrap: nowrap;
+  overflow: hidden;
 }
 .shortcuts-info:hover {
   color: rgba(0,0,0,0.7);
@@ -549,7 +551,7 @@ word, word:active, word:focus{
 }
 .shortcuts-info i{
   font-size: 16px;
-  margin-right: 6px;
+  /* margin-right: 6px; */
 }
 
 .filter-input:focus {

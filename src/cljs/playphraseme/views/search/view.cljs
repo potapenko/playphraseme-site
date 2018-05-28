@@ -8,6 +8,7 @@
             [playphraseme.common.util :as util]
             [playphraseme.common.responsive :as resp]
             [playphraseme.views.search.model :as model]
+            [playphraseme.common.ui :as ui :refer [spacer flexer]]
             [playphraseme.common.rest-api :as rest-api]
             [playphraseme.common.video-player :as player]
             [playphraseme.views.favorites.view :as favorites-page]
@@ -281,10 +282,13 @@
    [:div.shortcuts-info
     {:style {:opacity (if @(rf/subscribe [::model/input-focused?]) 1 0)}}
     [:div "Next word completion:"] [:i.material-icons "keyboard_tab"]
+    [spacer 4]
     [:div "Next word select:"] [:i.material-icons "keyboard_arrow_right"]
+    [spacer 4]
     [:div "Navigate result/suggestions list:"]
     [:i.material-icons "keyboard_arrow_up"]
     [:i.material-icons "keyboard_arrow_down"]
+    [spacer 4]
     [:div "Pause/Stop/Select suggestion:"] [:i.material-icons "keyboard_return"]]])
 
 (defn goto-word [e phrase-index word-index]

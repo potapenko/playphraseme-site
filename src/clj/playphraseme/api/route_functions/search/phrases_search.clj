@@ -100,15 +100,19 @@
 (defn update-phrases-suggestions [{:keys [count suggestions] :as search-result} text]
   (if (string/blank? text)
     search-result
-   (if (and (= count 0)
-            (empty? suggestions))
-     (let [suggestions (search-next-word-search-string text true)]
-      (assoc search-result
-             :suggestions suggestions
-             :next-word-suggestion (-> suggestions first :text)))
-     (assoc
-      search-result
-      :next-word-suggestion (-> text search-next-word-search-string first :text)))))
+    (cond
+      (and (= count 0)
+           (empty? suggestions)) (let [suggestions (search-next-word-search-string text true)]
+                                   (assoc search-result
+                                          :suggestions suggestions
+                                          :next-word-suggestion (-> suggestions first :text)))
+      (empty? suggestions)       (let [suggestions (search-next-word-search-string text)]
+                                   (assoc search-result
+                                          :suggestions suggestions
+                                          :next-word-suggestion (-> suggestions first :text)))
+      :else (assoc
+             search-result
+             :next-word-suggestion (-> text search-next-word-search-string first :text)))))
 
 (defn search-response [q skip limit]
   (let [url (str (:indexer-url env) "/search")
