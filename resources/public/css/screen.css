@@ -535,10 +535,11 @@ word, word:active, word:focus{
   display: flex;
   flex-direction: row;
   font-size: 10px;
-  color: rgba(0,0,0,0.5);
+  color: rgba(0,0,0,0.4);
   margin-top: 4px;
   align-items: center;
   padding-left: 4px;
+	transition: opacity 0.4s ease-in-out;
 }
 .shortcuts-info:hover {
   color: rgba(0,0,0,0.7);

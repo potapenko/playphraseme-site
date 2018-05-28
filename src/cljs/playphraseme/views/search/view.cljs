@@ -278,14 +278,14 @@
                 :src       "http://uk7.internet-radio.com:8000/stream"
                 :auto-play true
                 :controls  false}])])]
-   (when @(rf/subscribe [::model/input-focused?])
-    [:div.shortcuts-info {}
-     [:div "Next word completion" ] [:i.material-icons "keyboard_tab"]
-     [:div "Next word select:" ] [:i.material-icons "keyboard_arrow_right"]
-     [:div "Navigate result/suggestions list:" ]
-     [:i.material-icons "keyboard_arrow_up"]
-     [:i.material-icons "keyboard_arrow_down"]
-     [:div "Pause/Stop/Select suggestion:" ] [:i.material-icons "keyboard_return"]])])
+   [:div.shortcuts-info
+    {:style {:opacity (if @(rf/subscribe [::model/input-focused?]) 1 0)}}
+    [:div "Next word completion" ] [:i.material-icons "keyboard_tab"]
+    [:div "Next word select:" ] [:i.material-icons "keyboard_arrow_right"]
+    [:div "Navigate result/suggestions list:" ]
+    [:i.material-icons "keyboard_arrow_up"]
+    [:i.material-icons "keyboard_arrow_down"]
+    [:div "Pause/Stop/Select suggestion:" ] [:i.material-icons "keyboard_return"]]])
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
