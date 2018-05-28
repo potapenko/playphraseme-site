@@ -93,9 +93,11 @@
  ::favorite-phrase
  (fn [db [_ id value]]
    (let [index (:index (get-phrase-by-id db id))]
-     (assoc-in db
-               [::phrases index :favorited]
-               value))))
+     (if-not (nil? index)
+         (assoc-in db
+                   [::phrases index :favorited]
+                   value)
+         db))))
 
 (reg-event-db
  ::next-suggestion

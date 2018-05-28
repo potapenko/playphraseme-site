@@ -126,7 +126,9 @@
            :plays-inline true
            :controls     false
            :id           (index->id index)}]
-         (when (false? @(rf/subscribe [:autoplay-enabled]))
+         (when (and
+                (not util/chrome?)
+                (false? @(rf/subscribe [:autoplay-enabled])))
            [:div.overlay-play-icon
             [:span.fa-stack.fa-1x
              [:i.fa.fa-circle.fa-stack-2x]
