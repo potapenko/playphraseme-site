@@ -41,7 +41,6 @@
 (defn search-phrase
   ([text] (search-phrase text nil))
   ([text first-phrase]
-   (println ">>> text search:" text)
    (when text
      (when (or
             first-phrase
@@ -55,7 +54,6 @@
            (reset! scroll-loaded 0)
            (let [res (<! (rest-api/search-phrase text 10 0))]
              ;; (ga/track (str "/#/search=q=" text))
-             (println ">>> result:" (:next-word-suggestion res))
              (when (= id @search-id)
                (when (= id @search-id)
                  (when (and
