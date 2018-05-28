@@ -58,7 +58,7 @@
           (jump index 0))
         (when-let [audio (some-> "#music-player" util/selector)]
           (-> audio .play
-              (.then (fn [] (println "audio success") ))
+              (.then (fn [] #_(println "audio success") ))
               (.catch (fn [e] (println "audio error" e)))))
         (-> el .play
             (.then (fn []
@@ -66,10 +66,9 @@
                      (rf/dispatch [:playing true])
                      (rf/dispatch [:autoplay-enabled true])))
             (.catch (fn [e]
-                      (reset! success
-                              (->> e .-message
-                                   (re-find #"pause")
-                                   nil? not)))))
+                      (when (->> e .-message (re-find #"pause") nil?)
+                        (println "error play video:" e)
+                        (reset! success false)))))
         (go
           (<! (timeout 1000))
           (when-not @success
