@@ -195,8 +195,6 @@
         (when next-word
           (rf/dispatch [::model/next-word-suggestion next-word]))))))
 
-(go-next-word-suggestion)
-
 (defn work-with-keys-down [e]
   (let [key-code    (-> e .-keyCode)
         suggestions @(rf/subscribe [::model/suggestions])]
