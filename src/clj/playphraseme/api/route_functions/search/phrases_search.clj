@@ -80,7 +80,8 @@
 (defn search-next-word-search-string
   ([text] (search-next-word-search-string text false))
   ([text word-end?]
-   (let [text-pred (if word-end? (drop-last-word text) text)
+   (let [text      (string/trim text)
+         text-pred (if word-end? (drop-last-word text) text)
          rx        (str "^" text (if-not word-end? " " "") "\\S+$")
          strings   (->>
                     (search-strings/find-search-strings
@@ -93,7 +94,7 @@
        (if v
          (recur
           (remove #(-> % :text (= (:text v))) t)
-          (conj result {:text (:text v)
+          (conj result {:text  (:text v)
                         :count (:validCount v)}))
          result)))))
 
