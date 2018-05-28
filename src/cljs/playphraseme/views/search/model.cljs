@@ -25,6 +25,7 @@
 (mcr/md-reg-sub-event [model-store-md] ::audio-volume 0.3)
 (mcr/reg-sub-event ::input-focused? false)
 (mcr/reg-sub-event ::next-word-suggestion nil)
+(mcr/reg-sub-event ::inited false)
 
 (defn- add-indexes [coll]
   (->> coll (map-indexed (fn [i e] (assoc e :index i))) vec))

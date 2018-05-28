@@ -209,6 +209,13 @@
   (-> e .preventDefault)
   (f))
 
+(defn show-suggestions-list? []
+  (let-sub [::model/suggestions
+            ::model/phrases]
+   (and
+    (not (empty? @suggestions))
+    (empty? @phrases))))
+
 (defn work-with-keys-up [e]
   (let [key-code    (-> e .-keyCode)
         suggestions @(rf/subscribe [::model/suggestions])]
@@ -217,7 +224,7 @@
      (case key-code
        39 (go-next-word-suggestion)
        nil))
-    (if-not (empty? suggestions)
+    (if (show-suggestions-list?)
       (case key-code
         38 (prevent-call e prev-suggestion) ;; up
         40 (prevent-call e next-suggestion) ;; down
@@ -442,12 +449,16 @@
            (r/create-class
             {:component-will-unmount
              (fn [this]
-               (util/remove-document-listener "keyup" work-with-keys-up)
-               (util/remove-document-listener "keydown" work-with-keys-down))
+               (when-not @(rf/subscribe [::model/inited])
+                (util/remove-document-listener "keyup" work-with-keys-up)
+                (util/remove-document-listener "keydown" work-with-keys-down)
+                (rf/dispatch [::model/inited true])))
              :component-did-mount
              (fn [this]
-               (util/add-document-listener "keyup" work-with-keys-up)
-               (util/add-document-listener "keydown" work-with-keys-down)
+               (when @(rf/subscribe [::model/inited])
+                (util/add-document-listener "keyup" work-with-keys-up)
+                (util/add-document-listener "keydown" work-with-keys-down)
+                (rf/dispatch [::model/inited false]))
                (update-music-volume)
                (focus-input))
              :reagent-render
@@ -524,9 +535,7 @@
                         [overlay-current-phrase])]]
                     [:div.search-ui-container
                      [search-input]]
-                    (if (and
-                         (not (empty? @suggestions))
-                         (empty? @phrases))
+                    (if (show-suggestions-list?)
                       [suggestions-list @suggestions]
                       [search-results-list @phrases])
                     (when-not

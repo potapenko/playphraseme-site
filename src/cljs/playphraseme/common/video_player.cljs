@@ -126,7 +126,7 @@
            :controls     false
            :id           (index->id index)}]
          (when (and
-                (not util/chrome?)
+                util/safari?
                 (false? @(rf/subscribe [:autoplay-enabled])))
            [:div.overlay-play-icon
             [:span.fa-stack.fa-1x
