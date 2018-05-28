@@ -85,7 +85,7 @@
          strings   (->>
                     (search-strings/find-search-strings
                      {:searchPred text-pred
-                      :text       {$regex rx}} 10)
+                      :text       {$regex rx}} 20)
                     (remove #(-> % :validCount (= 0)))
                     (map #(select-keys % [:text :validCount])))]
      (loop [[v & t] strings

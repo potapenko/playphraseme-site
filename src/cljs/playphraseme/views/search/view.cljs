@@ -162,6 +162,10 @@
   (when-let [elem (some-> "search-input" js/document.getElementById)]
     (-> elem .-selectionStart (set! (-> elem .-value count)))))
 
+(defn get-input-cursor []
+  (when-let [elem (some-> "search-input" js/document.getElementById)]
+    (-> elem .-selectionStart)))
+
 (defn next-word-search [e]
   (let-sub [::model/next-word-suggestion
             ::model/input-focused?]
@@ -169,6 +173,29 @@
                       @input-focused?)
              (-> e .preventDefault)
              (search-phrase @next-word-suggestion))))
+
+(defn go-next-word-suggestion []
+  (let-sub [::model/suggestions
+            ::model/next-word-suggestion
+            :search-text]
+    (when (and (= (get-input-cursor)
+                  (count @search-text))
+           (not (empty? @suggestions)))
+      (let [current-index (loop [[v & t] @suggestions
+                                 i       0]
+                            (when v
+                              (if (= (:text v) @next-word-suggestion)
+                                i
+                                (recur t (inc i)))))
+            next-index    (let [i (inc current-index)]
+                            (if (>= i (count @suggestions))
+                              0
+                              i))
+            next-word     (-> @suggestions (get next-index) :text)]
+        (when next-word
+          (rf/dispatch [::model/next-word-suggestion next-word]))))))
+
+(go-next-word-suggestion)
 
 (defn work-with-keys-down [e]
   (let [key-code    (-> e .-keyCode)
@@ -182,6 +209,10 @@
   (let [key-code    (-> e .-keyCode)
         suggestions @(rf/subscribe [::model/suggestions])]
     ;; (println "key-up:" key-code)
+    (when (and @(rf/subscribe [::model/input-focused?]))
+     (case key-code
+       39 (go-next-word-suggestion)
+       nil))
     (if-not (empty? suggestions)
       (case key-code
         38 (prev-suggestion) ;; up
