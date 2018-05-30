@@ -36,7 +36,7 @@
           (assoc :searchPred (drop-last-word new-text))
           search-strings/update-search-string!))))
 
-(defn fix-all-search-strings []
+(defn add-search-pred-migration []
   (log/info "count search strings without searchPred:" (search-strings/count-search-string {:searchPred nil}))
   (let [part-size 1000]
     (loop [pos 0]
@@ -50,7 +50,7 @@
 
 (mount/defstate search-phrases-fixes
   :start (future
-           (fix-all-search-strings)))
+           (add-search-pred-migration)))
 
 (defn- get-video-file [id]
   (let [phrase (db/get-phrase-by-id id)]
@@ -80,7 +80,7 @@
 (defn search-next-word-search-string
   ([text] (search-next-word-search-string text false))
   ([text word-end?]
-   (let [text      (string/trim text)
+   (let [text      (-> text string/trim string/lower-case)
          text-pred (if word-end? (drop-last-word text) text)
          rx        (str "^" text (if-not word-end? " " "") "\\S+$")
          strings   (->>
@@ -162,11 +162,7 @@
 
   (fix-search-string "55da1457c6384911f4a22bbe")
   (search-next-word-search-string "are you")
-
   (search-next-word-search-string "are you s" true)
-
-  (future
-    (fix-all-search-strings))
   (add-search-string-search-pred "55bf95c5d18e85856832e9d0")
   (fix-search-string "55bf95c5d18e85856832e9d0")
   (time (count-response "hello"))
