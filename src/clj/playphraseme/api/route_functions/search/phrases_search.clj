@@ -31,6 +31,7 @@
       string/lower-case
       (string/replace #"[.,\/#!$%\^&\*;:{}=\-_`~()—]" "")
       (string/replace #"\s+" " ")
+      string/lower-case
       string/trim))
 
 (defn add-search-string-pred [id]
@@ -56,14 +57,23 @@
           (recur (+ pos part-size)))))
     (log/info "done")))
 
+
+(defn remove-search-string-punctuation [id]
+  (let [doc (search-strings/get-search-string-by-id id)]
+    (-> doc
+        (assoc :text (remove-punctuation (:text doc)))
+        (assoc :searchPred (remove-punctuation (:searchPred doc)))
+        search-strings/update-search-string!)))
+
 (defn remove-string-search-punctuation-migration []
   (let [part-size 1000]
     (loop [pos 0]
       (log/info "fix punctuation pos:" pos)
-      (let [part (search-strings/find-search-strings {:text {$regex "[.,\\/#!$%\\^&\\*;:{}=\\-_`~()—]"}})]
+      (let [part (search-strings/find-search-strings {:text       {$regex "[.,\\/#!$%\\^&\\*;:{}=\\-_`~()—]"}
+                                                      :searchPred {$ne nil}})]
         (when-not (empty? part)
           (pmap (fn [{:keys [id]}]
-                  (add-search-string-pred id)) part)
+                  (remove-search-string-punctuation id)) part)
           (recur (+ pos part-size)))))
     (log/info "done")))
 
