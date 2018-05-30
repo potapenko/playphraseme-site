@@ -25,7 +25,15 @@
       drop-last
       (->> (string/join " "))))
 
-(defn fix-search-string [id]
+
+(defn- remove-punctuation [s]
+  (-> s
+      string/lower-case
+      (string/replace #"[.,\/#!$%\^&\*;:{}=\-_`~()—]" "")
+      (string/replace #"\s+" " ")
+      string/trim))
+
+(defn add-search-string-pred [id]
   (let [doc (search-strings/get-search-string-by-id id)]
     (let [new-text (-> doc
                        :text
@@ -36,7 +44,7 @@
           (assoc :searchPred (drop-last-word new-text))
           search-strings/update-search-string!))))
 
-(defn add-search-pred-migration []
+(defn add-search-strings-pred-migration []
   (log/info "count search strings without searchPred:" (search-strings/count-search-string {:searchPred nil}))
   (let [part-size 1000]
     (loop [pos 0]
@@ -44,13 +52,25 @@
       (let [part (search-strings/find-search-strings {:searchPred nil} part-size)]
         (when-not (empty? part)
           (pmap (fn [{:keys [id]}]
-                  (fix-search-string id)) part)
+                  (add-search-string-pred id)) part)
+          (recur (+ pos part-size)))))
+    (log/info "done")))
+
+(defn remove-string-search-punctuation-migration []
+  (let [part-size 1000]
+    (loop [pos 0]
+      (log/info "fix punctuation pos:" pos)
+      (let [part (search-strings/find-search-strings {:text {$regex "[.,\\/#!$%\\^&\\*;:{}=\\-_`~()—]"}})]
+        (when-not (empty? part)
+          (pmap (fn [{:keys [id]}]
+                  (add-search-string-pred id)) part)
           (recur (+ pos part-size)))))
     (log/info "done")))
 
 (mount/defstate search-phrases-fixes
   :start (future
-           (add-search-pred-migration)))
+           (remove-string-search-punctuation-migration)
+           (add-search-strings-pred-migration)))
 
 (defn- get-video-file [id]
   (let [phrase (db/get-phrase-by-id id)]
@@ -160,11 +180,11 @@
 
 (comment
 
-  (fix-search-string "55da1457c6384911f4a22bbe")
+  (add-search-string-pred "55da1457c6384911f4a22bbe")
   (search-next-word-search-string "are you")
   (search-next-word-search-string "are you s" true)
   (add-search-string-search-pred "55bf95c5d18e85856832e9d0")
-  (fix-search-string "55bf95c5d18e85856832e9d0")
+  (add-search-string-pred "55bf95c5d18e85856832e9d0")
   (time (count-response "hello"))
   (time (search-response "hello" 0 10))
   (-> (search-response "hello" 0 1) :body)
