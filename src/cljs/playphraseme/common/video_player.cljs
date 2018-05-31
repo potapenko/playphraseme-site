@@ -57,6 +57,7 @@
         (when (ended? index)
           (jump index 0))
         (when-let [audio (some-> "#music-player" util/selector)]
+          (-> audio (aset "volume" @(rf/subscribe [:audio-volume])))
           (-> audio .play
               (.then (fn [] #_(println "audio success") ))
               (.catch (fn [e] (println "audio error" e)))))
