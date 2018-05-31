@@ -267,35 +267,38 @@
                      (aset "volume" (if audio-muted 0 @audio-volume))))))
 
 (defn audio-volume-control [muted volume]
-  (update-music-volume)
-  (let [muted (or muted @(rf/subscribe [:stopped]))]
-    [:div.d-flex.d-row
-     [:div
-      {:on-click (fn []
-                   (when-not @(rf/subscribe [:stopped])
-                     (rf/dispatch [:audio-muted (not muted)])))
-       :style {:opacity .3}}
-      [:i.material-icons "audiotrack"]]
-     (when-not muted
-       [:div
-        {:on-click #(rf/dispatch [:audio-volume (max 0 (- volume .1))])}
-        [:i.material-icons.audio-control "volume_down"]])
-     (when-not muted
-       [:div.music-volume (util/format "%10.1f" volume)])
-     (when-not muted
-       [:div
-        {:on-click #(rf/dispatch [:audio-volume (min 1 (+ volume .1))])}
-        [:i.material-icons.audio-control "volume_up"]])]))
+  (r/create-class
+   {:component-did-mount update-music-volume
+    :reagent-render
+    (fn [muted volume]
+      (let [muted (or muted @(rf/subscribe [:stopped]))]
+        [:div.d-flex.d-row
+         [:div
+          {:on-click (fn []
+                       (when-not @(rf/subscribe [:stopped])
+                         (rf/dispatch [:audio-muted (not muted)])))
+           :style {:opacity .3}}
+          [:i.material-icons "audiotrack"]]
+         (when-not muted
+           [:div
+            {:on-click #(rf/dispatch [:audio-volume (max 0 (- volume .1))])}
+            [:i.material-icons.audio-control "volume_down"]])
+         (when-not muted
+           [:div.music-volume (util/format "%10.1f" volume)])
+         (when-not muted
+           [:div
+            {:on-click #(rf/dispatch [:audio-volume (min 1 (+ volume .1))])}
+            [:i.material-icons.audio-control "volume_up"]])]))}))
 
 (defn search-input []
   [:div.filters-container
    [:input#search-input.filter-input.form-control.input-lg
     {:type      "text" :placeholder "Search Phrase"
      :value     @(rf/subscribe [:search-text])
-     :on-focus (fn []
-                 (rf/dispatch [::model/input-focused? true])
-                 (set-input-cursor))
-     :on-blur #(rf/dispatch [::model/input-focused? false])
+     :on-focus  (fn []
+                  (rf/dispatch [::model/input-focused? true])
+                  (set-input-cursor))
+     :on-blur   #(rf/dispatch [::model/input-focused? false])
      :on-change #(search-phrase (-> % .-target .-value))}]
    (when
     (and
@@ -318,15 +321,15 @@
       [:li
        [play-button]])
     (when-not util/mobile?
-      [:li
-       [audio-volume-control
-        @(rf/subscribe [:audio-muted])
-        @(rf/subscribe [:audio-volume])]
-       (when-not @(rf/subscribe [:audio-muted])
-         [:audio {:id        "music-player"
-                  :src       "http://uk7.internet-radio.com:8000/stream"
-                  :auto-play true
-                  :controls  false}])])]
+      (let-sub [:audio-muted
+                :audio-volume]
+       [:li
+        ^{:key [@audio-muted @audio-volume]}
+        [audio-volume-control @audio-muted @audio-volume]
+        (when-not @(rf/subscribe [:audio-muted])
+          [:audio {:id       "music-player"
+                   :src      "http://uk7.internet-radio.com:8000/stream"
+                   :controls false}])]))]
    [:div.shortcuts-info
     {:style {:opacity (if @(rf/subscribe [::model/input-focused?]) 1 0)}}
     [:div "Next word completion:"] [:i.material-icons "keyboard_tab"]
