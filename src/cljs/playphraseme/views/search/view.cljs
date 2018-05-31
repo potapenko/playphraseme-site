@@ -267,6 +267,7 @@
                      (aset "volume" (if audio-muted 0 @audio-volume))))))
 
 (defn audio-volume-control [muted volume]
+  (update-music-volume)
   (let [muted (or muted @(rf/subscribe [:stopped]))]
     [:div.d-flex.d-row
      [:div
@@ -322,8 +323,10 @@
        [play-button]])
     (when-not util/mobile?
       (let-sub [:audio-muted
-                :audio-volume]
+                :audio-volume
+                :stopped]
        [:li
+        ^{:keys [@audio-muted @audio-volume @stopped]}
         [audio-volume-control @audio-muted @audio-volume]
         (when-not @(rf/subscribe [:audio-muted])
           [:audio {:id       "music-player"
