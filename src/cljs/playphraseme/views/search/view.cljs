@@ -281,13 +281,17 @@
           [:i.material-icons "audiotrack"]]
          (when-not muted
            [:div
-            {:on-click #(rf/dispatch [:audio-volume (max 0 (- volume .1))])}
+            {:on-click (fn []
+                         (rf/dispatch-sync [:audio-volume (max 0 (- volume .1))])
+                         (update-music-volume))}
             [:i.material-icons.audio-control "volume_down"]])
          (when-not muted
            [:div.music-volume (util/format "%10.1f" volume)])
          (when-not muted
            [:div
-            {:on-click #(rf/dispatch [:audio-volume (min 1 (+ volume .1))])}
+            {:on-click (fn []
+                         (rf/dispatch-sync [:audio-volume (min 1 (+ volume .1))])
+                         (update-music-volume))}
             [:i.material-icons.audio-control "volume_up"]])]))}))
 
 (defn search-input []
