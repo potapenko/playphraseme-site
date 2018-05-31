@@ -260,8 +260,8 @@
      [:i.material-icons "pause_circle_filled"])])
 
 (defn- update-music-volume []
-  (let-sub [::model/audio-volume
-            ::model/audio-muted]
+  (let-sub [:audio-volume
+            :audio-muted]
            (let [audio-muted (or @audio-muted @(rf/subscribe [:stopped]))]
              (some-> (util/selector "#music-player")
                      (aset "volume" (if audio-muted 0 @audio-volume))))))
@@ -273,18 +273,18 @@
      [:div
       {:on-click (fn []
                    (when-not @(rf/subscribe [:stopped])
-                     (rf/dispatch [::model/audio-muted (not muted)])))
+                     (rf/dispatch [:audio-muted (not muted)])))
        :style {:opacity .3}}
       [:i.material-icons "audiotrack"]]
      (when-not muted
        [:div
-        {:on-click #(rf/dispatch [::model/audio-volume (max 0 (- volume .1))])}
+        {:on-click #(rf/dispatch [:audio-volume (max 0 (- volume .1))])}
         [:i.material-icons.audio-control "volume_down"]])
      (when-not muted
        [:div.music-volume (util/format "%10.1f" volume)])
      (when-not muted
        [:div
-        {:on-click #(rf/dispatch [::model/audio-volume (min 1 (+ volume .1))])}
+        {:on-click #(rf/dispatch [:audio-volume (min 1 (+ volume .1))])}
         [:i.material-icons.audio-control "volume_up"]])]))
 
 (defn search-input []
@@ -301,8 +301,16 @@
     (and
      @(rf/subscribe [::model/next-word-suggestion])
      @(rf/subscribe [::model/input-focused?]))
-     [:div.next-word-suggestion
-      @(rf/subscribe [::model/next-word-suggestion])])
+     (let-sub [::model/next-word-suggestion
+               :search-text]
+      [:div.next-word-suggestion.no-select
+       {:on-click focus-input}
+       [:span {:style {:color :tranparent}}
+        @search-text]
+       [:span
+        (string/replace-first
+         (string/lower-case @next-word-suggestion)
+         (string/lower-case @search-text) "")]]))
    [:ul.filter-input-icons
     [:li
      [:div.search-result-count @(rf/subscribe [::model/search-count])]]
@@ -312,9 +320,9 @@
     (when-not util/mobile?
       [:li
        [audio-volume-control
-        @(rf/subscribe [::model/audio-muted])
-        @(rf/subscribe [::model/audio-volume])]
-       (when-not @(rf/subscribe [::model/audio-muted])
+        @(rf/subscribe [:audio-muted])
+        @(rf/subscribe [:audio-volume])]
+       (when-not @(rf/subscribe [:audio-muted])
          [:audio {:id        "music-player"
                   :src       "http://uk7.internet-radio.com:8000/stream"
                   :auto-play true
