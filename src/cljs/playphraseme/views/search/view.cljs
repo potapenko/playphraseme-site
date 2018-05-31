@@ -267,32 +267,28 @@
                      (aset "volume" (if audio-muted 0 @audio-volume))))))
 
 (defn audio-volume-control [muted volume]
-  (r/create-class
-   {:component-did-mount update-music-volume
-    :reagent-render
-    (fn [muted volume]
-      (let [muted (or muted @(rf/subscribe [:stopped]))]
-        [:div.d-flex.d-row
-         [:div
-          {:on-click (fn []
-                       (when-not @(rf/subscribe [:stopped])
-                         (rf/dispatch [:audio-muted (not muted)])))
-           :style {:opacity .3}}
-          [:i.material-icons "audiotrack"]]
-         (when-not muted
-           [:div
-            {:on-click (fn []
-                         (rf/dispatch-sync [:audio-volume (max 0 (- volume .1))])
-                         (update-music-volume))}
-            [:i.material-icons.audio-control "volume_down"]])
-         (when-not muted
-           [:div.music-volume (util/format "%10.1f" volume)])
-         (when-not muted
-           [:div
-            {:on-click (fn []
-                         (rf/dispatch-sync [:audio-volume (min 1 (+ volume .1))])
-                         (update-music-volume))}
-            [:i.material-icons.audio-control "volume_up"]])]))}))
+  (let [muted (or muted @(rf/subscribe [:stopped]))]
+    [:div.d-flex.d-row
+     [:div
+      {:on-click (fn []
+                   (when-not @(rf/subscribe [:stopped])
+                     (rf/dispatch [:audio-muted (not muted)])))
+       :style {:opacity .3}}
+      [:i.material-icons "audiotrack"]]
+     (when-not muted
+       [:div
+        {:on-click (fn []
+                     (rf/dispatch-sync [:audio-volume (max 0 (- volume .1))])
+                     (update-music-volume))}
+        [:i.material-icons.audio-control "volume_down"]])
+     (when-not muted
+       [:div.music-volume (util/format "%10.1f" volume)])
+     (when-not muted
+       [:div
+        {:on-click (fn []
+                     (rf/dispatch-sync [:audio-volume (min 1 (+ volume .1))])
+                     (update-music-volume))}
+        [:i.material-icons.audio-control "volume_up"]])]))
 
 (defn search-input []
   [:div.filters-container
@@ -328,7 +324,6 @@
       (let-sub [:audio-muted
                 :audio-volume]
        [:li
-        ^{:key [@audio-muted @audio-volume]}
         [audio-volume-control @audio-muted @audio-volume]
         (when-not @(rf/subscribe [:audio-muted])
           [:audio {:id       "music-player"
