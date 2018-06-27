@@ -6,7 +6,8 @@
 
 (def coll "phrases")
 
-(defn migrate [])
+(defn migrate []
+  (mc/ensure-index db coll {:links 1}))
 
 (mount/defstate migrations-phrases
   :start (migrate))
@@ -37,3 +38,9 @@
   322
   #_(count-docs "movie" {}))
 
+(defn find-phrases
+  ([pred] (find-phrases pred 0 10))
+  ([pred limit] (find-phrases pred 0 limit))
+  ([pred skip limit]
+   (stringify-id
+    (find-docs coll {:pred pred :skip skip :limit limit :sort {:random -1}}))))

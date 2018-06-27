@@ -14,10 +14,12 @@
             [clojure.walk :as walk]
             [monger.operators :refer :all]
             [clojure.java.io :as io]
+            [playphraseme.common.nlp :as nlp]
             [ring.util.io :as ring-io]
             [ring.util.response :refer [response]]
             [playphraseme.common.debug-util :as debug-util :refer [...]]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log]
+            [playphraseme.api.queries.phrases :as phrases]))
 
 (defn drop-last-word [s]
   (-> s
@@ -97,12 +99,15 @@
       (update :end + (or (some-> p :shifts :right) 0))
       (dissoc :shifts)))
 
-(defn get-phrase-data [id]
-  (some-> (db/get-phrase-by-id id)
+(defn prepare-phrase-data [phrase]
+  (some-> phrase
           (util/remove-keys [:random :haveVideo :__v :state])
           (util/remove-keys :words [:id])
-          (assoc :video-url (get-video-url id))
+          (assoc :video-url (get-video-url (:id phrase)))
           use-shifts))
+
+(defn get-phrase-data [id]
+  (prepare-phrase-data (db/get-phrase-by-id id)))
 
 (defn- get-phrases [phrases-ids]
   (pmap get-phrase-data phrases-ids))
@@ -145,13 +150,29 @@
              search-result
              :next-word-suggestion (-> text search-next-word-search-string first :text)))))
 
-(defn search-response [q skip limit]
+(defn search-response-old [q skip limit]
   (let [url (str (:indexer-url env) "/search")
         res (http/get url {:query-params {:q q :skip skip :limit limit} :accept :json})]
     (ok (some-> res
                 :body (parse-string true)
                 (update :phrases get-phrases)
                 (update-phrases-suggestions q)))))
+
+
+(defn get-suggestions [q]
+  [])
+
+(defn search-response [q skip limit]
+  (let [search-string (first
+                       (search-strings/find-search-strings {:text (nlp/remove-punctuation q)}))]
+    (ok
+     (update-phrases-suggestions
+      (if-not search-string
+        {:count 0 :phrases [] :suggestions (get-suggestions q)}
+        (let [phrases (->> (phrases/find-phrases {:links (:text search-string)})
+                           (map prepare-phrase-data))]
+          {:count (:validCount search-string) :phrases phrases}))
+      q))))
 
 (defn phrase-response [id]
   (ok (util/nil-when-throw
