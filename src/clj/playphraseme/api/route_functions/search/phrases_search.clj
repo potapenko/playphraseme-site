@@ -19,6 +19,7 @@
             [ring.util.response :refer [response]]
             [playphraseme.common.debug-util :as debug-util :refer [...]]
             [clojure.tools.logging :as log]
+            [playphraseme.common.suggestions :refer [phrase-candidates]]
             [playphraseme.api.queries.phrases :as phrases]))
 
 (defn drop-last-word [s]
@@ -150,26 +151,15 @@
              search-result
              :next-word-suggestion (-> text search-next-word-search-string first :text)))))
 
-(defn search-response-old [q skip limit]
-  (let [url (str (:indexer-url env) "/search")
-        res (http/get url {:query-params {:q q :skip skip :limit limit} :accept :json})]
-    (ok (some-> res
-                :body (parse-string true)
-                (update :phrases get-phrases)
-                (update-phrases-suggestions q)))))
-
-
-(defn get-suggestions [q]
-  [])
-
 (defn search-response [q skip limit]
+  (assert (< limit 100))
   (let [search-string (first
                        (search-strings/find-search-strings {:text (nlp/remove-punctuation q)}))]
     (ok
      (update-phrases-suggestions
       (if-not search-string
-        {:count 0 :phrases [] :suggestions (get-suggestions q)}
-        (let [phrases (->> (phrases/find-phrases {:links (:text search-string)})
+        {:count 0 :phrases [] :suggestions (phrase-candidates q)}
+        (let [phrases (->> (phrases/find-phrases {:links (:text search-string)} skip limit)
                            (map prepare-phrase-data))]
           {:count (:validCount search-string) :phrases phrases}))
       q))))

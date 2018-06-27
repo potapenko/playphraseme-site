@@ -47,4 +47,4 @@
   ([pred limit] (find-search-strings pred 0 limit))
   ([pred skip limit]
    (stringify-id
-    (find-docs coll {:pred pred :skip skip :limit limit :sort {:validCount -1}}))))
+    (find-docs coll {:pred pred :skip skip :limit limit :sort {:random -1}}))))

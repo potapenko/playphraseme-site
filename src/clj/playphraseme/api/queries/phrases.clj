@@ -7,7 +7,7 @@
 (def coll "phrases")
 
 (defn migrate []
-  (mc/ensure-index db coll {:links 1}))
+  (mc/ensure-index db coll {:links 1 :random 1}))
 
 (mount/defstate migrations-phrases
   :start (migrate))
