@@ -158,10 +158,13 @@
     (ok
      (update-phrases-suggestions
       (if-not search-string
-        {:count 0 :phrases [] :suggestions (phrase-candidates q)}
+        {:count 0 :phrases [] :suggestions []}
         (let [phrases (->> (phrases/find-phrases {:links (:text search-string)} skip limit)
                            (map prepare-phrase-data))]
-          {:count (:validCount search-string) :phrases phrases}))
+          (merge
+           {:count (:validCount search-string) :phrases phrases}
+           (when (empty? phrases)
+             {:suggestions (phrase-candidates q)}))))
       q))))
 
 (defn phrase-response [id]
