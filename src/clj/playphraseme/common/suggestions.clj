@@ -45,7 +45,7 @@
 
 (defn- count-in-db [text]
   (or
-   (:validCount (first (search-strings/find-search-strings {:text text})))
+   (:count (first (search-strings/find-search-strings {:text text})))
    0))
 
 (defn- create-words [text]

@@ -21,20 +21,6 @@
   (stringify-id
    (get-doc-by-id coll (str->id search-string-id))))
 
-(defn insert-search-string!
-  [{:keys [email name password refresh-token] :as user-data}]
-  (stringify-id
-   (add-doc coll user-data)))
-
-(defn update-search-string!
-  ([data] (update-search-string! (:id data) (dissoc data :id)))
-  ([^String search-string-id data]
-   (update-doc-by-id coll (str->id search-string-id) data)))
-
-(defn delete-search-string!
-  [^String search-string-id]
-  (delete-doc-by-id coll (str->id search-string-id)))
-
 (defn count-all []
   (count-docs coll {}))
 
@@ -46,4 +32,4 @@
   ([pred limit] (find-search-strings pred 0 limit))
   ([pred skip limit]
    (stringify-id
-    (find-docs coll {:pred pred :skip skip :limit limit :sort {:random -1}}))))
+    (find-docs coll {:pred pred :skip skip :limit limit :sort {:count -1}}))))

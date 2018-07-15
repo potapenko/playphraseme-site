@@ -94,18 +94,11 @@
         phrase (db/get-phrase-by-id id)]
     (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")))
 
-(defn use-shifts [p]
-  (-> p
-      (update :start + (or (some-> p :shifts :left) 0))
-      (update :end + (or (some-> p :shifts :right) 0))
-      (dissoc :shifts)))
-
 (defn prepare-phrase-data [phrase]
   (some-> phrase
-          (util/remove-keys [:random :haveVideo :__v :state])
+          (util/remove-keys [:random :have-video :__v :state])
           (util/remove-keys :words [:id])
-          (assoc :video-url (get-video-url (:id phrase)))
-          use-shifts))
+          (assoc :video-url (get-video-url (:id phrase)))))
 
 (defn get-phrase-data [id]
   (prepare-phrase-data (db/get-phrase-by-id id)))
@@ -121,17 +114,17 @@
          rx        (str "^" text (if-not word-end? " " "") "\\S+$")
          strings   (->>
                     (search-strings/find-search-strings
-                     {:searchPred text-pred
+                     {:search-pred text-pred
                       :text       {$regex rx}} 20)
-                    (remove #(-> % :validCount (= 0)))
-                    (map #(select-keys % [:text :validCount])))]
+                    (remove #(-> % :count (= 0)))
+                    (map #(select-keys % [:text :count])))]
      (loop [[v & t] strings
             result  []]
        (if v
          (recur
           (remove #(-> % :text (= (:text v))) t)
           (conj result {:text  (:text v)
-                        :count (:validCount v)}))
+                        :count (:count v)}))
          result)))))
 
 (defn update-phrases-suggestions [{:keys [count suggestions] :as search-result} text]
@@ -162,7 +155,7 @@
         (let [phrases (->> (phrases/find-phrases {:links (:text search-string)} skip limit)
                            (map prepare-phrase-data))]
           (merge
-           {:count (:validCount search-string) :phrases phrases}
+           {:count (:count search-string) :phrases phrases}
            (when (empty? phrases)
              {:suggestions (phrase-candidates q)}))))
       q))))
