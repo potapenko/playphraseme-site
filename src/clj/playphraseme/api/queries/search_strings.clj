@@ -4,14 +4,13 @@
             [monger.collection :as mc]
             [playphraseme.db.phrases-db :refer :all]))
 
-(def coll "searchString")
+(def coll "search-strings")
 
 (defn migrate []
-  (mc/ensure-index db coll {:validCount 1})
+  (mc/ensure-index db coll {:count 1})
   (mc/ensure-index db coll {:text 1})
-  (mc/ensure-index db coll {:needRecalculate 1})
-  (mc/ensure-index db coll {:text 1 :validCount 1})
-  (mc/ensure-index db coll {:searchPred 1 :text 1 :validCount 1}))
+  (mc/ensure-index db coll {:text 1 :count 1})
+  (mc/ensure-index db coll {:search-pred 1 :text 1 :count 1}))
 
 (mount/defstate migrations-search-phrases
   :start

@@ -7,7 +7,7 @@
 (def coll "phrases")
 
 (defn migrate []
-  (mc/ensure-index db coll {:links 1 :random 1}))
+  (mc/ensure-index db coll {:search-strings 1 :random 1}))
 
 (mount/defstate migrations-phrases
   :start (migrate))
@@ -26,17 +26,11 @@
   [^String phrase-id {:keys [email name password refresh-token] :as user-data}]
   (update-doc-by-id coll (str->id phrase-id) user-data))
 
-(defn delete-phrase!
-  [^String phrase-id]
-  (delete-doc-by-id coll (str->id phrase-id)))
-
 (defn get-phrases-count []
-  (+ (count-docs coll {:state 1})
-     #_(count-docs coll {:state 0})))
+  (count-docs coll {}))
 
 (defn get-movies-count []
-  322
-  #_(count-docs "movie" {}))
+  (count-docs "movies" {}))
 
 (defn find-phrases
   ([pred] (find-phrases pred 0 10))
