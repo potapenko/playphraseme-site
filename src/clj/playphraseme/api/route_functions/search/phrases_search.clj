@@ -41,7 +41,7 @@
     (str (:id phrase) ".mp4")))
 
 (defn- get-video-url [id]
-  (let [cdn-url "https://cdn.playphrase.me/phrases/"
+  (let [cdn-url (:cdn-url env)
         phrase (db/get-phrase-by-id id)]
     (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")))
 
@@ -98,12 +98,13 @@
 (defn search-response [q skip limit]
   (assert (< limit 100))
   (let [search-string (first
-                       (search-strings/find-search-strings {:text (nlp/remove-punctuation q)}))]
+                       (search-strings/find-search-strings
+                        {:text (nlp/remove-punctuation q)}))]
     (ok
      (update-phrases-suggestions
       (if-not search-string
         {:count 0 :phrases [] :suggestions []}
-        (let [phrases (->> (phrases/find-phrases {:links (:text search-string)} skip limit)
+        (let [phrases (->> (phrases/find-phrases {:search-strings (:text search-string)} skip limit)
                            (map prepare-phrase-data))]
           (merge
            {:count (:count search-string) :phrases phrases}

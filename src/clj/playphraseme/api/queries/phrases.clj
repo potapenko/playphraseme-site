@@ -13,8 +13,7 @@
 (mount/defstate migrations-phrases
   :start (migrate))
 
-(defn get-phrase-by-id
-  [^String phrase-id]
+(defn get-phrase-by-id [^String phrase-id]
   (stringify-id
    (get-doc-by-id coll (str->id phrase-id))))
 

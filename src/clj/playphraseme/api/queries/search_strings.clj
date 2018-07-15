@@ -16,8 +16,7 @@
   :start
   (migrate))
 
-(defn get-search-string-by-id
-  [^String search-string-id]
+(defn get-search-string-by-id [^String search-string-id]
   (stringify-id
    (get-doc-by-id coll (str->id search-string-id))))
 
