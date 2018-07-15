@@ -1,5 +1,6 @@
 (ns playphraseme.api.queries.phrases
   (:require [playphraseme.api.general-functions.doc-id :refer :all]
+            [monger.operators :refer :all]
             [mount.core :as mount]
             [monger.collection :as mc]
             [playphraseme.db.phrases-db :refer :all]))
@@ -24,8 +25,17 @@
    (stringify-id
     (find-docs coll {:pred pred :skip skip :limit limit :sort {:random -1}}))))
 
-(defn get-phrases-count []
-  (count-docs coll {}))
+(def get-phrases-count
+  (memoize
+   (fn []
+     (count-docs coll {}))))
 
-(defn get-movies-count []
-  (count-docs "movies" {}))
+(def get-movies-count
+  (memoize
+   (fn []
+     (->> (aggregate-docs
+           coll [{$match {}}
+                 {$group {:_id   {:movie "$movie"}}}
+                 {"$count" "count"}])
+          first
+          :count))))

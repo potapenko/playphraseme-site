@@ -28,7 +28,6 @@
       drop-last
       (->> (string/join " "))))
 
-
 (defn- remove-punctuation [s]
   (-> s
       string/lower-case
@@ -36,54 +35,6 @@
       (string/replace #"\s+" " ")
       string/lower-case
       string/trim))
-
-(defn add-search-string-pred [id]
-  (let [doc (search-strings/get-search-string-by-id id)]
-    (let [new-text (-> doc
-                       :text
-                       (string/replace "\"" "")
-                       (string/trim))]
-      (-> doc
-          (assoc :text new-text)
-          (assoc :searchPred (drop-last-word new-text))
-          search-strings/update-search-string!))))
-
-(defn add-search-strings-pred-migration []
-  (log/info "count search strings without searchPred:" (search-strings/count-search-string {:searchPred nil}))
-  (let [part-size 1000]
-    (loop [pos 0]
-      (log/info "pos:" pos)
-      (let [part (search-strings/find-search-strings {:searchPred nil} part-size)]
-        (when-not (empty? part)
-          (pmap (fn [{:keys [id]}]
-                  (add-search-string-pred id)) part)
-          (recur (+ pos part-size)))))
-    (log/info "done")))
-
-
-(defn remove-search-string-punctuation [id]
-  (let [doc (search-strings/get-search-string-by-id id)]
-    (-> doc
-        (assoc :text (remove-punctuation (:text doc)))
-        (assoc :searchPred (remove-punctuation (:searchPred doc)))
-        search-strings/update-search-string!)))
-
-(defn remove-string-search-punctuation-migration []
-  (let [part-size 1000]
-    (loop [pos 0]
-      (log/info "fix punctuation pos:" pos)
-      (let [part (search-strings/find-search-strings {:text       {$regex "[.,\\/#!$%\\^&\\*;:{}=\\-_`~()—]"}
-                                                      :searchPred {$ne nil}})]
-        (when-not (empty? part)
-          (pmap (fn [{:keys [id]}]
-                  (remove-search-string-punctuation id)) part)
-          (recur (+ pos part-size)))))
-    (log/info "done")))
-
-(mount/defstate search-phrases-fixes
-  :start (future
-           (remove-string-search-punctuation-migration)
-           (add-search-strings-pred-migration)))
 
 (defn- get-video-file [id]
   (let [phrase (db/get-phrase-by-id id)]
