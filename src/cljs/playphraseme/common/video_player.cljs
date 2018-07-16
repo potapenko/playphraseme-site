@@ -115,7 +115,7 @@
     (fn [{:keys [hide? stopped? phrase
                  on-load on-pause on-play on-load-start
                  on-end on-pos-changed on-play-click]}]
-      (let [{:keys [index video_info]} phrase]
+      (let [{:keys [index video-info]} phrase]
         [:div.video-player-box
          {:style    (merge {:opacity (if hide? 0 1)}
                            (when hide? {:display :none}))
@@ -137,7 +137,7 @@
                [:div.auto-play-info-1 "Autoplay disabled"]
                [:div.auto-play-info "Enable Auto-Play for our site"]
                [:div.auto-play-info "in your browser settings"]])])
-         (let [{:keys [imdb info]} video_info]
+         (let [{:keys [imdb info]} video-info]
            [:a.overlay-video-info
             {:href imdb :target "_blank"}
             info])]))}))

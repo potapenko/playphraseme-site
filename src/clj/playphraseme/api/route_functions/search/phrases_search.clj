@@ -19,6 +19,7 @@
             [ring.util.response :refer [response]]
             [playphraseme.common.debug-util :as debug-util :refer [...]]
             [clojure.tools.logging :as log]
+            [playphraseme.api.queries.movies :as movies]
             [playphraseme.common.suggestions :refer [phrase-candidates]]
             [playphraseme.api.queries.phrases :as phrases]))
 
@@ -45,10 +46,19 @@
         phrase (db/get-phrase-by-id id)]
     (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")))
 
+(defn get-video-info [movie-id]
+  (let [movie (movies/get-movie-by-id movie-id)
+        serie (some-> movie :serie-imdb movies/get-movie-by-imdb)]
+    {:info (if-not serie
+             (:title movie)
+             (string/join " / " [(:title serie) (:title movie) (:season movie) (:episode movie)]))
+     :imdb (:imdb movie)}))
+
 (defn prepare-phrase-data [phrase]
   (some-> phrase
           (util/remove-keys [:random :have-video :__v :state])
           (util/remove-keys :words [:id])
+          (assoc :video-info (get-video-info (:movie phrase)))
           (assoc :video-url (get-video-url (:id phrase)))))
 
 (defn get-phrase-data [id]

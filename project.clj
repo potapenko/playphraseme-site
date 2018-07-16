@@ -94,7 +94,7 @@
   :figwheel
   {:http-server-root "public"
    :nrepl-port       7002
-   :server-ip        "192.168.0.200"
+   ;; :server-ip        "192.168.0.200"
    :css-dirs         ["resources/public/css"]
    :nrepl-middleware
    [cemerick.piggieback/wrap-cljs-repl cider.nrepl/cider-middleware]}
