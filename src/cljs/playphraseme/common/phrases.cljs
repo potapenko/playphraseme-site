@@ -5,7 +5,7 @@
 (defn random-phrase []
   (rand-nth
    ["l thought" "told you about" "I would have" "i'd have" "figured out" "what is wrong with you"
-    "take care" "if you know what i mean" "right now" "over there" "will give you" "I thought" "" " don't you?"
+    "take care" "if you know what i mean" "right now" "over there" "will give you" "I thought" "" "don't you think"
     "each other" "not at all" "anything at all" "each other" "could do that" "I knew that" "I've got to"
     "nothing to do" "What's happening" "appreciate it" "don't even have" "so be it" "stick around" "somehow"
     "good thing" "I'll tell you" "look at you" "too late" "let me know" "for a while" "where is my" "that's what she said"
@@ -17,9 +17,9 @@
     "what's wrong with you" "have fun" "Happy birthday" "I don't understand" "cannot do this" "you need something"
     "whether you like it or not" "Wait up" "chill out" "are you talking to" "I wouldn't do that" "will you please"
     "would you like" "oh, my god" "count on" "You're the best" "i've never been to" "as you wish" "stay with me"
-    "pretty cool" "How was your day?" "Have you ever been to" "It's about time" "say hello to" "for the time being"
+    "pretty cool" "How was your day" "Have you ever been to" "It's about time" "say hello to" "for the time being"
     "May I ask you" "Let me get this straight" "back and forth" "I beg your pardon" "This is ridiculous"
-    "How long has it been?" "let me down"]))
+    "How long has it been" "let me down"]))
 
 (defn random-bad-phrase []
   (rand-nth
