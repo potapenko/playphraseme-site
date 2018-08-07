@@ -114,7 +114,10 @@
      (update-phrases-suggestions
       (if-not search-string
         {:count 0 :phrases [] :suggestions []}
-        (let [phrases (->> (phrases/find-phrases {:search-strings (:text search-string)} (max skip 1000) limit)
+        (let [phrases (->> (phrases/find-phrases {:search-strings (:text search-string)
+                                                  :have-video     true}
+                                                 (if (> skip 1000) 1000 skip)
+                                                 limit)
                            (map prepare-phrase-data))]
           (merge
            {:count (:count search-string) :phrases phrases}

@@ -1,5 +1,5 @@
 {:dev        true
- :port       3000
+ :port       3033
  :nrepl-port 7000
  :cdn-url    "http://localhost:8099/"
 
