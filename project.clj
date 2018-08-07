@@ -138,7 +138,8 @@
                   {:app
                    {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
                     :figwheel     {:on-jsload      "playphraseme.core/mount-components"
-                                   :websocket-host "192.168.0.200"}
+                                   ;; :websocket-host "192.168.0.200"
+                                   }
                     :compiler
                     {:main          "playphraseme.app"
                      :asset-path    "/js/out"

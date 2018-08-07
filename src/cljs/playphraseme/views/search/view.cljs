@@ -350,7 +350,7 @@
         word (-> phrase :words (nth word-index))]
     (rf/dispatch [:stopped false])
     (rf/dispatch-sync [::model/current-word-index] (:index phrase))
-    (player/jump index (+ 400 (:start word)))
+    (player/jump index (:start word))
     (highlite-word word)
     (player/play index)))
 
