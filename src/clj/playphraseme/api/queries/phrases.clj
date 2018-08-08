@@ -33,8 +33,8 @@
   (memoize
    (fn []
      (->> (aggregate-docs
-           coll [{$match {}}
-                 {$group {:_id   {:movie "$movie"}}}
+           coll [{$match {:have-video true}}
+                 {$group {:_id {:movie "$movie"}}}
                  {"$count" "count"}])
           first
           :count))))
