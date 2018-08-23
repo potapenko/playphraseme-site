@@ -1,6 +1,5 @@
 {:production true
- :port       8080
- :cdn-url    "https://cdn.playphrase.me/phrases/"
+ :port       3000
 
  ;; :facebook-client-id     "<env variable>"
  ;; :facebook-client-secret "<env variable>"

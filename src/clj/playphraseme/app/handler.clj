@@ -10,7 +10,9 @@
             [playphraseme.env :refer [defaults]]
             [malcontent.middleware :refer [add-content-security-policy]]
             [ring.middleware.gzip :refer :all]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [playphraseme.common.util :as util]
+            [clojure.tools.logging :as log]))
 
 (mount/defstate init-app
   :start ((or (:init defaults) identity))
@@ -27,7 +29,7 @@
        (wrap-routes middleware/wrap-csrf)
        (wrap-routes middleware/wrap-formats)
        middleware/wrap-base
-       (add-content-security-policy :config-path "policy.edn"))
+       (add-content-security-policy :config-path (io/resource "policy.edn")))
    (route/not-found
     (:body
      (error-page {:status 404

@@ -21,7 +21,9 @@
     "would you like" "oh, my god" "count on" "You're the best" "i've never been to" "as you wish" "stay with me"
     "pretty cool" "How was your day" "Have you ever been to" "It's about time" "say hello to" "for the time being"
     "May I ask you" "Let me get this straight" "back and forth" "I beg your pardon" "This is ridiculous"
-    "How long has it been" "let me down" "come on let's go"]
+    "How long has it been" "let me down" "come on let's go" "where is she" "where is he" "i've been thinking"
+    "don't even think about" "don't know what to say" "I don't know what you're talking about"
+    "i don't know what you mean" "come on in" "told you not to" "let me see" "let me guess" "how's it going"]
    (sort-by #(rand-int 1000))
    vec))
 

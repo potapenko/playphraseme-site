@@ -1,0 +1,14 @@
+version: '3'
+services:
+  web:
+    build: .
+    env_file: .env-docker
+    ports:
+     - "3033:3000"
+  node:
+    build: ../video-server
+    restart: always
+    volumes:
+      - "/Volumes/Server/extractor-work-dir/final:/video"
+    ports:
+     - "8099:8099"

@@ -1,5 +1,6 @@
 (ns playphraseme.common.util
   (:require [clojure.string :as string]
+            [clojure.java.io :as io]
             [clojure.walk :as walk]))
 
 (defn- change-keys
@@ -41,3 +42,11 @@
     ~@body
     (catch Throwable e#
       nil)))
+
+(defn resource-file [path]
+  (-> path
+      io/resource
+      io/file))
+
+(defn resource-path [path]
+  (-> path io/resource .toURI .normalize .getPath))
