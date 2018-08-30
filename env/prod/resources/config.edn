@@ -1,5 +1,6 @@
 {:production true
  :port       3000
+ :cdn-url    "http://localhost:8099/"
 
  ;; :facebook-client-id     "<env variable>"
  ;; :facebook-client-secret "<env variable>"

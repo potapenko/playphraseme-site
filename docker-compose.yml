@@ -9,6 +9,6 @@ services:
     build: ../video-server
     restart: always
     volumes:
-      - "/Volumes/Server/extractor-work-dir/final:/video"
+      - "/Volumes/Server/extractor-work-dir/final-phrases:/video"
     ports:
      - "8099:8099"
