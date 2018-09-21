@@ -125,8 +125,7 @@
    (remove nil?)
    distinct
    (remove #(-> % :count (< 5)))
-   (remove #(-> % :text nlp/create-words count (< 3)))
-   (sort-by #(-> % :text count))
+   (sort-by #(-> % :text nlp/count-words))
    reverse
    (take 10)
    vec))
