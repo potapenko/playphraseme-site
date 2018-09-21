@@ -15,6 +15,8 @@
 (def escape_qustion "#escape_question#")
 (def escape_exclamation "#escape_exclamation#")
 
+(def ^:private stop-words (-> "resources/nlp/stop-words.txt" slurp string/split-lines set))
+
 (defn create-words [s]
   (-> s
       (->
@@ -105,3 +107,17 @@
                                     :s-id @s-counter
                                     :text w}))}))})))))
 
+(defn remove-first-word [s]
+  (->> s create-words rest (string/join " ")))
+
+(defn remove-last-word [s]
+  (->> s create-words drop-last (string/join " ")))
+
+(defn stop-word? [s]
+  (-> s stop-words nil? not))
+
+(defn count-words [s]
+  (->> s
+       create-words
+       (remove stop-word?)
+       count))

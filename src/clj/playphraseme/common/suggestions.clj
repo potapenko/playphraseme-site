@@ -14,7 +14,7 @@
       (recur t (assoc model v pos) (inc pos))
       model)))
 
-(def nwords-base (delay (train (words (slurp (io/resource "search/big-text.txt"))))))
+(def nwords-base (delay (train (words (slurp (io/resource "nlp/big-text.txt"))))))
 
 (defn- edits [word]
   (let [alphabet "abcdefghijklmnopqrstuvwxyz" n (count word)]
