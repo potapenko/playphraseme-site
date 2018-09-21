@@ -6,7 +6,7 @@ services:
     ports:
      - "3033:3000"
   node:
-    build: ../video-server
+    build: ./micro/video-server
     restart: always
     volumes:
       - "/Volumes/Server/extractor-work-dir/final-phrases:/video"

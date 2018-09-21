@@ -10,6 +10,7 @@
   (mc/ensure-index db coll {:count 1})
   (mc/ensure-index db coll {:text 1})
   (mc/ensure-index db coll {:text 1 :count 1})
+  (mc/ensure-index db coll {:search-next 1 :count 1})
   (mc/ensure-index db coll {:search-pred 1 :text 1 :count 1}))
 
 (mount/defstate migrations-search-phrases
@@ -23,7 +24,7 @@
 (defn count-all []
   (count-docs coll {}))
 
-(defn count-search-string [pred]
+(defn count-search-strings [pred]
   (count-docs coll pred))
 
 (defn find-search-strings
