@@ -1,6 +1,8 @@
 (ns playphraseme.common.common-phrases
   (:require [playphraseme.api.queries.search-strings :as search-strings]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [ring.util.http-response :refer :all]
+            [playphraseme.common.nlp :as nlp]))
 
 (declare build-map-right build-map-left)
 
@@ -23,9 +25,9 @@
    vec))
 
 (defn create-phrases-map [text]
-  {:text text
+  {:text  text
    :count (search-strings/count-search-strings {:text text})
-   :left (build-map-left text)
+   :left  (build-map-left text)
    :right (build-map-right text)})
 
 (defn- flat-phrases-map [m]
@@ -47,19 +49,23 @@
    vec))
 
 (defn get-common-phrases [text]
-  (->> text
-       string/trim
-       string/lower-case
-       create-phrases-map
-       flat-phrases-map
-       (remove #(-> % :text (= text)))
-       (take 10)))
+  (if (nlp/stop-word? text)
+    []
+    (->> text
+         string/trim
+         string/lower-case
+         create-phrases-map
+         flat-phrases-map
+         (remove #(-> % :text (= text)))
+         (take 10))))
+
+(defn get-common-phrases-response [text]
+  (ok (get-common-phrases text)))
 
 (comment
 
   (time
-   (get-common-phrases "i'm"))
+   (get-common-phrases "a book"))
 
-  (create-phrases-map "don't know")
 
   )
