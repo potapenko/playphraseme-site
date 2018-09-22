@@ -38,6 +38,11 @@
 (def search-id (atom 0))
 (def scroll-loaded (atom 0))
 
+(defn load-common-phrases [text]
+  (go
+    (let [common-phrases (<! (rest-api/common-phrases text))]
+      (rf/dispatch [::model/common-phrases common-phrases]))))
+
 (defn search-phrase
   ([text] (search-phrase text nil))
   ([text first-phrase]
@@ -72,7 +77,8 @@
                                                   (concat [first-phrase-info] ex)))
                                         res))
                                     res)])
-               (load-favorited)))))))
+               (load-favorited)
+               (load-common-phrases text)))))))
    (rf/dispatch [:search-text text])))
 
 (defn scroll-end []
@@ -334,7 +340,9 @@
                    :src      "http://uk7.internet-radio.com:8000/stream"
                    :controls false}])]))]
    [:div.shortcuts-info
-    {:style {:opacity (if @(rf/subscribe [::model/input-focused?]) 1 0)}}
+    {:style (if @(rf/subscribe [::model/input-focused?])
+              {:display "flex" :opacity 1}
+              {:display "none" :opacity 0})}
     [:div "Next word completion:"] [:i.material-icons "keyboard_tab"]
     [spacer 4]
     [:div "Next word select:"] [:i.material-icons "keyboard_arrow_right"]
@@ -343,7 +351,15 @@
     [:i.material-icons "keyboard_arrow_up"]
     [:i.material-icons "keyboard_arrow_down"]
     [spacer 4]
-    [:div "Pause/Stop/Select suggestion:"] [:i.material-icons "keyboard_return"]]])
+    [:div "Pause/Stop/Select suggestion:"] [:i.material-icons "keyboard_return"]]
+   [:div.common-phrases.red
+    {:style (if-not @(rf/subscribe [::model/input-focused?])
+              {:display "flex" :opacity 1}
+              {:display "none" :opacity 0})}
+    (doall
+     (for [{:keys [text count]} @(rf/subscribe [::model/common-phrases])]
+       ^{:key text}
+       [:a.one-common-phrase {:href (str "/#/search?q=" text)} text]))]])
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
