@@ -92,8 +92,12 @@
 (defn set-url! [url params]
   (js/history.replaceState nil nil (str "/#/" url "?" (params-to-url params))))
 
+(def history-last (atom nil))
+
 (defn set-history-url! [url params]
-  (js/history.pushState nil nil (str "/#/" url "?" (params-to-url params))))
+  (when-not (= @history-last [url params])
+    (reset! history-last [url params])
+    (js/history.pushState nil nil (str "/#/" url "?" (params-to-url params)))))
 
 (defn body []
   js/document.body)

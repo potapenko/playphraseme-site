@@ -536,7 +536,7 @@ word, word:active, word:focus{
   flex-direction: row;
   font-size: 10px;
   color: rgba(0,0,0,0.4);
-  margin-top: 4px;
+  margin-top: 5px;
   align-items: center;
   padding-left: 5px;
 	transition: opacity 0.4s ease-in-out;

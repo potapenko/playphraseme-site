@@ -339,27 +339,23 @@
           [:audio {:id       "music-player"
                    :src      "http://uk7.internet-radio.com:8000/stream"
                    :controls false}])]))]
-   [:div.shortcuts-info
-    {:style (if @(rf/subscribe [::model/input-focused?])
-              {:display "flex" :opacity 1}
-              {:display "none" :opacity 0})}
-    [:div "Next word completion:"] [:i.material-icons "keyboard_tab"]
-    [spacer 4]
-    [:div "Next word select:"] [:i.material-icons "keyboard_arrow_right"]
-    [spacer 4]
-    [:div "Navigate result/suggestions list:"]
-    [:i.material-icons "keyboard_arrow_up"]
-    [:i.material-icons "keyboard_arrow_down"]
-    [spacer 4]
-    [:div "Pause/Stop/Select suggestion:"] [:i.material-icons "keyboard_return"]]
-   [:div.common-phrases.red
-    {:style (if-not @(rf/subscribe [::model/input-focused?])
-              {:display "flex" :opacity 1}
-              {:display "none" :opacity 0})}
-    (doall
-     (for [{:keys [text count]} @(rf/subscribe [::model/common-phrases])]
-       ^{:key text}
-       [:a.one-common-phrase {:href (str "/#/search?q=" text)} text]))]])
+   (let [common-phrases @(rf/subscribe [::model/common-phrases])]
+    (if-not (empty? common-phrases)
+      [:div.common-phrases
+       (doall
+        (for [{:keys [text count]} common-phrases]
+          ^{:key text}
+          [:a.one-common-phrase {:href (str "/#/search?q=" text)} text]))]
+      [:div.shortcuts-info
+       [:div "Next word completion:"] [:i.material-icons "keyboard_tab"]
+       [spacer 4]
+       [:div "Next word select:"] [:i.material-icons "keyboard_arrow_right"]
+       [spacer 4]
+       [:div "Navigate result/suggestions list:"]
+       [:i.material-icons "keyboard_arrow_up"]
+       [:i.material-icons "keyboard_arrow_down"]
+       [spacer 4]
+       [:div "Pause/Stop/Select suggestion:"] [:i.material-icons "keyboard_return"]]))])
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
