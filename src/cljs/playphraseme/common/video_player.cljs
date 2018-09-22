@@ -139,6 +139,6 @@
                [:div.auto-play-info "in your browser settings"]])])
          (let [{:keys [imdb info]} video-info]
            [:a.overlay-video-info
-            {:href imdb :target "_blank"}
+            {:href (str "https://www.imdb.com/title/" imdb) :target "_blank"}
             info])]))}))
 
