@@ -88,48 +88,6 @@
                         :count (:count v)}))
          result)))))
 
-(defn- build-map-left [text]
-  (->>
-   (search-strings/find-search-strings {:search-next text :count {"$gt" 5}})
-   (map #(select-keys % [:text :count]))
-   (map #(assoc %
-                :left (build-map-left (:text %))
-                :right (build-map-right (:text %))))
-   vec))
-
-(declare build-map-right build-map-left)
-
-(defn- build-map-right [text]
-  (->>
-   (search-strings/find-search-strings {:search-pred text :count {"$gt" 5}})
-   (map #(select-keys % [:text :count]))
-   (map #(assoc %
-                :right (build-map-right (:text %))
-                :left (build-map-left (:text %))))
-   vec))
-
-(defn create-phrases-map [text]
-  {:text text
-   :count (search-strings/count-search-strings {:text text})
-   :left (build-map-left text)
-   :right (build-map-right text)})
-
-(defn flat-phrases-map [m]
-  (->> m
-   (clojure.walk/postwalk
-    (fn [e]
-      (if (and (map? e))
-        [(select-keys e [:text :count]) (:left e) (:right e)]
-        e)))
-   flatten
-   (remove nil?)
-   distinct
-   (remove #(-> % :count (< 5)))
-   (sort-by #(-> % :text nlp/count-words))
-   reverse
-   (take 10)
-   vec))
-
 (defn update-phrases-suggestions [{:keys [count suggestions] :as search-result} text]
   (if (string/blank? text)
     search-result
