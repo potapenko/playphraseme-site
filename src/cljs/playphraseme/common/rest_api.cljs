@@ -132,6 +132,11 @@
             (merge (api-headers) {:query-params {:id id}})
             login-md :body))
 
+(defn common-phrases [text]
+  (call-api http/get "/phrases/common-phrases"
+            (merge (api-headers) {:query-params {:q text}})
+            login-md :body))
+
 (defn favorites
   ([] (favorites 10 0))
   ([limit skip]
@@ -164,6 +169,7 @@
   (go (println (<! (get-favorite "543bd8c8d0430558da9bfeb1"))))
   (go (println (<! (delete-favorite "543bd8c8d0430558da9bfeb1"))))
   (go (println (<! (get-phrase "543bd8c8d0430558da9bfeb1"))))
+  (go (println (<! (common-phrases "hello"))))
 
 
 
