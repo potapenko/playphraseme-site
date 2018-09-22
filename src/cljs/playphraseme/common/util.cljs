@@ -90,8 +90,10 @@
   (string/join "&" (map (fn [[k v]] (str (name k) "=" (js/encodeURIComponent v))) params)))
 
 (defn set-url! [url params]
-  (js/history.pushState nil nil (str "/#/" url "?" (params-to-url params)))
-  #_(aset js/window.location "hash" (str "/" url "?" (params-to-url params))))
+  (js/history.replaceState nil nil (str "/#/" url "?" (params-to-url params))))
+
+(defn set-history-url! [url params]
+  (js/history.pushState nil nil (str "/#/" url "?" (params-to-url params))))
 
 (defn body []
   js/document.body)

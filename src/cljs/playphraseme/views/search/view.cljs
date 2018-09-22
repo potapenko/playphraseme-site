@@ -46,7 +46,6 @@
             first-phrase
             (not= (some-> text string/trim)
                   (some-> @(rf/subscribe [:search-text]) string/trim)))
-       (util/set-url! "search" (merge {:q text} (when first-phrase {:p first-phrase})))
        (let [id  (swap! search-id inc)]
          (rf/dispatch [::model/search-result []])
          (rf/dispatch [:current-phrase-index nil])
@@ -62,6 +61,8 @@
                    (rf/dispatch [:first-search false])
                    (rf/dispatch [:stopped false])))
                (rf/dispatch [:search-count])
+               (when (-> res :count pos?)
+                   (util/set-history-url! "search" (merge {:q text} (when first-phrase {:p first-phrase}))))
                (rf/dispatch-sync [::model/search-result
                                   (if first-phrase
                                     (let [first-phrase-info (<! (rest-api/get-phrase first-phrase))]
