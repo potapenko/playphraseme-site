@@ -3,12 +3,24 @@ services:
   web:
     build: .
     env_file: .env-docker
+    volumes:
+      - "~/.m2/:/root/.m2:ro"
     ports:
      - "3033:3000"
-  node:
-    build: ./micro/video-server
-    restart: always
+    networks:
+      - playphraseme-site-net
+  proxy:
+    image: nginx
     volumes:
-      - "/Volumes/Server/extractor-work-dir/final-phrases:/video"
+      - ./micro/proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./micro/proxy/default.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
-     - "8099:8099"
+     - "80:8080"
+    networks:
+      - playphraseme-site-net
+
+networks:
+  playphraseme-site-net:
+
+
+
