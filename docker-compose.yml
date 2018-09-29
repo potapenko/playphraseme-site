@@ -6,14 +6,13 @@ services:
     volumes:
       - "~/.m2/:/root/.m2:ro"
     ports:
-     - "3033:3000"
+     - "3033:3033"
     networks:
       - playphraseme-site-net
   proxy:
     image: nginx
     volumes:
       - ./micro/proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./micro/proxy/default.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
      - "80:8080"
     networks:

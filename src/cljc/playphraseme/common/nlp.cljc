@@ -1,5 +1,6 @@
 (ns playphraseme.common.nlp
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+            [clojure.java.io :as io]))
 
 (def test-text " ")
 
@@ -15,7 +16,7 @@
 (def escape_qustion "#escape_question#")
 (def escape_exclamation "#escape_exclamation#")
 
-(def ^:private stop-words (-> "resources/nlp/stop-words.txt" slurp string/split-lines set))
+(def ^:private stop-words (-> "nlp/stop-words.txt" io/resource slurp string/split-lines set))
 
 (defn create-words [s]
   (-> s
