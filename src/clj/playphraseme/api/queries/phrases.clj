@@ -26,12 +26,12 @@
 
 (def get-phrases-count
   (memoize
-   (fn []
-     (count-docs coll {}))))
+   (fn [_]
+     (count-docs coll {:have-video true}))))
 
 (def get-movies-count
   (memoize
-   (fn []
+   (fn [_]
      (->> (aggregate-docs
            coll [{$match {:have-video true}}
                  {$group {:_id {:movie "$movie"}}}

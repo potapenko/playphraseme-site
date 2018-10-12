@@ -44,7 +44,7 @@
 (defn- get-video-url [id]
   (let [cdn-url (:cdn-url env)
         phrase (db/get-phrase-by-id id)]
-    (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")))
+    (str cdn-url "/" (:movie phrase) "/" (:id phrase) ".mp4")))
 
 (defn get-video-info [movie-id]
   (let [movie (movies/get-movie-by-id movie-id)
@@ -135,10 +135,10 @@
     (ok (some-> res :body (parse-string true) :count))))
 
 (defn all-phrases-count-response []
-  (ok (db/get-phrases-count)))
+  (ok (db/get-phrases-count (util/time-stamp-10-min))))
 
 (defn all-movies-count-response []
-  (ok (db/get-movies-count)))
+  (ok (db/get-movies-count (util/time-stamp-10-min))))
 
 (defn video-url-response [id]
   (ok (get-video-url id)))

@@ -67,10 +67,10 @@
                 [:span.black "Phrase"]
                 [:span.gray ".me"]]
                [ui/flexer]
-               [:div.statistic
+               #_[:div.statistic
                 [:span.count @all-movies-count]
                 [:span.info (ls :statistic.movies)]]
-               [ui/spacer 10]
+               #_[ui/spacer 10]
                [:div.statistic
                 [:span.count @all-phrases-count]
                 [:span.info (ls :statistic.phrases)]]

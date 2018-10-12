@@ -2,4 +2,12 @@
            ;; :default [:self "http:" "https:" :unsafe-inline "ws:"]
            :media   ["http://localhost:8099"
                      "http://localhost:3033"
+                     "http://localhost"
+                     "http://35.204.116.220"
+                     "http://playphrase.me"
+                     "http://*.playphrase.me"
+                     "https://*.playphrase.me"
+                     "https://*.googleusercontent.com"
+                     "https://accounts.google.com"
+                     "https://storage.cloud.google.com"
                      "http://uk7.internet-radio.com:8000"]}}

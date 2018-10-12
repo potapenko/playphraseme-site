@@ -50,3 +50,12 @@
 
 (defn resource-path [path]
   (-> path io/resource .toURI .normalize .getPath))
+
+(defn time-stamp-10-min []
+  (-> (System/currentTimeMillis)
+      (float)
+      (/ 1000.0)
+      (/ 1000.0)
+      (/ 10.0)
+      (int)))
+
