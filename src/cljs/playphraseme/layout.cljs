@@ -38,7 +38,7 @@
             :all-phrases-count]
            (go
              (rf/dispatch [:all-phrases-count (<! (rest-api/count-all-phrases))])
-             (rf/dispatch [:all-movies-count (<! (rest-api/count-all-movies))]))
+             #_(rf/dispatch [:all-movies-count (<! (rest-api/count-all-movies))]))
            (fn []
              [:div.header
               {:class (util/class->str (when-not (= @page :search) "invert"))}
