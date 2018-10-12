@@ -72,7 +72,7 @@
                 [:span.info (ls :statistic.movies)]]
                #_[ui/spacer 10]
                [:div.statistic
-                [:span.count @all-phrases-count]
+                [:span.count (some->> @all-phrases-count #_(util/format "%,12d"))]
                 [:span.info (ls :statistic.phrases)]]
                #_[:div.translate-direction
                   [:span.select-button "En"] [:span.arrow ">"] [:span.select-button "En"]]]])))

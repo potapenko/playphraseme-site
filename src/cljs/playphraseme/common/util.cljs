@@ -236,11 +236,13 @@
   "Formats a string using goog.string.format.
    e.g: (format \"Cost: %.2f\" 10.0234)"
   [fmt & args]
-  (apply gstring/format fmt args))
+  (apply gstring/format (concat [fmt] args)))
 
 (comment
   (or-str nil "" "hello" "world")
   (nil-or-blank? "hello")
   (nil-or-blank? "")
+
+  (format "%,12d" 100000)
 
   )
