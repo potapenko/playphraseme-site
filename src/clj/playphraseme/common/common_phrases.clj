@@ -43,7 +43,6 @@
    flatten
    (remove nil?)
    (sort-by :words-count-without-stops)
-   (map #(dissoc % :words-count-without-stops))
    distinct
    reverse
    vec))
@@ -57,8 +56,9 @@
          create-phrases-map
          flat-phrases-map
          (remove #(-> % :text (= text)))
-         (take 30)
-         (sort-by :count)
+         (take 50)
+         (sort-by #(+ (:count %) (* 1000 (:words-count-without-stops %))))
+         (map #(dissoc % :words-count-without-stops))
          reverse)))
 
 (defn get-common-phrases-response [text]
