@@ -57,7 +57,7 @@
          create-phrases-map
          flat-phrases-map
          (remove #(-> % :text (= text)))
-         (take 10))))
+         (take 30))))
 
 (defn get-common-phrases-response [text]
   (ok (get-common-phrases text)))

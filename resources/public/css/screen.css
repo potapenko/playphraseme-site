@@ -940,3 +940,12 @@ h2 {
     display: none;
   }
 }
+
+.mobile-apps {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  padding-bottom: 8px;
+  opacity: 0.5;
+}
+

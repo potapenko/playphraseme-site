@@ -67,15 +67,17 @@
                 [:span.black "Phrase"]
                 [:span.gray ".me"]]
                [ui/flexer]
-               #_[:div.statistic
-                [:span.count @all-movies-count]
-                [:span.info (ls :statistic.movies)]]
-               #_[ui/spacer 10]
+               [:div.mobile-apps
+                [:a {:href ""}
+                 [:img {:src "./img/apple-store-button@1x.png" :height 24 :width 66}]]
+                [ui/spacer 12]
+                [:a {:href ""}
+                 [:img {:src "./img/google-play-button@1x.png" :height 24 :width 66}]]
+                ]
+               [ui/flexer]
                [:div.statistic
-                [:span.count (some->> @all-phrases-count #_(util/format "%,12d"))]
-                [:span.info (ls :statistic.phrases)]]
-               #_[:div.translate-direction
-                  [:span.select-button "En"] [:span.arrow ">"] [:span.select-button "En"]]]])))
+                [:span.count @all-phrases-count]
+                [:span.info (ls :statistic.phrases)]]]])))
 
 (defn left-column []
   [:div.left-column ""])

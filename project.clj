@@ -93,8 +93,8 @@
   [:target-path [:cljsbuild :builds :app :compiler :output-dir] [:cljsbuild :builds :app :compiler :output-to]]
   :figwheel
   {:http-server-root "public"
+   :server-port      9999
    :nrepl-port       7002
-   ;; :server-ip        "192.168.0.200"
    :css-dirs         ["resources/public/css"]
    :nrepl-middleware
    [cemerick.piggieback/wrap-cljs-repl cider.nrepl/cider-middleware]}
@@ -137,9 +137,7 @@
                  {:builds
                   {:app
                    {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-                    :figwheel     {:on-jsload      "playphraseme.core/mount-components"
-                                   ;; :websocket-host "192.168.0.200"
-                                   }
+                    :figwheel     {:on-jsload "playphraseme.core/mount-components"}
                     :compiler
                     {:main          "playphraseme.app"
                      :asset-path    "/js/out"
