@@ -49,9 +49,10 @@
 (defn get-video-info [movie-id]
   (let [movie (movies/get-movie-by-id movie-id)
         serie (some-> movie :serie-imdb movies/get-movie-by-imdb)]
-    {:info (if-not serie
-             (:title movie)
-             (string/join " / " [(:title serie) (:title movie) (:season movie) (:episode movie)]))
+    {:info (str (if-not serie
+                  (:title movie)
+                  (string/join " / " [(:title serie) (:season movie) (:episode movie)]))
+                " (" (:year movie) ")")
      :imdb (:imdb movie)}))
 
 (defn prepare-phrase-data [phrase]

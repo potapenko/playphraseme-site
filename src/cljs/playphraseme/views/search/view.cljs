@@ -513,36 +513,6 @@
                      [:div.video-overlay {:class (util/class->str (when @stopped :stopped))}
                       [:ul.video-overlay-menu
                        [:li
-                        {:on-click favorite-current-phrase}
-                        [:i.material-icons (if (:favorited (get-current-phrase))
-                                             "favorite"
-                                             "favorite_border")]
-                        [:div.info-text "Favorite"]
-                        [:div.info-text "This Phrase"]]
-                       [:li
-                        {:on-click #(util/go-url! "/#/favorites")}
-                        [:i.material-icons "featured_play_list"]
-                        [:div.info-text "Favorited"]
-                        [:div.info-text "Pharases"]]
-                       (when-not util/mobile?
-                         [:li
-                          {:on-click #(util/go-url! "/#/history")}
-                          [:i.material-icons "search"]
-                          [:div.info-text "Search"]
-                          [:div.info-text "History"]])
-                       (when-not util/mobile?
-                         [:li
-                          {:on-click #(util/go-url! "/#/learn")}
-                          [:i.material-icons "school"]
-                          [:div.info-text "Learn"]
-                          [:div.info-text "Phrases"]])
-                       (when-not util/mobile?
-                         [:li
-                          {:on-click #(util/go-url! "/#/settings")}
-                          [:i.material-icons "settings"]
-                          [:div.info-text "Your"]
-                          [:div.info-text "Settings"]])
-                       [:li
                         {:on-click #(util/go-url!
                                      (str "/api/v1/phrases/video-download?id="
                                           (:id (get-current-phrase)))

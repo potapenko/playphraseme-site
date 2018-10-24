@@ -8,7 +8,7 @@
 
 (defn- build-map-left [text]
   (->>
-   (search-strings/find-search-strings {:search-next text :count {"$gt" 5}})
+   (search-strings/find-search-strings {:search-next text :count {"$gt" 10}})
    (pmap #(select-keys % [:text :count :words-count-without-stops]))
    (pmap #(assoc %
                 :left (build-map-left (:text %))
@@ -17,7 +17,7 @@
 
 (defn- build-map-right [text]
   (->>
-   (search-strings/find-search-strings {:search-pred text :count {"$gt" 5}})
+   (search-strings/find-search-strings {:search-pred text :count {"$gt" 10}})
    (pmap #(select-keys % [:text :count :words-count-without-stops]))
    (pmap #(assoc %
                 :right (build-map-right (:text %))
@@ -57,7 +57,9 @@
          create-phrases-map
          flat-phrases-map
          (remove #(-> % :text (= text)))
-         (take 30))))
+         (take 30)
+         (sort-by :count)
+         reverse)))
 
 (defn get-common-phrases-response [text]
   (ok (get-common-phrases text)))
