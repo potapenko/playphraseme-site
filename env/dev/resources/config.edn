@@ -1,7 +1,10 @@
 {:dev        true
  :port       3033
  :nrepl-port 7040
- :cdn-url    "http://localhost:8099"
+ :cdn-url
+ "https://storage.googleapis.com/playphraseme-video"
+ ;; "https://storage.cloud.google.com/playphraseme-video"
+ ;; "http://localhost:8099"
 
  :facebook-client-id     "<env variable>"
  :facebook-client-secret "<env variable>"
