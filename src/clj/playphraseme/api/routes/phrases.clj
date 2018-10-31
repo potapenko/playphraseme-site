@@ -76,5 +76,13 @@
          :middleware    [cors-mw]
          :query-params  [q :- s/Str]
          :summary       "Return common phrases"
-         (common-phrases/get-common-phrases-response q))))
+         (common-phrases/get-common-phrases-response q))
+
+    (GET "/all-common-phrases" request
+         :tags          ["Phrases"]
+         :return        s/Any
+         :middleware    [cors-mw]
+         :query-params  [{skip :- s/Num 0} {limit :- s/Num 10}]
+         :summary       "Return all common phrases"
+         (common-phrases/get-all-common-phrases-response skip limit))))
 

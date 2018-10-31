@@ -11,7 +11,8 @@
   (mc/ensure-index db coll {:text 1})
   (mc/ensure-index db coll {:text 1 :count 1})
   (mc/ensure-index db coll {:search-next 1 :count 1})
-  (mc/ensure-index db coll {:search-pred 1 :text 1 :count 1}))
+  (mc/ensure-index db coll {:search-pred 1 :text 1 :count 1})
+  (mc/ensure-index db coll {:words-count-without-stops 1 :count 1 :text 1}))
 
 (mount/defstate migrations-search-phrases
   :start
@@ -30,6 +31,7 @@
 (defn find-search-strings
   ([pred] (find-search-strings pred 0 10))
   ([pred limit] (find-search-strings pred 0 limit))
-  ([pred skip limit]
+  ([pred skip limit] (find-search-strings pred skip limit {:count -1}))
+  ([pred skip limit sort]
    (stringify-id
-    (find-docs coll {:pred pred :skip skip :limit limit :sort {:count -1}}))))
+    (find-docs coll {:pred pred :skip skip :limit limit :sort sort}))))

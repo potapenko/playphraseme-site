@@ -64,10 +64,52 @@
 (defn get-common-phrases-response [text]
   (ok (get-common-phrases text)))
 
+
+(defn- distinct-texts [strings]
+  (let [exists (->> strings (map :text))]
+    (->> strings
+         (remove (fn [{:keys [text] :as e}]
+                   (loop [[v & t] exists]
+                     (when v
+                       (if (and (not= v text)
+                                (re-find (re-pattern text) v))
+                         true
+                         (recur t)))))))))
+
+(def ^:private ignore-strings [#"captain's log stardate"
+                               #"space the final frontier"
+                               #"starship enterprise"
+                               #"saving people hunting things"
+                               #"captain james kirk"
+                               #"log supplemental"
+                               #"ahead warp"
+                               #"Dr. House"
+                               #"warp factor"
+                               #"desperate housewives"])
+
+(defn search-string-is-ignored? [text]
+  (->> ignore-strings
+       (drop-while #(nil? (re-find % text)))
+       empty?
+       not))
+
+(defn get-all-common-phrases
+  ([] (get-all-common-phrases 0 10))
+  ([limit] (get-all-common-phrases 0 limit))
+  ([skip limit]
+   (->> (search-strings/find-search-strings {:count {"$gte" 10}} skip limit
+                                            {:words-count-without-stops -1 :text -1})
+        (map #(select-keys % [:text :count]))
+        distinct-texts
+        (remove #(-> % :text search-string-is-ignored?)))))
+
+(defn get-all-common-phrases-response [skip limit]
+  (ok (get-all-common-phrases skip limit)))
+
 (comment
 
   (time
-   (get-common-phrases "a book"))
+   (get-all-common-phrases 1 100))
 
 
   )
