@@ -77,14 +77,14 @@
                          (recur t)))))))))
 
 (def ^:private ignore-strings [#"captain's log stardate"
-                               #"space the final frontier"
-                               #"starship enterprise"
-                               #"saving people hunting things"
-                               #"captain james kirk"
+                               #"final frontier"
+                               #"starship"
+                               #"hunting things"
+                               #"captain"
                                #"log supplemental"
                                #"ahead warp"
                                #"Dr. House"
-                               #"warp factor"
+                               #"warp"
                                #"desperate housewives"])
 
 (defn search-string-is-ignored? [text]
