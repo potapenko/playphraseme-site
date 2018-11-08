@@ -80,25 +80,33 @@
                                #"final frontier"
                                #"starship"
                                #"hunting things"
+                               #"saving people"
+                               #"people hunting"
                                #"captain"
                                #"log supplemental"
+                               #"sheldon"
+                               #"hailing"
                                #"ahead warp"
-                               #"Dr. House"
+                               #"farrah"
+                               #"spock"
+                               #"penny"
+                               #"dr. house"
                                #"warp"
                                #"desperate housewives"])
 
 (defn search-string-is-ignored? [text]
-  (->> ignore-strings
-       (drop-while #(nil? (re-find % text)))
-       empty?
-       not))
+  (let [text (string/lower-case text)]
+   (->> ignore-strings
+        (drop-while #(nil? (re-find % text)))
+        empty?
+        not)))
 
 (defn get-all-common-phrases
   ([] (get-all-common-phrases 0 10))
   ([limit] (get-all-common-phrases 0 limit))
   ([skip limit]
    (->> (search-strings/find-search-strings {:count {"$gte" 10}} skip limit
-                                            {:words-count-without-stops -1 :text -1})
+                                            {:words-count-without-stops -1 :count -1})
         (map #(select-keys % [:text :count]))
         distinct-texts
         (remove #(-> % :text search-string-is-ignored?)))))

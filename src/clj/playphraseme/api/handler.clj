@@ -8,6 +8,7 @@
             [playphraseme.api.routes.session :refer :all]
             [playphraseme.api.routes.password :refer :all]
             [playphraseme.api.routes.phrases :refer :all]
+            [playphraseme.api.routes.playlists :refer :all]
             [playphraseme.api.routes.favorites :refer :all]
             [ring.util.http-response :refer :all]
             [schema.core :as s]))
@@ -26,6 +27,7 @@
                   {:name "Session" :description "Get session information for a user"}
                   {:name "Phrases" :description "Search phrases"}
                   {:name "Favorites" :description "Phrases favorites"}
+                  {:name "Playlists" :description "Mobile app playlists"}
                   {:name "Password" :description "Request and confirm password resets"}]}}}
   preflight-route
   user-routes
@@ -35,4 +37,5 @@
   session-routes
   password-routes
   phrases-routes
-  favorites-routes)
+  favorites-routes
+  playlists-routes)
