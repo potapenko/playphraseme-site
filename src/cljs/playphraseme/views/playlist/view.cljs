@@ -12,8 +12,8 @@
 
 (defn phrase [index {:keys [text into]}]
   [:li.list-group-item.mobile-red
-   [:span {:style {:font-size "22px"
-                   :margin-right "12px"}} (str (inc index) ".")] (str "\"" text "\"")])
+   {:style {:padding 18}}
+   [:span {:style {:margin-right "12px"}} (str (inc index) ".")] (str "\"" text "\"")])
 
 (defn page []
   (let-sub [:params
@@ -30,10 +30,12 @@
        (let [{:keys [title info phrases]} @playlist
              app-url (str "playphraseme://playlist/" (:playlist @params))]
         [:div.page-container
-         [:h1.mobile-red title]
-         [:a.mobile-red {:href app-url :style {:text-decoration :underline}}
+         [spacer 32]
+         [:h1.mobile-red {:style {:font-size 55}} title]
+         [spacer 32]
+         [:a {:href app-url :style {:text-decoration :underline :font-size 33}}
           "Open playlist in mobile app"]
-         [spacer 16]
+         [spacer 32]
          [:ul.list-group
           (->> phrases
                (map-indexed
