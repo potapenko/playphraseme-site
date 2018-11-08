@@ -156,6 +156,13 @@
   (call-api http/delete (str "/favorites/" phrase-id)
             (api-headers) login-md :body))
 
+(defn add-playlist [playlist-data]
+  (call-api http/post "/playlists" {:json-params {:playlist playlist-data}} :body))
+
+(defn get-playlist [playlist-id]
+  (call-api http/get (str "/playlists/" playlist-id)
+            (api-headers) login-md :body))
+
 (comment
   (go (println (<! (search-phrase "hello"))))
   (go (println (<! (count-phrase "hello"))))

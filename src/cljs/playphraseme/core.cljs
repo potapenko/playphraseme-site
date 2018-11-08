@@ -17,6 +17,7 @@
             [playphraseme.views.history.view :as history-page]
             [playphraseme.views.favorites.view :as favorites-page]
             [playphraseme.views.settings.view :as settings-page]
+            [playphraseme.views.playlist.view :as playlist-page]
             [playphraseme.views.learn.view :as learn-page]
             [playphraseme.layout :as layout]
             [playphraseme.model]
@@ -37,7 +38,7 @@
    :support        #'support-page/page
    :history        #'history-page/page
    :favorites      #'favorites-page/page
-   :settings       #'settings-page/page
+   :playlist       #'playlist-page/page
    :learn          #'learn-page/page})
 
 (defn page []
@@ -106,6 +107,9 @@
 
 (secretary/defroute "/guest-tour" []
   (route/goto-page! :guest-tour))
+
+(secretary/defroute "/playlist/:id" {id :id}
+  (route/goto-page! :playlist {:playlist id}))
 
 (secretary/defroute "*" []
   (route/goto-page! :not-found))
