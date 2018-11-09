@@ -44,6 +44,8 @@
              [:div.header
               {:class (util/class->str (when-not (= @page :search) "invert"))}
               [:div.top
+               (when @mobile?
+                 [ui/spacer 6])
                (when-not (= @page :search)
                  [header-button "Home" "/#/" "fas fa-home"])
                (when-not (= @page :login)
@@ -62,6 +64,8 @@
                ^{:key "fixed-key"}
                [facebook-like-button]]
               [:div.bottom
+               (when @mobile?
+                 [ui/spacer 6])
                [:div.logo {:on-click (fn [e]
                                        (if (-> e .-altKey)
                                          (phrases/search-random-bad-phrase)
