@@ -35,7 +35,8 @@
 (defn header []
   (let-sub [:page
             :all-movies-count
-            :all-phrases-count]
+            :all-phrases-count
+            :mobile?]
            (go
              (rf/dispatch [:all-phrases-count (<! (rest-api/count-all-phrases))])
              #_(rf/dispatch [:all-movies-count (<! (rest-api/count-all-movies))]))
@@ -51,11 +52,13 @@
                     (str (ls :navigation.logout) " (" (:name @(rf/subscribe [:auth-data])) ")")
                     "/#/logout" "fas fa-user-circle"]
                    [header-button (ls :navigation.login.register) "/#/login" "fas fa-user-circle"]))
-               (when-not (= @page :support)
+               #_(when-not (= @page :support)
                  [header-button (ls :navigation.support) "/#/support" "far fa-envelope"])
                [ui/flexer]
-               [header-button "Github" "https://github.com/potapenko/playphraseme-site" "fab fa-github-square"]
-               [header-button  "Facebook" "https://www.facebook.com/playphrase/" "fab fa-facebook"]
+               (when-not @mobile?
+                [header-button "Github" "https://github.com/potapenko/playphraseme-site" "fab fa-github-square"])
+               (when-not @mobile?
+                [header-button  "Facebook" "https://www.facebook.com/playphrase/" "fab fa-facebook"])
                ^{:key "fixed-key"}
                [facebook-like-button]]
               [:div.bottom
@@ -69,15 +72,17 @@
                [ui/flexer]
                [:div.mobile-apps
                 [:a {:href ""}
-                 [:img {:src "./img/apple-store-button@1x.png" :height 24 :width 66}]]
+                 [:img.app-button {:src "./img/apple-store-button@1x.png"}]]
                 [ui/spacer 12]
                 [:a {:href ""}
-                 [:img {:src "./img/google-play-button@1x.png" :height 24 :width 66}]]
+                 [:img.app-button {:src "./img/google-play-button@1x.png"}]]
                 ]
-               [ui/flexer]
-               [:div.statistic
-                [:span.count @all-phrases-count]
-                [:span.info (ls :statistic.phrases)]]]])))
+               (when-not @mobile?
+                [ui/flexer])
+               (when-not @mobile?
+                [:div.statistic
+                 [:span.count @all-phrases-count]
+                 [:span.info (ls :statistic.phrases)]])]])))
 
 (defn left-column []
   [:div.left-column ""])

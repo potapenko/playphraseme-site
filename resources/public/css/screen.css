@@ -787,6 +787,11 @@ h2 {
   display: none;
 }
 
+img.app-button {
+  height: 24px;
+  width: 66px;
+}
+
 
 @media only screen and (max-device-width: 800px) and (orientation : portrait){
   .search-ui-container {
@@ -868,6 +873,22 @@ h2 {
   .shortcuts-info {
     display: none;
   }
+  h1 {
+    font-size: 55px;
+  }
+  .mobile-text {
+    font-size: 33px !important;
+  }
+  .mobile-text-2 {
+    font-size: 25px !important;
+  }
+
+  img.app-button {
+    height: 53px;
+    width: 145px;
+    margin-right: 8px;
+  }
+
 }
 
 @media only screen and (max-device-width : 800px) and (orientation : landscape){
@@ -948,9 +969,5 @@ h2 {
 
 .mobile-red{
   color: #fe4c4c;
-  font-size: 33px;
 }
 
-.mobile-text {
-  font-size 33px;
-}
