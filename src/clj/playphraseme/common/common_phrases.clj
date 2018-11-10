@@ -90,7 +90,7 @@
                                #"farrah"
                                #"spock"
                                #"penny"
-                               #"dr. house"
+                               #"dr\.? house"
                                #"warp"
                                #"desperate housewives"])
 

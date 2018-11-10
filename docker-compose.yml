@@ -6,13 +6,23 @@ services:
     volumes:
       - "~/.m2/:/root/.m2:ro"
     ports:
-     - "3033:3033"
+     - 3033:3033
+    networks:
+      - playphraseme-site-net
+  mongo:
+    image: mongo:3.4.14
+    restart: always
+    env_file: .env
+    volumes:
+      - /data/db:/data/db
+    ports:
+      - 27037:27017
     networks:
       - playphraseme-site-net
   proxy:
     build: ./micro/proxy
     ports:
-     - "80:8080"
+     - 80:8080
     networks:
       - playphraseme-site-net
 
