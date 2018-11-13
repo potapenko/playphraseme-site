@@ -48,18 +48,16 @@
    vec))
 
 (defn get-common-phrases [text]
-  (if (nlp/stop-word? text)
-    []
-    (->> text
-         string/trim
-         string/lower-case
-         create-phrases-map
-         flat-phrases-map
-         (remove #(-> % :text (= text)))
-         (take 50)
-         (sort-by #(+ (:count %) (* 1000 (:words-count-without-stops %))))
-         (map #(dissoc % :words-count-without-stops))
-         reverse)))
+  (->> text
+       string/trim
+       string/lower-case
+       create-phrases-map
+       flat-phrases-map
+       (remove #(-> % :text (= text)))
+       (take 50)
+       (sort-by #(+ (:count %) (* 1000 (:words-count-without-stops %))))
+       (map #(dissoc % :words-count-without-stops))
+       reverse))
 
 (defn get-common-phrases-response [text]
   (ok (get-common-phrases text)))
@@ -90,6 +88,8 @@
                                #"farrah"
                                #"spock"
                                #"penny"
+                               #"\d+ ago"
+                               #"\d+ years? old"
                                #"dr\.? house"
                                #"warp"
                                #"desperate housewives"])

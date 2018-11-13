@@ -12,7 +12,7 @@ services:
   mongo:
     image: mongo:3.4.14
     restart: always
-    env_file: .env
+    env_file: .env-docker
     volumes:
       - /data/db:/data/db
     ports:
