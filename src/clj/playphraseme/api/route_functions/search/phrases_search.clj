@@ -135,10 +135,13 @@
            (let [search-string (first
                                 (search-strings/find-search-strings
                                  {:text (nlp/remove-punctuation q)}))]
-             (->> (phrases/find-phrases {:search-strings (:text search-string)
-                                         :have-video     true}
-                                        0 30)
-                  (map prepare-phrase-data))))))))
+             (if-not search-string
+               {:count 0 :phrases [] :suggestions []}
+               (let [phrases (->> (phrases/find-phrases {:search-strings (:text search-string)
+                                                         :have-video     true}
+                                                        0 30)
+                                  (map prepare-phrase-data))]
+                 {:count (:count search-string) :phrases phrases}))))))))
 
 (defn phrase-response [id]
   (ok (util/nil-when-throw
