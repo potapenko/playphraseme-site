@@ -126,6 +126,20 @@
              {:suggestions (phrase-candidates q)}))))
       q))))
 
+(defn search-batch-response [search-texts]
+  (ok
+   (->> search-texts
+        (map
+         (fn [q]
+
+           (let [search-string (first
+                                (search-strings/find-search-strings
+                                 {:text (nlp/remove-punctuation q)}))]
+             (->> (phrases/find-phrases {:search-strings (:text search-string)
+                                         :have-video     true}
+                                        0 30)
+                  (map prepare-phrase-data))))))))
+
 (defn phrase-response [id]
   (ok (util/nil-when-throw
        (get-phrase-data id))))

@@ -73,7 +73,8 @@
                  [bux "0.3.0"]
                  [com.cognitect/transit-cljs "0.8.243"]
                  [re-frame-macros "0.1.14-SNAPSHOT"]
-                 [cljs-await "1.0.1-SNAPSHOT"]]
+                 [cljs-await "1.0.1-SNAPSHOT"]
+                 [ring-rewrite "0.1.0"]]
 
   :min-lein-version "2.0.0"
 

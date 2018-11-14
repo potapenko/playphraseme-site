@@ -84,5 +84,13 @@
          :middleware    [cors-mw]
          :query-params  [{skip :- s/Num 0} {limit :- s/Num 10}]
          :summary       "Return all common phrases"
-         (common-phrases/get-all-common-phrases-response skip limit))))
+         (common-phrases/get-all-common-phrases-response skip limit))
+
+    (GET "/search-batch"   request
+         :tags          ["Phrases"]
+         :return        s/Any
+         :middleware    [cors-mw]
+         :query-params  [q :- [s/Str]]
+         :summary       "Return batch phrases search result for mobile"
+         (search-batch-response q))))
 
