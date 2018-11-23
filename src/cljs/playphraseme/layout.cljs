@@ -54,7 +54,7 @@
                     (str (ls :navigation.logout) " (" (:name @(rf/subscribe [:auth-data])) ")")
                     "/#/logout" "fas fa-user-circle"]
                    [header-button (ls :navigation.login.register) "/#/login" "fas fa-user-circle"]))
-               #_(when-not (= @page :support)
+               (when-not @mobile?
                  [header-button (ls :navigation.support) "/#/support" "far fa-envelope"])
                [ui/flexer]
                (when-not @mobile?
@@ -75,12 +75,11 @@
                 [:span.gray ".me"]]
                [ui/flexer]
                [:div.mobile-apps
-                [:a {:href ""}
+                [:a {:href "/#/mobile-app"}
                  [:img.app-button {:src "./img/apple-store-button@1x.png"}]]
                 [ui/spacer 12]
-                [:a {:href ""}
-                 [:img.app-button {:src "./img/google-play-button@1x.png"}]]
-                ]
+                [:a {:href "/#/mobile-app"}
+                 [:img.app-button {:src "./img/google-play-button@1x.png"}]]]
                (when-not @mobile?
                 [ui/flexer])
                (when-not @mobile?

@@ -57,7 +57,7 @@
 
 (defn prepare-phrase-data [phrase]
   (some-> phrase
-          (util/remove-keys [:random :have-video :__v :state])
+          (util/remove-keys [:random :have-video :__v :state :search-strings])
           (util/remove-keys :words [:id])
           (assoc :video-info (get-video-info (:movie phrase)))
           (assoc :video-url (get-video-url (:id phrase)))))

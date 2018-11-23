@@ -676,19 +676,6 @@ word, word:active, word:focus{
   font-weight: 300;
 }
 
-h1, .page-title {
-	font-size: 24px;
-  margin: 5px 0px 20px 0px;
-	color: rgba(0,0,0,0.8);
-  text-align: left;
-	font-family: Roboto;
-	font-weight: 500;
-	line-height: 26px;
-  text-decoration: underline;
-  text-decoration-color: rgba(0,0,0,0.1);
-  text-decoration-style: solid;
-}
-
 h2 {
 	font-size: 24px;
 	color: rgba(0,0,0,0.8);
@@ -971,3 +958,50 @@ img.app-button {
   color: #fe4c4c;
 }
 
+.android-coming-soon {
+  font-size: 22px;
+  padding: 8px;
+  color: rgba(0,0,0,0.5);
+}
+
+.mobile-app-page ul {
+  /* list-style-type: none; */
+}
+
+.mobile-app-page h2 {
+  padding: 8px;
+  background-color: rgba(0,0,0,0.1);
+  /* color: #fe4c4c; */
+}
+
+.mobile-app-page .futures-app {
+  color: #fe4c4c;
+  /* text-decoration: underline; */
+}
+
+.mobile-app-page  li{
+  margin-bottom: 8px;
+  margin-top: 8px;
+  padding: 8px;
+  font-weight: bold;
+  color: rgba(0,0,0,0.7);
+  /* background-color: rgba(0,0,0,0.1); */
+}
+.mobile-app-page .install-buttons {
+  text-align: center;
+  opacity: 0.8;
+}
+
+.mobile-app-page .install-buttons img{
+  height: 106px;
+  width: 290px;
+  margin-right: 8px;
+}
+.mobile-app-page .logo {
+  background-color: rgba(0,0,0,0.1);
+  display: inline-block;
+  padding: 4px;
+}
+.mobile-app-page .logo .red {color: red}
+.mobile-app-page .logo .black {color: black}
+.mobile-app-page .logo .gray {color: gray}

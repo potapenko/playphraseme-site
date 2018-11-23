@@ -14,6 +14,7 @@
             [playphraseme.views.phrase.view :as phrase-page]
             [playphraseme.views.article.view :as articles]
             [playphraseme.views.support.view :as support-page]
+            [playphraseme.views.mobile-app.view :as mobile-app-page]
             [playphraseme.views.history.view :as history-page]
             [playphraseme.views.favorites.view :as favorites-page]
             [playphraseme.views.settings.view :as settings-page]
@@ -36,6 +37,7 @@
    :guest-tour     #'articles/guest-tour
    :phrase         #'phrase-page/page
    :support        #'support-page/page
+   :mobile-app     #'mobile-app-page/page
    :history        #'history-page/page
    :favorites      #'favorites-page/page
    :playlist       #'playlist-page/page
@@ -91,7 +93,7 @@
   (route/goto-page! :article))
 
 (secretary/defroute "/support" []
-  (route/goto-page-or-login! :support))
+  (route/goto-page! :support))
 
 (secretary/defroute "/history" []
   (route/goto-page-or-login! :history))
@@ -104,6 +106,9 @@
 
 (secretary/defroute "/settings" []
   (route/goto-page-or-login! :settings))
+
+(secretary/defroute "/mobile-app" []
+  (route/goto-page! :mobile-app))
 
 (secretary/defroute "/guest-tour" []
   (route/goto-page! :guest-tour))

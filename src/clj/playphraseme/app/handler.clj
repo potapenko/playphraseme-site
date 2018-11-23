@@ -12,7 +12,8 @@
             [ring.middleware.gzip :refer :all]
             [clojure.java.io :as io]
             [playphraseme.common.util :as util]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log]
+            [ring.middleware.cors :refer [wrap-cors]]))
 
 (mount/defstate init-app
   :start ((or (:init defaults) identity))
@@ -24,12 +25,15 @@
 
 (def app-routes
   (routes
-   (-> #'api-routes wrap-gzip)
+   (-> #'api-routes
+       wrap-gzip
+       (wrap-cors :access-control-allow-origin [#".*"]
+                  :access-control-allow-methods [:get :put :post :delete]))
    (-> #'home-routes
        (wrap-routes middleware/wrap-csrf)
        (wrap-routes middleware/wrap-formats)
        middleware/wrap-base
-       (add-content-security-policy :config-path (io/resource "policy.edn")))
+       #_(add-content-security-policy :config-path (io/resource "policy.edn")))
    (route/not-found
     (:body
      (error-page {:status 404

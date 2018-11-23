@@ -1,6 +1,7 @@
 (ns playphraseme.api.queries.user.registered-user
   (:require [playphraseme.api.general-functions.doc-id :refer :all]
-            [playphraseme.db.users-db :refer :all]))
+            [playphraseme.db.users-db :refer :all]
+            [clojure.string :as string]))
 
 (def coll "users")
 
@@ -63,3 +64,23 @@
   "Delete a single user matching provided id"
   [^String user-id]
   (delete-doc-by-id coll (str->id user-id)))
+
+
+(comment
+
+  ;; "First Name", "Last Name", "Email", "Age"
+
+  (let [part 4]
+   (->> (find-docs coll {:pred  {:email {"$ne" nil}
+                                 :name  {"$ne" nil}}
+                         :skip (-> part dec (* 2000))
+                         :limit 2000})
+        (map (fn [{:keys [name email]}]
+               (string/join "," (flatten [email (string/split name #" +" )]))))
+
+        (map #(spit (format "emails-%s.csv" part) (str % "\n") :append true))
+        (doall)))
+
+
+
+  )

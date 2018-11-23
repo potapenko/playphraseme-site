@@ -33,5 +33,4 @@
   [:div.under-contsuction
    "Page Under Construction."
    [ui/spacer 16]
-   [:div "Functionality will be ready for several days. You can support us with like :)"]
    [:div {:style {:display "flex" :flex-direction "row"}}]])

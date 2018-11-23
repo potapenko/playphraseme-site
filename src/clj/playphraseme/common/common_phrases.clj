@@ -88,8 +88,11 @@
                                #"farrah"
                                #"spock"
                                #"penny"
-                               #"\d+ ago"
-                               #"\d+ years? old"
+                               #"\d"
+                               #"sam"
+                               #"dean"
+                               #"alert one"
+                               #"winchester"
                                #"dr\.? house"
                                #"warp"
                                #"desperate housewives"])
