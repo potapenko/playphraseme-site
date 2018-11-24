@@ -224,7 +224,6 @@
 (defn work-with-keys-up [e]
   (let [key-code    (-> e .-keyCode)
         suggestions @(rf/subscribe [::model/suggestions])]
-    (println "key-up:" key-code)
     (when @(rf/subscribe [::model/input-focused?])
      (case key-code
        39 (go-next-word-suggestion)
