@@ -55,7 +55,9 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (util/go-url! "/#/search"))
+  (if util/ios?
+    (util/go-url! "/#/mobile-app")
+    (util/go-url! "/#/search")))
 
 (secretary/defroute "/search" [query-params]
   (let [{:keys [q p]} query-params]

@@ -1,9 +1,6 @@
 /* Style the Image Used to Trigger the Modal */
 .modal-image-containter {
   margin: 18px 0px;
-  overflow: hidden;
-  overflow-x: auto;
-  height: 150px;
 }
 .modal-image-containter img{
     border-radius: 5px;
@@ -34,7 +31,6 @@
     top: 0;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
-    overflow: hidden; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
 }
@@ -71,4 +67,27 @@
     color: #bbb;
     text-decoration: none;
     cursor: pointer;
+}
+
+@media only screen and (max-device-width: 800px) and (orientation : portrait) {
+.modal-image-containter {
+  margin: 18px 0px;
+}
+.modal-image-containter img{
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  border: 2px #ccddc solid;
+  margin: 8px;
+}
+
+.vertical-modal-image {
+  height: 270px;
+  width: 124px;
+}
+
+.horizontal-modal-image {
+  height: 124px;
+  width: 270px;
+}
 }
