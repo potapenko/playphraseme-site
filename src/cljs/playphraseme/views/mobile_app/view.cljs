@@ -55,10 +55,16 @@
        [:h2 "Get mobile app:"]
        [spacer 32]
        [:div.install-buttons
-        [:a {:href ""}
+        [:a {:href "https://itunes.apple.com/app/playphraseme/id1441967668" :target "_blank"}
          [:img.app-button {:src "./img/apple-store-button@1x.png"}]]
         [ui/spacer 32]
         #_[:a {:href ""}
            [:img.app-button {:src "./img/google-play-button@1x.png"}]]
         [:div.android-coming-soon "(Android app is coming soon)"]]
        [spacer 32]])}))
+
+(comment
+
+  (js/require "react-image-lightbox")
+
+  )
