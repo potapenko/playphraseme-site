@@ -28,7 +28,8 @@
 (defn page []
   (let-sub [::model/modal-img-src
             ::model/modal-img-horzontal?
-            :layout]
+            :layout
+            :mobile?]
    (r/create-class
     {:component-did-mount
      (fn [])
@@ -119,15 +120,17 @@
            {:style    {:display "block"}
             :on-click #(rf/dispatch [::model/modal-img-src nil])})
          [:span.close  "×"]
-         (let [style (if @modal-img-horzontal?
-                       {:width  (-> @layout :width)
-                        :height (-> @layout :width (* 0.46))}
-                       {:width  (-> @layout :height (* 0.46))
-                        :height (-> @layout :height)})]
-           (println ">>>" @layout)
+         (let [style (->
+                      (if @modal-img-horzontal?
+                        {:width  (-> @layout :width)
+                         :height (-> @layout :width (* 0.46))}
+                        {:width  (-> @layout :height (* 0.46))
+                         :height (-> @layout :height)})
+                      (update :width #(/ % (:scale @layout)))
+                      (update :height #(/ % (:scale @layout))))]
            (println style)
-          [:img.modal-content {:src   @modal-img-src
-                               :style style}])
+           [:img.modal-content {:src   @modal-img-src
+                                :style style}])
          [:div.caption]]])})))
 
 (comment
