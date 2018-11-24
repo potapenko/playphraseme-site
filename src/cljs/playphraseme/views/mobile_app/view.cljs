@@ -122,11 +122,17 @@
          [:span.close  "×"]
          (let [style (->
                       (if @modal-img-horzontal?
-                        {:width  (-> @layout :width)
-                         :height (-> @layout :width (* 0.46))}
-                        {:width  (-> @layout :height (* 0.46))
-                         :height (-> @layout :height)})
+                        {:width          (-> @layout :width)
+                         :height         (-> @layout :width (* 0.46))
+                         :margin-top    (-> @layout :height (* 0.23))
+                         :margin-bottom (-> @layout :height (* 0.23))}
+                        {:width          (-> @layout :height (* 0.46))
+                         :height         (-> @layout :height)
+                         :margin-top    0
+                         :margin-bottom 0})
                       (update :width #(/ % (:scale @layout)))
+                      (update :margin-top #(/ % (:scale @layout)))
+                      (update :margin-bottom #(/ % (:scale @layout)))
                       (update :height #(/ % (:scale @layout))))]
            (println style)
            [:img.modal-content {:src   @modal-img-src
