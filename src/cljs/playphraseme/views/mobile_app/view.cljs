@@ -13,6 +13,12 @@
    [cljs.core.async.macros :refer [go go-loop]]
    [re-frame-macros.core :as mcr :refer [let-sub]]))
 
+(defn modal-image [{:keys [image horizontal?]}]
+  [:img {:src (str "/img/mobile-app/" image ".png") :class (util/class->str
+                                                            (if horizontal?
+                                                              "horizontal-modal-image"
+                                                              "vertical-modal-image"))}])
+
 (defn page []
   (r/create-class
    {:component-did-mount
@@ -30,16 +36,51 @@
         [:div.android-coming-soon "(Android app is coming soon)"]]
        [spacer 18]
        [:h2 "Key features of mobile application:"]
-       [spacer 18]
+       #_[:ol
+        [:li "Fast and native mobile interface"]
+        [:li "Advanced phrases search"]
+        [:li "Offline"]
+        [:li "Playlists"]
+        [:li "Play phrases in background"]
+        [:li "Playlists sharing"]]
+       [:h2 "Screenshots:"]
        [:ul
-        [:li "Search result with " [:span.futures-app "common phrases"] " of the English language."]
-        [:li "Auto-generated playlists for listening common phrases for more than " [:span.futures-app "1000 days!"] ""]
+        #_[:li "Advanced search with " [:span.futures-app "common phrases:"]
+         [:div.modal-image-containter
+          [modal-image {:image "search"}]
+          [modal-image {:image "search-suggestions"}]
+          [modal-image {:image "player"}]
+          [modal-image {:image "video-5" :horizontal? true}]
+          [modal-image {:image "video-3" :horizontal? true}]
+          ]]
+        #_[:li "Auto-generated playlists for listening common phrases for more than " [:span.futures-app "1000 days:"] ""
+         [:div.modal-image-containter
+          [modal-image {:image "phrases-of-the-day"}]
+          [modal-image {:image "phrases-of-the-day-downloading"}]
+          [modal-image {:image "select-day-53"}]
+          [modal-image {:image "select-day-1085"}]]]
         [:li [:span.futures-app2 "Custom playlists " ]
-         "- save interesting phrases and words to playlists for listening and studying."]
-        [:li [:span.futures-app "Share"] " playlists to the web and " [:span.futures-app "import"] " them into your mobile app."]
+         "- save interesting phrases and words to playlists for listening and studying:"
+         [:div.modal-image-containter
+          [modal-image {:image "playlists"}]
+          [modal-image {:image "current-playlist"}]
+          [modal-image {:image "playlists-create-playlist"}]
+          [modal-image {:image "playlists-word-add"}]
+
+          ]]
+        [:li [:span.futures-app "Share"] " playlists to the web and " [:span.futures-app "import"] " them into your mobile app."
+         [:div.modal-image-containter
+          [modal-image {:image ""}]
+          [modal-image {:image ""}]]]
         [:li "Listen to playlists in headphones for a walk or in transport. Playlists can be listened to with a "
-         [:span.futures-app  "locked screen"] "."]
-        [:li "Download playlists " [:span.futures-app "offline" ] " and listen to them without access to the Internet!"]]
+         [:span.futures-app  "locked screen"] "."
+         [:div.modal-image-containter
+          [modal-image {:image "search"}]
+          [modal-image {:image "search-suggestions"}]]]
+        [:li "Download playlists " [:span.futures-app "offline" ] " and listen to them without access to the Internet!"
+         [:div.modal-image-containter
+          [modal-image {:image "search"}]
+          [modal-image {:image "search-suggestions"}]]]]
        [spacer 18]
        [:h2 "View key features in action:"]
        [spacer 18]

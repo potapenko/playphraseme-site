@@ -18,6 +18,9 @@
 (mcr/reg-sub-event :all-movies-count nil)
 (mcr/reg-sub :auth-data {})
 
+(mcr/reg-sub-event :modal-images [""])
+(mcr/reg-sub-event :modal-images-index 0)
+
 (reg-event-db
  :initialize-db
  (fn [_ _]

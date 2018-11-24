@@ -964,10 +964,6 @@ img.app-button {
   color: rgba(0,0,0,0.5);
 }
 
-.mobile-app-page ul {
-  /* list-style-type: none; */
-}
-
 .mobile-app-page h2 {
   padding: 8px;
   background-color: rgba(0,0,0,0.1);
@@ -979,12 +975,17 @@ img.app-button {
   /* text-decoration: underline; */
 }
 
+.mobile-app-page ul {
+  list-style-type: none;
+  padding-left: 20px;
+}
+
 .mobile-app-page  li{
-  margin-bottom: 8px;
-  margin-top: 8px;
-  padding: 8px;
+  /* margin-bottom: 8px; */
+  margin-top: 18px;
   font-weight: bold;
   color: rgba(0,0,0,0.7);
+  margin-left: 0px;
   /* background-color: rgba(0,0,0,0.1); */
 }
 .mobile-app-page .install-buttons {
