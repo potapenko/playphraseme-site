@@ -1,6 +1,5 @@
 (ns playphraseme.common.nlp
-  (:require [clojure.string :as string]
-            [clojure.java.io :as io]))
+  (:require [clojure.string :as string]))
 
 (def test-text " ")
 

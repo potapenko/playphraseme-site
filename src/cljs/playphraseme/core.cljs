@@ -1,6 +1,7 @@
 (ns playphraseme.core
   (:require [goog.events :as events]
             [goog.history.EventType :as HistoryEventType]
+            [playphraseme.common.config :as config]
             [playphraseme.common.phrases :as phrases]
             [playphraseme.common.responsive :as responsive]
             [playphraseme.common.rest-api :as rest-api]
@@ -41,59 +42,56 @@
 ;; Routes
 (secretary/set-config! :prefix "#")
 
-(let [mobile-layout? util/ios?]
+(secretary/defroute "/" []
+  (if config/mobile-layout?
+    (util/go-url! "/#/mobile-app")
+    (util/go-url! "/#/search")))
 
- (secretary/defroute "/" []
-   (if mobile-layout?
-     (util/go-url! "/#/mobile-app")
-     (util/go-url! "/#/search")))
-
- (when-not mobile-layout?
-   (secretary/defroute "/search" [query-params]
-     (let [{:keys [q p]} query-params]
-       (route/goto-page! :search (merge
-                                  query-params
-                                  (when-not p
-                                    {:q (or-str
-                                         q
-                                         @(rf/subscribe [:search-text])
-                                         (phrases/random-phrase))})))))
+(when-not config/mobile-layout?
+  (secretary/defroute "/search" [query-params]
+    (let [{:keys [q p]} query-params]
+      (route/goto-page! :search (merge
+                                 query-params
+                                 (when-not p
+                                   {:q (or-str
+                                        q
+                                        @(rf/subscribe [:search-text])
+                                        (phrases/random-phrase))})))))
 
 
-   (secretary/defroute "/register" []
-     (route/goto-page! :register))
+  (secretary/defroute "/register" []
+    (route/goto-page! :register))
 
-   (secretary/defroute "/reset-password" []
-     (route/goto-page! :reset-password))
+  (secretary/defroute "/reset-password" []
+    (route/goto-page! :reset-password))
 
-   (secretary/defroute "/login" []
-     (route/goto-page! :login))
+  (secretary/defroute "/login" []
+    (route/goto-page! :login))
 
-   (secretary/defroute "/logout" []
-     (rest-api/logout)
-     (util/go-url! "/#/"))
+  (secretary/defroute "/logout" []
+    (rest-api/logout)
+    (util/go-url! "/#/"))
 
-   (secretary/defroute "/auth" [query-params]
-     (let [{:keys [auth-token]} query-params]
-       (rest-api/auth auth-token)
-       (util/go-url! "/#/search")))
+  (secretary/defroute "/auth" [query-params]
+    (let [{:keys [auth-token]} query-params]
+      (rest-api/auth auth-token)
+      (util/go-url! "/#/search")))
 
-   (secretary/defroute "/article" []
-     (route/goto-page! :article))
-   )
+  (secretary/defroute "/article" []
+    (route/goto-page! :article))
+  )
 
- (secretary/defroute "/support" []
-   (route/goto-page! :support))
+(secretary/defroute "/support" []
+  (route/goto-page! :support))
 
- (secretary/defroute "/mobile-app" []
-   (route/goto-page! :mobile-app))
+(secretary/defroute "/mobile-app" []
+  (route/goto-page! :mobile-app))
 
- (secretary/defroute "/playlist/:id" {id :id}
-   (route/goto-page! :playlist {:playlist id}))
+(secretary/defroute "/playlist/:id" {id :id}
+  (route/goto-page! :playlist {:playlist id}))
 
- (secretary/defroute "*" []
-   (route/goto-page! :not-found))
- )
+(secretary/defroute "*" []
+  (route/goto-page! :not-found))
 
 ;; -------------------------
 ;; History
