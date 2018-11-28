@@ -95,6 +95,7 @@
 
 (defn root []
   (let-sub [scale :responsive-scale
+            :page
             :responsive-show-left-column?
             :responsive-show-right-column?]
     (r/create-class
@@ -105,7 +106,10 @@
       :reagent-render
       (fn [current-page]
        [:div.layout-container
-        {:style (resp/zoom-css @scale)
+        {:style (merge
+                 (resp/zoom-css @scale)
+                 #_(when-not (-> @page (= :search))
+                     {:overflow-y "auto"}))
          :class (util/class->str
                  (when resp/ios? :ios)
                  (when resp/android? :android)

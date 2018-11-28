@@ -1,31 +1,23 @@
 (ns playphraseme.core
-  (:require [reagent.core :as r]
-            [re-frame.core :as rf]
-            [secretary.core :as secretary]
-            [goog.events :as events]
+  (:require [goog.events :as events]
             [goog.history.EventType :as HistoryEventType]
+            [playphraseme.common.phrases :as phrases]
+            [playphraseme.common.responsive :as responsive]
+            [playphraseme.common.rest-api :as rest-api]
             [playphraseme.common.route :as route]
             [playphraseme.common.util :as util :refer [or-str]]
-            [playphraseme.views.search.view :as search-page]
+            [playphraseme.layout :as layout]
             [playphraseme.views.login.view :as login-page]
+            [playphraseme.views.mobile-app.view :as mobile-app-page]
             [playphraseme.views.not-found.view :as not-found-page]
+            [playphraseme.views.playlist.view :as playlist-page]
             [playphraseme.views.register.view :as register-page]
             [playphraseme.views.reset-password.view :as reset-password-page]
-            [playphraseme.views.phrase.view :as phrase-page]
-            [playphraseme.views.article.view :as articles]
+            [playphraseme.views.search.view :as search-page]
             [playphraseme.views.support.view :as support-page]
-            [playphraseme.views.mobile-app.view :as mobile-app-page]
-            [playphraseme.views.history.view :as history-page]
-            [playphraseme.views.favorites.view :as favorites-page]
-            [playphraseme.views.settings.view :as settings-page]
-            [playphraseme.views.playlist.view :as playlist-page]
-            [playphraseme.views.learn.view :as learn-page]
-            [playphraseme.layout :as layout]
-            [playphraseme.model]
-            [playphraseme.common.ga :as ga]
-            [playphraseme.common.responsive :as responsive]
-            [playphraseme.common.phrases :as phrases]
-            [playphraseme.common.rest-api :as rest-api])
+            [re-frame.core :as rf]
+            [reagent.core :as r]
+            [secretary.core :as secretary])
   (:import goog.History))
 
 (def pages
@@ -34,14 +26,9 @@
    :register       #'register-page/page
    :reset-password #'reset-password-page/page
    :not-found      #'not-found-page/page
-   :guest-tour     #'articles/guest-tour
-   :phrase         #'phrase-page/page
    :support        #'support-page/page
    :mobile-app     #'mobile-app-page/page
-   :history        #'history-page/page
-   :favorites      #'favorites-page/page
-   :playlist       #'playlist-page/page
-   :learn          #'learn-page/page})
+   :playlist       #'playlist-page/page})
 
 (defn page []
   (let [page-id @(rf/subscribe [:page])
@@ -70,9 +57,6 @@
                                      (phrases/random-phrase))})))))
 
 
-(secretary/defroute "/phrase" []
-  (route/goto-page! :phrase))
-
 (secretary/defroute "/register" []
   (route/goto-page! :register))
 
@@ -97,23 +81,8 @@
 (secretary/defroute "/support" []
   (route/goto-page! :support))
 
-(secretary/defroute "/history" []
-  (route/goto-page-or-login! :history))
-
-(secretary/defroute "/favorites" []
-  (route/goto-page-or-login! :favorites))
-
-(secretary/defroute "/learn" []
-  (route/goto-page! :learn))
-
-(secretary/defroute "/settings" []
-  (route/goto-page-or-login! :settings))
-
 (secretary/defroute "/mobile-app" []
   (route/goto-page! :mobile-app))
-
-(secretary/defroute "/guest-tour" []
-  (route/goto-page! :guest-tour))
 
 (secretary/defroute "/playlist/:id" {id :id}
   (route/goto-page! :playlist {:playlist id}))

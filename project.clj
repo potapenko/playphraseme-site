@@ -93,7 +93,7 @@
   [:target-path [:cljsbuild :builds :app :compiler :output-dir] [:cljsbuild :builds :app :compiler :output-to]]
   :figwheel
   {:http-server-root "public"
-   :server-port      9999
+   ;; :server-port      9999
    :nrepl-port       7002
    :css-dirs         ["resources/public/css"]
    :nrepl-middleware

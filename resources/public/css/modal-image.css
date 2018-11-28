@@ -43,7 +43,7 @@
 
 .modal-content, .caption {
     animation-name: zoom;
-    animation-duration: 0.6s;
+    animation-duration: 0.3s;
 }
 
 @keyframes zoom {
@@ -73,6 +73,7 @@
 .modal-image-containter {
   margin: 18px 0px;
 }
+
 .modal-image-containter img{
   border-radius: 5px;
   cursor: pointer;
@@ -82,12 +83,12 @@
 }
 
 .vertical-modal-image {
-  height: 270px;
-  width: 124px;
+  height: 300px;
+  width: 138px;
 }
 
 .horizontal-modal-image {
-  height: 124px;
-  width: 270px;
+  height: 138px;
+  width: 300px;
 }
 }

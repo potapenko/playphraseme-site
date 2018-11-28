@@ -59,40 +59,40 @@
         [:ul
          [:li "Advanced search with " [:span.futures-app "common phrases:"]
           [:div.modal-image-containter
-           [modal-image {:image "search" :index 0}]
-           [modal-image {:image "search-suggestions" :index 1}]
+           [modal-image {:image "search"}]
+           [modal-image {:image "search-suggestions"}]
            [modal-image {:image "player"}]
-           [modal-image {:image "video-5" :horizontal? true :index 2}]
-           [modal-image {:image "video-3" :horizontal? true :index 3}]]]
+           [modal-image {:image "video-5" :horizontal? true}]
+           [modal-image {:image "video-3" :horizontal? true}]]]
          [:li "Auto-generated playlists for listening common phrases for more than " [:span.futures-app "1000 days:"] ""
           [:div.modal-image-containter
-           [modal-image {:image "phrases-of-the-day" :index 4}]
-           [modal-image {:image "phrases-of-the-day-downloading" :index 5}]
-           [modal-image {:image "select-day-53" :index 6}]
-           [modal-image {:image "select-day-1085" :index 7}]]]
+           [modal-image {:image "phrases-of-the-day"}]
+           [modal-image {:image "phrases-of-the-day-downloading"}]
+           [modal-image {:image "select-day-53"}]
+           [modal-image {:image "select-day-1085"}]]]
          [:li [:span.futures-app2 "Custom playlists " ]
           "- save interesting phrases and words to playlists for listening and studying:"
           [:div.modal-image-containter
-           [modal-image {:image "playlists" :index 8}]
-           [modal-image {:image "current-playlist" :index 9}]
-           [modal-image {:image "playlists-create-playlist" :index 10}]
-           [modal-image {:image "playlists-word-add" :index 11}]]]
+           [modal-image {:image "playlists"}]
+           [modal-image {:image "current-playlist"}]
+           [modal-image {:image "playlists-create-playlist"}]
+           [modal-image {:image "playlists-word-add"}]]]
          [:li [:span.futures-app "Share"] " playlists to the web and " [:span.futures-app "import"] " them into your mobile app."
           [:div.modal-image-containter
-           [modal-image {:image "playlist-share-1" :index 12}]
-           [modal-image {:image "playlist-share-2" :index 13}]
-           [modal-image {:image "playlist-share-3" :index 14}]
-           [modal-image {:image "playlist-share-4" :index 15}]
-           [modal-image {:image "playlist-share-5" :index 16}]]]
+           [modal-image {:image "playlist-share-1"}]
+           [modal-image {:image "playlist-share-2"}]
+           [modal-image {:image "playlist-share-3"}]
+           [modal-image {:image "playlist-share-4"}]
+           [modal-image {:image "playlist-share-5"}]]]
          [:li "Listen to playlists in headphones for a walk or in transport. Playlists can be listened to with a "
           [:span.futures-app  "locked screen"] "."
           [:div.modal-image-containter
            [modal-image {:image "play-background"}]]]
          [:li "Download playlists " [:span.futures-app "offline" ] " and listen to them without access to the Internet!"
           [:div.modal-image-containter
-           [modal-image {:image "offline-1" :index 17}]
-           [modal-image {:image "offline-2" :index 18}]
-           [modal-image {:image "offline-3" :horizontal? true :index 19}]]]]
+           [modal-image {:image "offline-1"}]
+           [modal-image {:image "offline-2"}]
+           [modal-image {:image "offline-3" :horizontal? true}]]]]
         [spacer 18]
         [:h2 "View key features in action:"]
         [spacer 18]
