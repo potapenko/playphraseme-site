@@ -85,7 +85,7 @@
   :main ^:skip-aot playphraseme.core
   :plugins [[lein-cprop "1.0.3"]
             [lein-cljsbuild "1.1.5"]
-            [lein-figwheel "0.5.14"]
+            [lein-figwheel "0.5.17"]
             [lein-immutant "2.1.0"]
             [lein-dotenv "RELEASE"]
             [lein-midje "3.1.3"]]
@@ -128,10 +128,9 @@
                                 [com.cemerick/piggieback "0.2.2"]
                                 [midje "1.8.3"]
                                 [doo "0.1.8"]
-                                [figwheel-sidecar "0.5.14"]]
+                                [figwheel-sidecar "0.5.17"]]
                  :plugins      [[com.jakemccrary/lein-test-refresh "0.19.0"]
                                 [lein-doo "0.1.8"]
-                                [lein-figwheel "0.5.14"]
                                 [org.clojure/clojurescript "1.9.946"]]
                  :cljsbuild
                  {:builds

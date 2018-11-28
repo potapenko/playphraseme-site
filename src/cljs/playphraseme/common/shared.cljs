@@ -9,7 +9,6 @@
             [playphraseme.common.ui :as ui :refer [flexer spacer]]
             [playphraseme.views.search.model :as model]
             [playphraseme.common.rest-api :as rest-api]
-            [playphraseme.views.favorites.view :as favorites-page]
             [playphraseme.common.phrases :as phrases]
             [playphraseme.common.nlp :as nlp])
   (:require-macros

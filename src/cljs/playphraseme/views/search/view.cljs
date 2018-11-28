@@ -11,7 +11,6 @@
             [playphraseme.common.ui :as ui :refer [spacer flexer]]
             [playphraseme.common.rest-api :as rest-api]
             [playphraseme.common.video-player :as player]
-            [playphraseme.views.favorites.view :as favorites-page]
             [playphraseme.common.phrases :as phrases]
             [playphraseme.common.ga :as ga]
             [playphraseme.common.nlp :as nlp])
