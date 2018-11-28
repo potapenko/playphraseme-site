@@ -968,7 +968,12 @@ img.app-button {
 .mobile-app-page h2 {
   padding: 8px;
   background-color: rgba(0,0,0,0.1);
+  line-height: 38px;
   /* color: #fe4c4c; */
+}
+.mobile-app-page h2 a{
+  color: black;
+  text-decoration: underline;
 }
 
 .mobile-app-page .futures-app {

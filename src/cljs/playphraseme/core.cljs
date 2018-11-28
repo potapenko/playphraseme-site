@@ -47,39 +47,39 @@
     (util/go-url! "/#/mobile-app")
     (util/go-url! "/#/search")))
 
-(when-not config/mobile-layout?
-  (secretary/defroute "/search" [query-params]
-    (let [{:keys [q p]} query-params]
-      (route/goto-page! :search (merge
-                                 query-params
-                                 (when-not p
-                                   {:q (or-str
-                                        q
-                                        @(rf/subscribe [:search-text])
-                                        (phrases/random-phrase))})))))
+(secretary/defroute "/search" [query-params]
+  (let [{:keys [q p]} query-params]
+   (if config/mobile-layout?
+     (util/go-url! (str "playpraseme://search/" q))
+     (route/goto-page! :search (merge
+                                query-params
+                                (when-not p
+                                  {:q (or-str
+                                       q
+                                       @(rf/subscribe [:search-text])
+                                       (phrases/random-phrase))}))))))
 
 
-  (secretary/defroute "/register" []
-    (route/goto-page! :register))
+(secretary/defroute "/register" []
+  (route/goto-page! :register))
 
-  (secretary/defroute "/reset-password" []
-    (route/goto-page! :reset-password))
+(secretary/defroute "/reset-password" []
+  (route/goto-page! :reset-password))
 
-  (secretary/defroute "/login" []
-    (route/goto-page! :login))
+(secretary/defroute "/login" []
+  (route/goto-page! :login))
 
-  (secretary/defroute "/logout" []
-    (rest-api/logout)
-    (util/go-url! "/#/"))
+(secretary/defroute "/logout" []
+  (rest-api/logout)
+  (util/go-url! "/#/"))
 
-  (secretary/defroute "/auth" [query-params]
-    (let [{:keys [auth-token]} query-params]
-      (rest-api/auth auth-token)
-      (util/go-url! "/#/search")))
+(secretary/defroute "/auth" [query-params]
+  (let [{:keys [auth-token]} query-params]
+    (rest-api/auth auth-token)
+    (util/go-url! "/#/search")))
 
-  (secretary/defroute "/article" []
-    (route/goto-page! :article))
-  )
+(secretary/defroute "/article" []
+  (route/goto-page! :article))
 
 (secretary/defroute "/support" []
   (route/goto-page! :support))

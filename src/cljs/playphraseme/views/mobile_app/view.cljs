@@ -42,19 +42,21 @@
              [:span.red "Play"]
              [:span.black "Phrase"]
              [:span.gray ".me"]]]
-         "Mobile App for IOS is out!"
+         "Mobile App for IOS"
          [:div.android-coming-soon "(Android app is coming soon)"]]
-        [spacer 18]
-        [:h5 "Mobile app have all goodies of site plus some unique features."]
-        [spacer 18]
-        [:h2 "Key features of mobile application:"]
-        [:ol
-         [:li "Fast and native mobile interface"]
-         [:li "Advanced phrases search"]
-         [:li "Offline"]
-         [:li "Playlists"]
-         [:li "Play phrases in background"]
-         [:li "Playlists sharing"]]
+        [:h2 {:style {:background-color "white"}}
+         "The web version is now only available on desktop computers. On mobile devices "
+         [:a {:href "https://itunes.apple.com/app/playphraseme/id1441967668"} "install"]
+         " our mobile app."]
+        [:h2 "With mobile application you get everything from the web version plus:"]
+        [:ul
+         [:li "+ Fast and native mobile interface"]
+         [:li "+ Advanced phrases search"]
+         [:li "+ Offline mode"]
+         [:li "+ Phrases of the day"]
+         [:li "+ Playlists"]
+         [:li "+ Play phrases in background"]
+         [:li "+ Playlists sharing"]]
         [:h2 "Screenshots:"]
         [:ul
          [:li "Advanced search with " [:span.futures-app "common phrases:"]

@@ -3,6 +3,7 @@
             [re-frame.core :as rf]
             [markdown.core :refer [md->html]]
             [playphraseme.common.ui :as ui]
+            [playphraseme.common.config :as config]
             [playphraseme.common.util :as util]
             [playphraseme.views.search.view :as search-page]
             [playphraseme.common.localization :refer [ls]]
@@ -37,55 +38,58 @@
             :all-movies-count
             :all-phrases-count
             :mobile?]
-           (go
-             (rf/dispatch [:all-phrases-count (<! (rest-api/count-all-phrases))])
-             #_(rf/dispatch [:all-movies-count (<! (rest-api/count-all-movies))]))
-           (fn []
-             [:div.header
-              {:class (util/class->str (when-not (= @page :search) "invert"))}
-              [:div.top
-               (when @mobile?
-                 [ui/spacer 6])
-               (when-not (= @page :search)
-                 [header-button "Home" "/#/" "fas fa-home"])
-               (when-not (= @page :login)
-                 (if (rest-api/authorized?)
-                   [header-button
-                    (str (ls :navigation.logout) " (" (:name @(rf/subscribe [:auth-data])) ")")
-                    "/#/logout" "fas fa-user-circle"]
-                   [header-button (ls :navigation.login.register) "/#/login" "fas fa-user-circle"]))
-               (when-not @mobile?
-                 [header-button (ls :navigation.support) "/#/support" "far fa-envelope"])
-               [ui/flexer]
-               (when-not @mobile?
-                [header-button "Github" "https://github.com/potapenko/playphraseme-site" "fab fa-github-square"])
-               (when-not @mobile?
-                [header-button  "Facebook" "https://www.facebook.com/playphrase/" "fab fa-facebook"])
-               ^{:key "fixed-key"}
-               [facebook-like-button]]
-              [:div.bottom
-               (when @mobile?
-                 [ui/spacer 6])
-               [:div.logo {:on-click (fn [e]
-                                       (if (-> e .-altKey)
-                                         (phrases/search-random-bad-phrase)
-                                         (phrases/search-random-phrase)))}
-                [:span.red "Play"]
-                [:span.black "Phrase"]
-                [:span.gray ".me"]]
-               [ui/flexer]
-               [:div.mobile-apps
-                [:a {:href "/#/mobile-app"}
-                 [:img.app-button {:src "./img/apple-store-button@1x.png"}]]
-                [ui/spacer 12]
-                [:a {:href "/#/mobile-app"}
-                 [:img.app-button {:src "./img/google-play-button@1x.png"}]]]
-               (when-not @mobile?
-                [ui/flexer])
-               (when-not @mobile?
-                [:div.statistic
-                 [:span.count @all-phrases-count]
-                 [:span.info (ls :statistic.phrases)]])]])))
+    (go
+      (rf/dispatch [:all-phrases-count (<! (rest-api/count-all-phrases))])
+      #_(rf/dispatch [:all-movies-count (<! (rest-api/count-all-movies))]))
+    (fn []
+      [:div.header
+       {:class (util/class->str (when-not (= @page :search) "invert"))}
+       [:div.top
+        (when @mobile?
+          [ui/spacer 6])
+        (when-not (= @page :search)
+          [header-button "Home" "/#/" "fas fa-home"])
+        (when-not (= @page :login)
+          (if (rest-api/authorized?)
+            [header-button
+             (str (ls :navigation.logout) " (" (:name @(rf/subscribe [:auth-data])) ")")
+             "/#/logout" "fas fa-user-circle"]
+            [header-button (ls :navigation.login.register) "/#/login" "fas fa-user-circle"]))
+        (when-not @mobile?
+          [header-button (ls :navigation.support) "/#/support" "far fa-envelope"])
+        [ui/flexer]
+        (when-not @mobile?
+          [header-button "Github" "https://github.com/potapenko/playphraseme-site" "fab fa-github-square"])
+        (when-not @mobile?
+          [header-button  "Facebook" "https://www.facebook.com/playphrase/" "fab fa-facebook"])
+        ^{:key "fixed-key"}
+        [facebook-like-button]]
+       [:div.bottom
+        (when @mobile?
+          [ui/spacer 6])
+        [:div.logo (when-not config/mobile-layout?
+                     {:on-click (fn [e]
+                                  (if (-> e .-altKey)
+                                    (phrases/search-random-bad-phrase)
+                                    (phrases/search-random-phrase)))})
+         [:span.red "Play"]
+         [:span.black "Phrase"]
+         [:span.gray ".me"]]
+        [ui/flexer]
+        [:div.mobile-apps
+         [:a (if (and config/mobile-layout? (-> @page (= :mobile-app)))
+               {:href "https://itunes.apple.com/app/playphraseme/id1441967668" :targe "_blank"}
+               {:href "/#/mobile-app"})
+          [:img.app-button {:src "./img/apple-store-button@1x.png"}]]
+         [ui/spacer 12]
+         [:a {:href "/#/mobile-app"}
+          [:img.app-button {:src "./img/google-play-button@1x.png"}]]]
+        (when-not @mobile?
+          [ui/flexer])
+        (when-not @mobile?
+          [:div.statistic
+           [:span.count @all-phrases-count]
+           [:span.info (ls :statistic.phrases)]])]])))
 
 (defn left-column []
   [:div.left-column ""])
