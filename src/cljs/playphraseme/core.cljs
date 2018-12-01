@@ -22,14 +22,16 @@
   (:import goog.History))
 
 (def pages
-  {:search         #'search-page/page
-   :login          #'login-page/page
-   :register       #'register-page/page
-   :reset-password #'reset-password-page/page
-   :not-found      #'not-found-page/page
-   :support        #'support-page/page
-   :mobile-app     #'mobile-app-page/page
-   :playlist       #'playlist-page/page})
+  (merge
+   {:login          #'login-page/page
+    :register       #'register-page/page
+    :reset-password #'reset-password-page/page
+    :not-found      #'not-found-page/page
+    :support        #'support-page/page
+    :mobile-app     #'mobile-app-page/page
+    :playlist       #'playlist-page/page}
+   (when-not config/mobile-layout?
+     {:search #'search-page/page})))
 
 (defn page []
   (let [page-id @(rf/subscribe [:page])
@@ -50,7 +52,7 @@
 (secretary/defroute "/search" [query-params]
   (let [{:keys [q p]} query-params]
    (if config/mobile-layout?
-     (util/go-url! (str "playpraseme://search/" q))
+     (util/go-url! (str "playphraseme://search/" q))
      (route/goto-page! :search (merge
                                 query-params
                                 (when-not p

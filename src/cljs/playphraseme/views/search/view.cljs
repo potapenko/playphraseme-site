@@ -244,7 +244,7 @@
 
 (defn favorite-current-phrase [e]
   (-> e .preventDefault)
-  (if-not (rest-api/authorized?)
+  #_(if-not (rest-api/authorized?)
     (util/go-url! "/#/login")
     (let [{:keys [id favorited]} (get-current-phrase)]
       (rf/dispatch [::model/favorite-phrase id (not favorited)])

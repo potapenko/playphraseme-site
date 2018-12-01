@@ -1,5 +1,6 @@
 (ns playphraseme.model
   (:require [re-frame.core :refer [dispatch subscribe reg-event-db reg-sub]]
+            [playphraseme.common.config :as config]
             [playphraseme.common.localstorage :as localstorage])
   (:require-macros [re-frame-macros.core :as mcr]))
 
@@ -25,7 +26,7 @@
  :initialize-db
  (fn [_ _]
    (merge
-    {:page :search}
+    {:page (if-not config/mobile-layout? :search :mobile-app)}
     (localstorage/load-model))))
 
 (reg-event-db
