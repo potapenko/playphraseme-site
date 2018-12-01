@@ -12,7 +12,7 @@
   (mc/ensure-index db coll {:text 1 :count 1})
   (mc/ensure-index db coll {:search-next 1 :count 1})
   (mc/ensure-index db coll {:search-pred 1 :text 1 :count 1})
-  (mc/ensure-index db coll {:words-count-without-stops 1 :count 1 :text 1}))
+  (mc/ensure-index db coll {:words-count 1 :count 1 :text 1}))
 
 (mount/defstate migrations-search-phrases
   :start

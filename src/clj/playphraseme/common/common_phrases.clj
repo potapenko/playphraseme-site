@@ -9,7 +9,7 @@
 (defn- build-map-left [text]
   (->>
    (search-strings/find-search-strings {:search-next text :count {"$gt" 10}})
-   (pmap #(select-keys % [:text :count :words-count-without-stops]))
+   (pmap #(select-keys % [:text :count :words-count]))
    (pmap #(assoc %
                 :left (build-map-left (:text %))
                 :right (build-map-right (:text %))))
@@ -18,7 +18,7 @@
 (defn- build-map-right [text]
   (->>
    (search-strings/find-search-strings {:search-pred text :count {"$gt" 10}})
-   (pmap #(select-keys % [:text :count :words-count-without-stops]))
+   (pmap #(select-keys % [:text :count :words-count]))
    (pmap #(assoc %
                 :right (build-map-right (:text %))
                 :left (build-map-left (:text %))))
@@ -36,13 +36,13 @@
     (fn [e]
       (if (and (map? e))
         [(when (and (-> e :left (= [])) (-> e :right (= [])))
-           (select-keys e [:count :text :words-count-without-stops]))
+           (select-keys e [:count :text :words-count]))
          (:left e)
          (:right e)]
         e)))
    flatten
    (remove nil?)
-   (sort-by :words-count-without-stops)
+   (sort-by :words-count)
    distinct
    reverse
    vec))
@@ -55,8 +55,8 @@
        flat-phrases-map
        (remove #(-> % :text (= text)))
        (take 50)
-       (sort-by #(+ (:count %) (* 1000 (:words-count-without-stops %))))
-       (map #(dissoc % :words-count-without-stops))
+       (sort-by #(+ (:count %) (* 1000 (:words-count %))))
+       (map #(dissoc % :words-count))
        reverse))
 
 (defn get-common-phrases-response [text]
@@ -109,7 +109,7 @@
   ([limit] (get-all-common-phrases 0 limit))
   ([skip limit]
    (->> (search-strings/find-search-strings {:count {"$gte" 10}} skip limit
-                                            {:words-count-without-stops -1 :count -1})
+                                            {:words-count -1 :count -1})
         (map #(select-keys % [:text :count]))
         distinct-texts
         (remove #(-> % :text search-string-is-ignored?)))))
