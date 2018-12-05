@@ -380,28 +380,46 @@
             :else                        (recur t all-search-words []))
           result)))))
 
-(defn karaoke-words-current [phrase-index words]
+(defn copy-icon [text]
+  [:div.copy-icon
+   {:on-click    (fn [e]
+                   (-> e .preventDefault)
+                   (-> e .stopPropagation)
+                   (js/copyToClipboard text))
+    :data-toggle "tooltip"
+    :title       "Copy phrase to clipboard"}
+   [:i.material-icons
+    {:style {:color     "rgba(0,0,0,0.5)"
+             :margin    0
+             :font-size "22px"
+             :padding   0}}
+    "content_copy"]])
+
+(defn karaoke-words-current [phrase-index words text]
   (let-sub [::model/current-word-index]
            (fn []
              [:div.karaoke
               (for [w    words
                     :let [{:keys [formated-text text index searched]} w]]
                 ^{:key (str "word-" index)}
-                [:a.s-word {:href     ""
-                            :on-click #(goto-word % phrase-index index)
+                [:span.s-word {:on-click #(goto-word % phrase-index index)
                             :id       (str "word-" index)
                             :class    (util/class->str
                                        (when searched "s-word-searched")
                                        (when (= index current-word-index) "s-word-played"))}
-                 formated-text])])))
+                 formated-text])
+              [flexer]
+              [copy-icon text]])))
 
-(defn karaoke-words [phrase-index words]
+(defn karaoke-words [phrase-index words text]
   [:div.karaoke
    (for [w    words
          :let [{:keys [formated-text index searched]} w]]
      ^{:key (str "word-" index)}
-     [:a.s-word {:href "" :class (when searched "s-word-searched")
-                 :on-click #(goto-word % phrase-index index)} formated-text])])
+     [:span.s-word {:class (when searched "s-word-searched")
+                    :on-click #(goto-word % phrase-index index)} formated-text])
+   [flexer]
+   [copy-icon text]])
 
 (defn karaoke [phrase]
   (let [{:keys [words text id index]} phrase
@@ -415,8 +433,8 @@
         current-index                 (rf/subscribe [:current-phrase-index])]
     (fn []
       (if (= @current-index index)
-        [karaoke-words-current index words]
-        [karaoke-words index words]))))
+        [karaoke-words-current index words text]
+        [karaoke-words index words text]))))
 
 (defn phrase-text [x]
   (r/create-class

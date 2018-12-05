@@ -14,7 +14,7 @@
    [cljs.core.async.macros :refer [go go-loop]]
    [re-frame-macros.core :as mcr :refer [let-sub]]))
 
-(defn modal-image [{:keys [image horizontal? index]}]
+(defn modal-image [{:keys [image horizontal? index have-for-android?]}]
   (let [src (str "/img/mobile-app/" image ".png")]
     [:img {:src      src
            :on-click (fn []
@@ -37,16 +37,17 @@
      (fn []
        [:div.page-container.mobile-app-page
         [:h1
-         #_[:div
-            [:span.logo
-             [:span.red "Play"]
-             [:span.black "Phrase"]
-             [:span.gray ".me"]]]
-         "Mobile App for IOS"
-         [:div.android-coming-soon "(Android app is coming soon)"]]
+         [:div.logo
+          [:span.no-wrap
+           [:span.red "Play"]
+           [:span.black "Phrase"]
+           [:span.gray ".me "]]
+          [:span.no-wrap "Mobile App"]]]
         [:h2 {:style {:background-color "white"}}
          "The web version is now only available on desktop computers. On mobile devices "
-         [:a {:href "https://itunes.apple.com/app/playphraseme/id1441967668"} "install"]
+         [:a (if (or util/ios? util/macos?)
+               {:href "https://itunes.apple.com/app/playphraseme/id1441967668"}
+               {:href "https://play.google.com/store/apps/details?id=com.playphrasemewalk"}) "install"]
          " our mobile app."]
         [:h2 "With mobile application you get everything from the web version plus:"]
         [:ul
@@ -55,7 +56,8 @@
          [:li "+ Offline mode"]
          [:li "+ Phrases of the day"]
          [:li "+ Playlists"]
-         [:li "+ Play phrases in background"]
+         (when-not util/android?
+          [:li "+ Play phrases in background"])
          [:li "+ Playlists sharing"]]
         [:h2 "Screenshots:"]
         [:ul
@@ -113,9 +115,8 @@
          [:a {:href "https://itunes.apple.com/app/playphraseme/id1441967668" :target "_blank"}
           [:img.app-button {:src "./img/apple-store-button@1x.png"}]]
          [ui/spacer 32]
-         #_[:a {:href ""}
-            [:img.app-button {:src "./img/google-play-button@1x.png"}]]
-         [:div.android-coming-soon "(Android app is coming soon)"]]
+         [:a {:href "https://play.google.com/store/apps/details?id=com.playphrasemewalk" :target "_blank"}
+          [:img.app-button {:src "./img/google-play-button@1x.png"}]]]
         [spacer 32]
         [:div.modal
          (when @modal-img-src

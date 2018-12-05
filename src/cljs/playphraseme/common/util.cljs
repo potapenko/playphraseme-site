@@ -141,6 +141,7 @@
     (some->> user-agent string/lower-case (re-find rx) nil? not)))
 
 (def ios? (check-navigator #"ipad|iphone"))
+(def macos? (check-navigator #"mac os"))
 (def android? (check-navigator #"android"))
 (def windows-phone? (check-navigator #"windows phone"))
 (def chrome? (check-navigator #"chrome"))
