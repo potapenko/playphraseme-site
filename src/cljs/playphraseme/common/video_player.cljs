@@ -125,7 +125,7 @@
            :plays-inline true
            :controls     false
            :id           (index->id index)}]
-         (when (and
+         #_(when (and
                 util/safari?
                 (false? @(rf/subscribe [:autoplay-enabled])))
            [:div.overlay-play-icon

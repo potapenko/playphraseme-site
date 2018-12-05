@@ -15,7 +15,10 @@
    [re-frame-macros.core :as mcr :refer [let-sub]]))
 
 (defn modal-image [{:keys [image horizontal? index have-for-android?]}]
-  (let [src (str "/img/mobile-app/" image ".png")]
+  (let [src (str "/img/mobile-app/" image
+                 (when (and
+                        have-for-android?
+                        util/android?) "-android") ".png")]
     [:img {:src      src
            :on-click (fn []
                        (rf/dispatch [::model/modal-img-src src])
@@ -56,31 +59,31 @@
          [:li "+ Offline mode"]
          [:li "+ Phrases of the day"]
          [:li "+ Playlists"]
-         (when-not util/android?
+         (when (or util/ios? util/macos?)
           [:li "+ Play phrases in background"])
          [:li "+ Playlists sharing"]]
         [:h2 "Screenshots:"]
         [:ul
          [:li "Advanced search with " [:span.futures-app "common phrases:"]
           [:div.modal-image-containter
-           [modal-image {:image "search"}]
-           [modal-image {:image "search-suggestions"}]
-           [modal-image {:image "player"}]
+           [modal-image {:image "search" :have-for-android? true}]
+           [modal-image {:image "search-suggestions" :have-for-android? true}]
+           [modal-image {:image "player" :have-for-android? true}]
            [modal-image {:image "video-5" :horizontal? true}]
            [modal-image {:image "video-3" :horizontal? true}]]]
          [:li "Auto-generated playlists for listening common phrases for more than " [:span.futures-app "1000 days:"] ""
           [:div.modal-image-containter
-           [modal-image {:image "phrases-of-the-day"}]
-           [modal-image {:image "phrases-of-the-day-downloading"}]
-           [modal-image {:image "select-day-53"}]
-           [modal-image {:image "select-day-1085"}]]]
+           [modal-image {:image "phrases-of-the-day" :have-for-android? true}]
+           [modal-image {:image "phrases-of-the-day-downloading" :have-for-android? true}]
+           [modal-image {:image "select-day-53" :have-for-android? true}]
+           [modal-image {:image "select-day-1085" :have-for-android? true}]]]
          [:li [:span.futures-app2 "Custom playlists " ]
           "- save interesting phrases and words to playlists for listening and studying:"
           [:div.modal-image-containter
-           [modal-image {:image "playlists"}]
+           [modal-image {:image "playlists" :have-for-android? true}]
            [modal-image {:image "current-playlist"}]
-           [modal-image {:image "playlists-create-playlist"}]
-           [modal-image {:image "playlists-word-add"}]]]
+           [modal-image {:image "playlists-create-playlist" :have-for-android? true}]
+           [modal-image {:image "playlists-word-add" :have-for-android? true}]]]
          [:li [:span.futures-app "Share"] " playlists to the web and " [:span.futures-app "import"] " them into your mobile app."
           [:div.modal-image-containter
            [modal-image {:image "playlist-share-1"}]
@@ -88,13 +91,15 @@
            [modal-image {:image "playlist-share-3"}]
            [modal-image {:image "playlist-share-4"}]
            [modal-image {:image "playlist-share-5"}]]]
-         [:li "Listen to playlists in headphones for a walk or in transport. Playlists can be listened to with a "
-          [:span.futures-app  "locked screen"] "."
-          [:div.modal-image-containter
-           [modal-image {:image "play-background"}]]]
+         (when (or util/ios? util/macos?)
+          [:li "Listen to playlists in headphones for a walk or in transport. Playlists can be listened to with a "
+           [:span.futures-app  "locked screen"] "."
+           [:div.modal-image-containter
+            [modal-image {:image "play-background"}]]])
          [:li "Download playlists " [:span.futures-app "offline" ] " and listen to them without access to the Internet!"
           [:div.modal-image-containter
-           [modal-image {:image "offline-1"}]
+           (when (or util/ios? util/macos?)
+            [modal-image {:image "offline-1"}])
            [modal-image {:image "offline-2"}]
            [modal-image {:image "offline-3" :horizontal? true}]]]]
         [spacer 18]
