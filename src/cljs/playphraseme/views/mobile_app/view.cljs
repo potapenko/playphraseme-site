@@ -55,10 +55,10 @@
         [:h2 "With mobile application you get everything from the web version plus:"]
         [:ul
          [:li "+ Fast and native mobile interface"]
-         [:li "+ Advanced phrases search"]
-         [:li "+ Offline mode"]
-         [:li "+ Phrases of the day"]
-         [:li "+ Playlists"]
+         [:li "+ Advanced phrases search (with common phrases)"]
+         [:li "+ Offline mode (play phrases without internet)"]
+         [:li "+ \"Phrases of the day\" playlists (for 1000 days)"]
+         [:li "+ Custom Playlists (for collecting words and phrases)"]
          (when (or util/ios? util/macos?)
           [:li "+ Play phrases in background"])
          [:li "+ Playlists sharing"]]
