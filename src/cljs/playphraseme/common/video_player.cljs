@@ -140,5 +140,7 @@
          (let [{:keys [imdb info]} video-info]
            [:a.overlay-video-info
             {:href (str "https://www.imdb.com/title/" imdb) :target "_blank"}
-            info])]))}))
+            (if-not stopped?
+              (string/replace info #"\s*\[.+\]" "")
+              info)])]))}))
 

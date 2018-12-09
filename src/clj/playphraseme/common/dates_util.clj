@@ -11,6 +11,7 @@
    (instance? org.joda.time.LocalDate tm)))
 
 (def formater (f/formatters :mysql))
+(def formater-timestamp (f/formatters :hours-minute-second))
 
 (defn format-date [t]
   (f/unparse formater t))
@@ -36,7 +37,13 @@
 (defn to-utc [dt]
   (t/to-time-zone dt (t/time-zone-for-offset 0)))
 
+(defn timestamp [mils]
+  (f/unparse (f/formatters :hour-minute-second) (c/from-long mils)))
+
 (comment
   (->java-date (->java-date (now-str)))
+
+
+  (timestamp 226900)
 
   (f/show-formatters))

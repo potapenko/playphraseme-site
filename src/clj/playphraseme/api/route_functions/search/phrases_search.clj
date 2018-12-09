@@ -21,7 +21,8 @@
             [clojure.tools.logging :as log]
             [playphraseme.api.queries.movies :as movies]
             [playphraseme.common.suggestions :refer [phrase-candidates]]
-            [playphraseme.api.queries.phrases :as phrases]))
+            [playphraseme.api.queries.phrases :as phrases]
+            [playphraseme.common.dates-util :as date-util]))
 
 (defn drop-last-word [s]
   (-> s
@@ -55,12 +56,12 @@
                 " (" (:year movie) ")")
      :imdb (:imdb movie)}))
 
-(defn prepare-phrase-data [phrase]
+(defn prepare-phrase-data [{:keys [id start] :as phrase}]
   (some-> phrase
           (util/remove-keys [:random :have-video :__v :state :search-strings])
           (util/remove-keys :words [:id])
-          (assoc :video-info (get-video-info (:movie phrase)))
-          (assoc :video-url (get-video-url (:id phrase)))))
+          (assoc :video-info (update (get-video-info (:movie phrase)) :info str " [" (date-util/timestamp start) "]") )
+          (assoc :video-url (get-video-url id))))
 
 (defn get-phrase-data [id]
   (prepare-phrase-data (db/get-phrase-by-id id)))
