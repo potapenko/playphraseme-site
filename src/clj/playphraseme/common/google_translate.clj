@@ -1,6 +1,7 @@
 (ns playphraseme.common.google-translate
-  (:require [org.httpkit.client :as client]
+  (:require [clj-http.client :as client]
             [playphraseme.app.config :refer [env]]
+            [cheshire.core :as parser]
             [clojure.data.json :as json]))
 
 (defn- make-url [text from to]
@@ -10,18 +11,14 @@
        "&target=" to
        "&q=" text))
 
-(defn- translate-async [text from to]
-  "Translates a string. Returns promise which is either translated string
-  or a map {:error response}"
-  (client/get (make-url text from to) {}
-              (fn [{:keys [status body] :as resp}]
-                (if (and (>= status 200) (< status 300))
-                  (json/read-str body :key-fn keyword)
-                  {:error  resp}))))
-
 (defn translate [text from to]
   "Translate a string. returns translated string or throws an exception"
-  (let [result @(translate-async text from to)]
+  (let [result (-> (client/get (make-url text from to))
+                   :body (parser/parse-string keyword))]
     (if (:error result)
       (throw (Exception. (str (:error result))))
       (->> result :data :translations (map :translatedText) first))))
+
+(comment
+
+  )

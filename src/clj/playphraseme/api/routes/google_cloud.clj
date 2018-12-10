@@ -15,10 +15,10 @@
 
 (def google-cloud-routes
   "Specify routes for Google Cloud API"
-  (context "/api/v1/favorites" []
+  (context "/api/v1/google-api" []
            :tags ["Google Cloud"]
 
-           (GET "/translate"            request
+           (GET "/translate"   request
                 :return        s/Any
                 :middleware    [cors-mw csrf-mw]
                 :query-params  [text :- s/Str to-lang :- s/Str]
