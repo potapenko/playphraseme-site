@@ -103,7 +103,7 @@
            [modal-image {:image "offline-2"}]
            [modal-image {:image "offline-3" :horizontal? true}]]]
 
-         [:li "Google " [:span.futures-app "translate"] " integration (long press on words/phrases)"
+         [:li "Google " [:span.futures-app "translate"] " integration (long press on words/phrases to use)"
           [:div.modal-image-containter
            [modal-image {:image "translate-1"}]
            #_[modal-image {:image "translate-2"}]
