@@ -87,6 +87,7 @@
                        (some->> surname string/lower-case (re-find #"(ov|ko|va|ev|in|na|ik|ak|ih|ki)$"))
                        (names name))))
          (map (fn [{:keys [name surname email]}] (string/join "," [email name surname])))
+         (shuffle)
          (partition-all 20000)
          (map-indexed (fn [index part]
                         (->> part
