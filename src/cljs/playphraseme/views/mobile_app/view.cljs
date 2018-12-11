@@ -101,7 +101,18 @@
            (when (or util/ios? util/macos?)
             [modal-image {:image "offline-1"}])
            [modal-image {:image "offline-2"}]
-           [modal-image {:image "offline-3" :horizontal? true}]]]]
+           [modal-image {:image "offline-3" :horizontal? true}]]]
+
+         [:li "Google " [:span.futures-app "translate"] " integration (long press on words/phrases)"
+          [:div.modal-image-containter
+           [modal-image {:image "translate-1"}]
+           #_[modal-image {:image "translate-2"}]
+           [modal-image {:image "translate-3" :horizontal? true}]
+           #_[modal-image {:image "translate-4" :horizontal? true}]
+           [modal-image {:image "translate-5" :horizontal? true}]
+           #_[modal-image {:image "translate-6"}]
+           [modal-image {:image "translate-7"}]
+           #_[modal-image {:image "translate-8" :horizontal? true}]]]]
         [spacer 18]
         [:h2 "View key features in action:"]
         [spacer 18]
