@@ -9,7 +9,7 @@
 (defn- build-map-left [text]
   (->>
    (search-strings/find-search-strings {:search-next text :count {"$gt" 10}})
-   (pmap #(select-keys % [:text :count :words-count]))
+   (pmap #(select-keys % [:text :count :words-count :words-count-without-stops]))
    (pmap #(assoc %
                 :left (build-map-left (:text %))
                 :right (build-map-right (:text %))))
@@ -18,7 +18,7 @@
 (defn- build-map-right [text]
   (->>
    (search-strings/find-search-strings {:search-pred text :count {"$gt" 10}})
-   (pmap #(select-keys % [:text :count :words-count]))
+   (pmap #(select-keys % [:text :count :words-count :words-count-without-stops]))
    (pmap #(assoc %
                 :right (build-map-right (:text %))
                 :left (build-map-left (:text %))))
@@ -36,35 +36,30 @@
     (fn [e]
       (if (and (map? e))
         [(when (and (-> e :left (= [])) (-> e :right (= [])))
-           (select-keys e [:count :text :words-count]))
+           (select-keys e [:count :text :words-count :words-count-without-stops]))
          (:left e)
          (:right e)]
         e)))
    flatten
    (remove nil?)
-   (sort-by :words-count)
    distinct
+   (sort-by :words-count-without-stops)
    reverse
    vec))
 
-(defn get-common-phrases [text]
-  (->> text
-       string/trim
-       string/lower-case
-       create-phrases-map
-       flat-phrases-map
-       (remove #(-> % :text (= text)))
-       (take 50)
-       (sort-by #(+ (:count %) (* 1000 (:words-count %))))
-       (map #(dissoc % :words-count))
-       reverse))
 
-(defn get-common-phrases-response [text]
-  (ok (get-common-phrases text)))
+(defn- compact-common-phrases [phrases]
+  (loop [min-count 10
+         phrases   phrases]
+    (let [new-phrases (->> phrases
+                           (filter #(-> % count (>= min-count))))]
+      (if (-> new-phrases count (< 20))
+        phrases
+        (recur (inc min-count) new-phrases)))))
 
 
 (defn- distinct-texts [strings]
-  (let [exists (->> strings (map :text))]
+  (let [exists (->> strings (map :text) (map string/lower-case))]
     (->> strings
          (remove (fn [{:keys [text] :as e}]
                    (loop [[v & t] exists]
@@ -74,10 +69,49 @@
                          true
                          (recur t)))))))))
 
-(def ^:private ignore-strings [#"captain's log stardate" #"final frontier" #"starship" #"hunting things"
-                               #"saving people" #"people hunting" #"captain" #"log supplemental"
-                               #"sheldon" #"hailing" #"ahead warp" #"farrah" #"spock" #"penny"
-                               #"\d" #"sam" #"dean" #"alert one" #"winchester" #"dr\.? house"
+(defn distinct-texts-by-stops [phrases]
+  (if (-> phrases count (<= 20))
+    phrases
+   (loop [[v & t] phrases
+          before  #{}
+          result  []]
+     (if v
+       (let [text-without-stops (-> v :text string/lower-case nlp/remove-stop-words)]
+         (if (before text-without-stops)
+           (recur t before result)
+           (recur t (conj before text-without-stops) (conj result v))))
+       result))))
+
+(defn get-common-phrases [text]
+  (let [text (-> text string/trim string/lower-case)]
+   (->> text
+        create-phrases-map
+        flat-phrases-map
+        (remove #(-> % :text (= text)))
+        (take 100)
+        distinct-texts-by-stops
+        compact-common-phrases
+        (sort-by #(+ (:count %) (* 1000 (:words-count-without-stops %))))
+        reverse
+        (take 20)
+        (map #(dissoc % :words-count-without-stops))
+        (map #(dissoc % :words-count)))))
+
+(defn get-common-phrases-response [text]
+  (ok (get-common-phrases text)))
+
+
+
+(def ^:private ignore-strings [#"captain's log stardate" #"final frontier"
+                               #"starship" #"hunting things"
+                               #"saving people" #"people hunting"
+                               #"captain" #"log supplemental"
+                               #"sheldon" #"hailing"
+                               #"ahead warp" #"farrah"
+                               #"spock" #"penny"
+                               #"\d" #"sam"
+                               #"dean" #"alert one"
+                               #"winchester" #"dr\.? house"
                                #"warp" #"desperate housewives"])
 
 (defn search-string-is-ignored? [text]
@@ -95,6 +129,7 @@
                                             {:words-count -1 :words-count-without-stops -1 :count -1})
         (map #(select-keys % [:text :count]))
         distinct-texts
+        distinct-texts-by-stops
         (remove #(-> % :text search-string-is-ignored?)))))
 
 (defn get-all-common-phrases-response [skip limit]

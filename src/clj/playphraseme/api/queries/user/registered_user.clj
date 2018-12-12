@@ -81,7 +81,7 @@
          (remove #(-> % :name nil?))
          (remove #(-> % :surname nil?))
          (filter #(->> % :email (re-find #"^.+@.+\..+$")))
-         (filter (fn [{:keys [name surname email]}]
+         (remove (fn [{:keys [name surname email]}]
                    (or (-> email (string/ends-with? "ru"))
                        (->> name string/lower-case (re-find #"^[а-я]+$"))
                        (some->> surname string/lower-case (re-find #"(ov|ko|va|ev|in|na|ik|ak|ih|ki)$"))
@@ -91,7 +91,7 @@
          (partition-all 20000)
          (map-indexed (fn [index part]
                         (->> part
-                             (map #(spit (format "emails-ru-%s.csv" index) (str % "\n") :append true))
+                             (map #(spit (format "emails-en-%s.csv" index) (str % "\n") :append true))
                              (doall))))))
 
 

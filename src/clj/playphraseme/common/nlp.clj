@@ -122,3 +122,9 @@
        create-words
        (remove stop-word?)
        count))
+
+(defn remove-stop-words [s]
+  (->> s
+       create-words
+       (remove stop-word?)
+       (string/join " ")))
