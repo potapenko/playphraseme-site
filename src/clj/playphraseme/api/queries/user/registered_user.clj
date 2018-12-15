@@ -81,7 +81,7 @@
          (remove #(-> % :name nil?))
          (remove #(-> % :surname nil?))
          (filter #(->> % :email (re-find #"^.+@.+\..+$")))
-         (remove (fn [{:keys [name surname email]}]
+         (filter (fn [{:keys [name surname email]}]
                    (or (-> email (string/ends-with? "ru"))
                        (->> name string/lower-case (re-find #"^[а-я]+$"))
                        (some->> surname string/lower-case (re-find #"(ov|ko|va|ev|in|na|ik|ak|ih|ki)$"))

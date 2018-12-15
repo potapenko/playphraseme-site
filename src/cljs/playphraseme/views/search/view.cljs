@@ -120,7 +120,10 @@
     (scroll-to-phrase current)
     (util/set-url! "search" {:q text :p (:id (get-current-phrase))})
     (when (-> current (+ 5) (> loaded))
-      (scroll-end))))
+      (scroll-end)))
+  (when (-> @(rf/subscribe [::model/phrases]) count (= 1))
+    (player/jump 0 0)
+    (player/play 0)))
 
 (defn prev-phrase []
   (rf/dispatch-sync [::model/prev-phrase])

@@ -108,8 +108,7 @@
                                #"captain" #"log supplemental"
                                #"sheldon" #"hailing"
                                #"ahead warp" #"farrah"
-                               #"spock" #"penny"
-                               #"\d" #"sam"
+                               #"spock" #"penny" #"\d" #"sam"
                                #"dean" #"alert one"
                                #"winchester" #"dr\.? house"
                                #"warp" #"desperate housewives"])
@@ -140,5 +139,6 @@
   (time
    (get-all-common-phrases 1 100))
 
+  (get-common-phrases "i'll be back")
 
   )
