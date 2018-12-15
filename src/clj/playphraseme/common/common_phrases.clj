@@ -84,18 +84,20 @@
 
 (defn get-common-phrases [text]
   (let [text (-> text string/trim string/lower-case)]
-   (->> text
-        create-phrases-map
-        flat-phrases-map
-        (remove #(-> % :text (= text)))
-        (take 100)
-        distinct-texts-by-stops
-        compact-common-phrases
-        (sort-by #(+ (:count %) (* 1000 (:words-count-without-stops %))))
-        reverse
-        (take 20)
-        (map #(dissoc % :words-count-without-stops))
-        (map #(dissoc % :words-count)))))
+    (if (-> text count (<= 2))
+      []
+      (->> text
+           create-phrases-map
+           flat-phrases-map
+           (remove #(-> % :text (= text)))
+           (take 100)
+           distinct-texts-by-stops
+           compact-common-phrases
+           (sort-by #(+ (:count %) (* 1000 (:words-count-without-stops %))))
+           reverse
+           (take 20)
+           (map #(dissoc % :words-count-without-stops))
+           (map #(dissoc % :words-count))))))
 
 (defn get-common-phrases-response [text]
   (ok (get-common-phrases text)))
@@ -139,6 +141,6 @@
   (time
    (get-all-common-phrases 1 100))
 
-  (get-common-phrases "i'll be back")
+  (get-common-phrases "j")
 
   )
