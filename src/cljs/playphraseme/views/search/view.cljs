@@ -45,40 +45,43 @@
 (defn search-phrase
   ([text] (search-phrase text nil))
   ([text first-phrase]
-   (when text
-     (when (or
-            first-phrase
-            (not= (some-> text string/trim)
-                  (some-> @(rf/subscribe [:search-text]) string/trim)))
-       (let [id  (swap! search-id inc)]
-         (rf/dispatch [::model/search-result []])
-         (rf/dispatch [:current-phrase-index nil])
-         (go
-           (reset! scroll-loaded 0)
-           (let [res (<! (rest-api/search-phrase text 10 0))]
-             ;; (ga/track (str "/#/search=q=" text))
-             (when (= id @search-id)
-               (when (= id @search-id)
-                 (when (and
-                        @(rf/subscribe [:first-search])
-                        (pos? @(rf/subscribe [:search-count])))
-                   (rf/dispatch [:first-search false])
-                   (rf/dispatch [:stopped false])))
-               (rf/dispatch [:search-count])
-               (when (-> res :count pos?)
-                   (util/set-history-url! "search" (merge {:q text} (when first-phrase {:p first-phrase}))))
-               (rf/dispatch-sync [::model/search-result
-                                  (if first-phrase
-                                    (let [first-phrase-info (<! (rest-api/get-phrase first-phrase))]
-                                      (if (phrases/phrase? first-phrase-info)
-                                        (update res :phrases
-                                                (fn [ex]
-                                                  (concat [first-phrase-info] ex)))
-                                        res))
-                                    res)])
-               (load-favorited)
-               (load-common-phrases text)))))))
-   (rf/dispatch [:search-text text])))
+   (let [text (some-> text
+                      (string/replace #"\s" " ")
+                      (string/replace #"^\s" ""))]
+    (when text
+      (when (or
+             first-phrase
+             (not= (some-> text string/trim)
+                   (some-> @(rf/subscribe [:search-text]) string/trim)))
+        (let [id  (swap! search-id inc)]
+          (rf/dispatch [::model/search-result []])
+          (rf/dispatch [:current-phrase-index nil])
+          (go
+            (reset! scroll-loaded 0)
+            (let [res (<! (rest-api/search-phrase text 10 0))]
+              ;; (ga/track (str "/#/search=q=" text))
+              (when (= id @search-id)
+                (when (= id @search-id)
+                  (when (and
+                         @(rf/subscribe [:first-search])
+                         (pos? @(rf/subscribe [:search-count])))
+                    (rf/dispatch [:first-search false])
+                    (rf/dispatch [:stopped false])))
+                (rf/dispatch [:search-count])
+                (when (-> res :count pos?)
+                  (util/set-history-url! "search" (merge {:q text} (when first-phrase {:p first-phrase}))))
+                (rf/dispatch-sync [::model/search-result
+                                   (if first-phrase
+                                     (let [first-phrase-info (<! (rest-api/get-phrase first-phrase))]
+                                       (if (phrases/phrase? first-phrase-info)
+                                         (update res :phrases
+                                                 (fn [ex]
+                                                   (concat [first-phrase-info] ex)))
+                                         res))
+                                     res)])
+                (load-favorited)
+                (load-common-phrases text)))))))
+    (rf/dispatch [:search-text text]))))
 
 (defn scroll-end []
   (let [count-all @(rf/subscribe [::model/search-count])
@@ -300,63 +303,67 @@
         [:i.material-icons.audio-control "volume_up"]])]))
 
 (defn search-input []
-  [:div.filters-container
-   [:input#search-input.filter-input.form-control.input-lg
-    {:type      "text" :placeholder "Search Phrase"
-     :value     @(rf/subscribe [:search-text])
-     :on-focus  (fn []
-                  (rf/dispatch [::model/input-focused? true])
-                  (set-input-cursor))
-     :on-blur   #(rf/dispatch [::model/input-focused? false])
-     :on-change #(search-phrase (-> % .-target .-value))}]
-   (when
-    (and
-     @(rf/subscribe [::model/next-word-suggestion])
-     @(rf/subscribe [::model/input-focused?]))
-     (let-sub [::model/next-word-suggestion
-               :search-text]
-      [:div.next-word-suggestion.no-select
-       {:on-click focus-input}
-       [:span {:style {:color :tranparent}}
-        @search-text]
-       [:span
-        (string/replace-first
-         (string/lower-case @next-word-suggestion)
-         (string/lower-case @search-text) "")]]))
-   [:ul.filter-input-icons
-    [:li
-     [:div.search-result-count @(rf/subscribe [::model/search-count])]]
-    (when-not resp/mobile?
-      [:li
-       [play-button]])
-    (when-not util/mobile?
-      (let-sub [:audio-muted
-                :audio-volume
-                :stopped]
-       [:li
-        ^{:keys [@audio-muted @audio-volume @stopped]}
-        [audio-volume-control @audio-muted @audio-volume]
-        (when-not @(rf/subscribe [:audio-muted])
-          [:audio {:id       "music-player"
-                   :src      "http://uk7.internet-radio.com:8000/stream"
-                   :controls false}])]))]
-   (let [common-phrases @(rf/subscribe [::model/common-phrases])]
-    (if-not (empty? common-phrases)
-      [:div.common-phrases
-       (doall
-        (for [{:keys [text count]} common-phrases]
-          ^{:key text}
-          [:a.one-common-phrase {:href (str "/#/search?q=" text)} text]))]
-      [:div.shortcuts-info
-       [:div "Next word completion:"] [:i.material-icons "keyboard_tab"]
-       [spacer 4]
-       [:div "Next word select:"] [:i.material-icons "keyboard_arrow_right"]
-       [spacer 4]
-       [:div "Navigate result/suggestions list:"]
-       [:i.material-icons "keyboard_arrow_up"]
-       [:i.material-icons "keyboard_arrow_down"]
-       [spacer 4]
-       [:div "Pause/Stop/Select suggestion:"] [:i.material-icons "keyboard_return"]]))])
+  (let-sub [::model/next-word-suggestion
+            ::model/input-focused?
+            :search-text]
+    (fn []
+      [:div.filters-container
+       [:input#search-input.filter-input.form-control.input-lg
+        {:type           "text" :placeholder "Search Phrase"
+         :value          @search-text
+         :autocorrect    "off"
+         :autocapitalize "off"
+         :on-focus       (fn []
+                           (rf/dispatch [::model/input-focused? true])
+                           (set-input-cursor))
+         :on-blur        #(rf/dispatch [::model/input-focused? false])
+         :on-change      #(search-phrase (-> % .-target .-value))}]
+       (when
+           (and
+            @next-word-suggestion
+            @input-focused?)
+         [:div.next-word-suggestion.no-select
+          {:on-click focus-input}
+          [:span {:style {:color :tranparent}}
+           @search-text]
+          [:span
+           (string/replace-first
+            (string/lower-case @next-word-suggestion)
+            (string/lower-case @search-text) "")]])
+       [:ul.filter-input-icons
+        [:li
+         [:div.search-result-count @(rf/subscribe [::model/search-count])]]
+        (when-not resp/mobile?
+          [:li
+           [play-button]])
+        (when-not util/mobile?
+          (let-sub [:audio-muted
+                    :audio-volume
+                    :stopped]
+            [:li
+             ^{:keys [@audio-muted @audio-volume @stopped]}
+             [audio-volume-control @audio-muted @audio-volume]
+             (when-not @(rf/subscribe [:audio-muted])
+               [:audio {:id       "music-player"
+                        :src      "http://uk7.internet-radio.com:8000/stream"
+                        :controls false}])]))]
+       (let [common-phrases @(rf/subscribe [::model/common-phrases])]
+         (if-not (empty? common-phrases)
+           [:div.common-phrases
+            (doall
+             (for [{:keys [text count]} common-phrases]
+               ^{:key text}
+               [:a.one-common-phrase {:href (str "/#/search?q=" text)} text]))]
+           [:div.shortcuts-info
+            [:div "Next word completion:"] [:i.material-icons "keyboard_tab"]
+            [spacer 4]
+            [:div "Next word select:"] [:i.material-icons "keyboard_arrow_right"]
+            [spacer 4]
+            [:div "Navigate result/suggestions list:"]
+            [:i.material-icons "keyboard_arrow_up"]
+            [:i.material-icons "keyboard_arrow_down"]
+            [spacer 4]
+            [:div "Pause/Stop/Select suggestion:"] [:i.material-icons "keyboard_return"]]))])))
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
