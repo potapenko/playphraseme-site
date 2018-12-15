@@ -46,8 +46,8 @@
   ([text] (search-phrase text nil))
   ([text first-phrase]
    (let [text (some-> text
-                      (string/replace #"\s" " ")
-                      (string/replace #"^\s" ""))]
+                      (string/replace #"\s+" " ")
+                      (string/replace #"^\s+" ""))]
     (when text
       (when (or
              first-phrase
