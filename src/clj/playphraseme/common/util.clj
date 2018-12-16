@@ -59,3 +59,21 @@
       (/ 10.0)
       (int)))
 
+(defn distinct-by [key-fn coll]
+  (loop [[v & t] (->> coll
+                      (map (fn [x]
+                             {:key   (key-fn x)
+                              :value x})))
+         result  []]
+    (if v
+      (recur
+       (remove #(-> % :key (= (:key v))) t)
+       (conj result (:value v)))
+      result)))
+
+(comment
+
+  (distinct-by :a [{:a 1} {:a 1} {:a 2}])
+
+
+  )

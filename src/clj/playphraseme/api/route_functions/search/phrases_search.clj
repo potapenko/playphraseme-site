@@ -74,22 +74,15 @@
   ([text word-end?]
    (let [text      (-> text string/trim string/lower-case)
          text-pred (if word-end? (drop-last-word text) text)
-         rx        (str "^" text (if-not word-end? " " "") "\\S+$")
-         strings   (->>
-                    (search-strings/find-search-strings
-                     {:search-pred text-pred
-                      :text       {$regex rx}} 20)
-                    (remove #(-> % :count (= 0)))
-                    (remove #(->> % :text (re-find #"\s\d+$")))
-                    (map #(select-keys % [:text :count])))]
-     (loop [[v & t] strings
-            result  []]
-       (if v
-         (recur
-          (remove #(-> % :text (= (:text v))) t)
-          (conj result {:text  (:text v)
-                        :count (:count v)}))
-         result)))))
+         rx        (str "^" text (if-not word-end? " " "") "\\S+$")]
+     (->>
+      (search-strings/find-search-strings
+       {:search-pred text-pred
+        :text        {$regex rx}} 20)
+      (remove #(-> % :count (= 0)))
+      (remove #(->> % :text (re-find #"\s\d+$")))
+      (map #(select-keys % [:text :count]))
+      (util/distinct-by :text)))))
 
 (defn update-phrases-suggestions [{:keys [count suggestions] :as search-result} text]
   (if (string/blank? text)
@@ -111,24 +104,25 @@
 (defn search-response [q skip limit]
   (assert (< limit 100))
   (ok
-   (if (some-> q string/trim count (<= 2))
-     {:count 0 :phrases [] :suggestions []}
-     (let [search-string (first
-                          (search-strings/find-search-strings
-                           {:text (nlp/remove-punctuation q)}))]
-       (update-phrases-suggestions
-        (if (or (not search-string) )
-          {:count 0 :phrases [] :suggestions []}
-          (let [phrases (->> (phrases/find-phrases {:search-strings (:text search-string)
-                                                    :have-video     true}
-                                                   (if (> skip 1000) 1000 skip)
-                                                   limit)
-                             (map prepare-phrase-data))]
-            (merge
-             {:count (:count search-string) :phrases phrases}
-             (when (empty? phrases)
-               {:suggestions (phrase-candidates q)}))))
-        q)))))
+   (let [q (some-> q string/trim (string/replace #"\s+" " "))]
+    (if (some-> q count (<= 2))
+      {:count 0 :phrases [] :suggestions []}
+      (let [search-string (first
+                           (search-strings/find-search-strings
+                            {:text (nlp/remove-punctuation q)}))]
+        (update-phrases-suggestions
+         (if (or (not search-string) )
+           {:count 0 :phrases [] :suggestions []}
+           (let [phrases (->> (phrases/find-phrases {:search-strings (:text search-string)
+                                                     :have-video     true}
+                                                    (if (> skip 1000) 1000 skip)
+                                                    limit)
+                              (map prepare-phrase-data))]
+             (merge
+              {:count (:count search-string) :phrases phrases}
+              (when (empty? phrases)
+                {:suggestions (phrase-candidates q)}))))
+         q))))))
 
 (defn search-batch-response [search-texts]
   (ok
