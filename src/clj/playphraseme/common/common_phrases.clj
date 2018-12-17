@@ -2,7 +2,8 @@
   (:require [playphraseme.api.queries.search-strings :as search-strings]
             [clojure.string :as string]
             [ring.util.http-response :refer :all]
-            [playphraseme.common.nlp :as nlp]))
+            [playphraseme.common.nlp :as nlp]
+            [playphraseme.common.util :as util]))
 
 (declare build-map-right build-map-left)
 
@@ -59,28 +60,16 @@
 
 
 (defn- distinct-texts [strings]
-  (let [exists (->> strings (map :text) (map string/lower-case))]
-    (->> strings
-         (remove (fn [{:keys [text] :as e}]
-                   (loop [[v & t] exists]
-                     (when v
-                       (if (and (not= v text)
-                                (re-find (re-pattern text) v))
-                         true
-                         (recur t)))))))))
+  (util/distinct-by :text (fn [a b]
+                            (or
+                             #_(re-find (re-pattern a) b)
+                             (re-find (re-pattern b) a)))
+                    strings))
 
 (defn distinct-texts-by-stops [phrases]
   (if (-> phrases count (<= 20))
     phrases
-   (loop [[v & t] phrases
-          before  #{}
-          result  []]
-     (if v
-       (let [text-without-stops (-> v :text string/lower-case nlp/remove-stop-words)]
-         (if (before text-without-stops)
-           (recur t before result)
-           (recur t (conj before text-without-stops) (conj result v))))
-       result))))
+    (util/distinct-by #(-> % :text string/lower-case nlp/remove-stop-words) phrases)))
 
 (defn get-common-phrases [text]
   (let [text (-> text string/trim string/lower-case)]
