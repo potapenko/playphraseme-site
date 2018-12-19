@@ -13,6 +13,7 @@
             [playphraseme.views.not-found.view :as not-found-page]
             [playphraseme.views.playlist.view :as playlist-page]
             [playphraseme.views.register.view :as register-page]
+            [clojure.string :as string]
             [playphraseme.views.reset-password.view :as reset-password-page]
             [playphraseme.views.search.view :as search-page]
             [playphraseme.views.support.view :as support-page]
@@ -50,7 +51,8 @@
     (util/go-url! "/#/search")))
 
 (secretary/defroute "/search" [query-params]
-  (let [{:keys [q p]} query-params]
+  (let [{:keys [q p]} query-params
+        q             (string/replace q #"\+" " ")]
    (if config/mobile-layout?
      (util/go-url! (str "playphraseme://search/" q))
      (route/goto-page! :search (merge
