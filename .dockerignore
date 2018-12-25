@@ -1,5 +1,6 @@
 **/.git
 **/micro
+**/work
 **/target/cljbuild
 **/target/uberjar/classes
 **/target/uberjar/cljsbuild-compiler-0

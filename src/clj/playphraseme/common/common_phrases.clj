@@ -3,6 +3,7 @@
             [clojure.string :as string]
             [ring.util.http-response :refer :all]
             [playphraseme.common.nlp :as nlp]
+            [playphraseme.api.queries.common-phrases :as db-common-phrases]
             [playphraseme.common.util :as util]))
 
 (declare build-map-right build-map-left)
@@ -62,7 +63,7 @@
 (defn- distinct-texts [strings]
   (util/distinct-by :text (fn [a b]
                             (or
-                             #_(re-find (re-pattern a) b)
+                             (re-find (re-pattern a) b)
                              (re-find (re-pattern b) a)))
                     strings))
 
@@ -119,11 +120,14 @@
                                             {:words-count -1 :words-count-without-stops -1 :count -1})
         (map #(select-keys % [:text :count]))
         distinct-texts
-        distinct-texts-by-stops
+        ;; distinct-texts-by-stops
         (remove #(-> % :text search-string-is-ignored?)))))
 
 (defn get-all-common-phrases-response [skip limit]
   (ok (get-all-common-phrases skip limit)))
+
+(defn generate-common-phrases []
+  (loop [phrases ]))
 
 (comment
 
@@ -131,5 +135,10 @@
    (get-all-common-phrases 1 100))
 
   (get-common-phrases "j")
+
+
+  (count (get-all-common-phrases (* 100 58) 100))
+
+  (get-all-common-phrases 0 50)
 
   )
