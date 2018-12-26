@@ -87,7 +87,12 @@
               (cb)) idle))))
 
 (defn params-to-url [params]
-  (string/join "&" (map (fn [[k v]] (str (name k) "=" (js/encodeURIComponent v))) params)))
+  (string/join "&" (map (fn [[k v]]
+                          (str (name k) "=" (-> v
+                                                (string/replace #"\s+" "+")
+                                                js/encodeURIComponent
+                                                (string/replace #"(%2B)+" "+"))))
+                        params)))
 
 (defn set-url! [url params]
   (js/history.replaceState nil nil (str "/#/" url "?" (params-to-url params))))
@@ -95,6 +100,7 @@
 (def history-last (atom nil))
 
 (defn set-history-url! [url params]
+  (println ">>>" params)
   (when-not (= @history-last [url params])
     (reset! history-last [url params])
     (js/history.pushState nil nil (str "/#/" url "?" (params-to-url params)))))

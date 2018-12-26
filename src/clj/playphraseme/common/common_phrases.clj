@@ -127,7 +127,7 @@
   (ok (get-all-common-phrases skip limit)))
 
 (defn generate-common-phrases []
-  (loop [phrases ]))
+  #_(loop [phrases ]))
 
 (comment
 
@@ -137,7 +137,7 @@
   (get-common-phrases "j")
 
 
-  (count (get-all-common-phrases (* 100 58) 100))
+  (count (get-all-common-phrases (* 30 58) 30))
 
   (get-all-common-phrases 0 50)
 

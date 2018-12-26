@@ -69,7 +69,8 @@
                     (rf/dispatch [:stopped false])))
                 (rf/dispatch [:search-count])
                 (when (-> res :count pos?)
-                  (util/set-history-url! "search" (merge {:q text} (when first-phrase {:p first-phrase}))))
+                  (util/set-history-url! "search" (merge {:q text}
+                                                         #_(when first-phrase {:p first-phrase}))))
                 (rf/dispatch-sync [::model/search-result
                                    (if first-phrase
                                      (let [first-phrase-info (<! (rest-api/get-phrase first-phrase))]
@@ -121,7 +122,7 @@
         loaded  (count @(rf/subscribe [::model/phrases]))
         text @(rf/subscribe [:search-text])]
     (scroll-to-phrase current)
-    (util/set-url! "search" {:q text :p (:id (get-current-phrase))})
+    (util/set-url! "search" {:q text #_:p #_(:id (get-current-phrase))})
     (when (-> current (+ 5) (> loaded))
       (scroll-end)))
   (when (-> @(rf/subscribe [::model/phrases]) count (= 1))
