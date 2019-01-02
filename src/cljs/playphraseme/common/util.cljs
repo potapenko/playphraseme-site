@@ -100,7 +100,6 @@
 (def history-last (atom nil))
 
 (defn set-history-url! [url params]
-  (println ">>>" params)
   (when-not (= @history-last [url params])
     (reset! history-last [url params])
     (js/history.pushState nil nil (str "/#/" url "?" (params-to-url params)))))

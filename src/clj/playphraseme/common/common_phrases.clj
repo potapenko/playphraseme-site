@@ -3,8 +3,9 @@
             [clojure.string :as string]
             [ring.util.http-response :refer :all]
             [playphraseme.common.nlp :as nlp]
-            [playphraseme.api.queries.common-phrases :as db-common-phrases]
-            [playphraseme.common.util :as util]))
+            [playphraseme.api.queries.common-phrases :as common-phrases-db]
+            [playphraseme.common.util :as util]
+            [playphraseme.common.urban-dictionary :as urban-dictionary]))
 
 (declare build-map-right build-map-left)
 
@@ -127,18 +128,24 @@
   (ok (get-all-common-phrases skip limit)))
 
 (defn generate-common-phrases []
-  #_(loop [phrases ]))
+  (->> (range 1 2)
+       (map (fn [pos]
+              (->> (get-all-common-phrases pos 100)
+                   (map (fn [{:keys [count text]}]
+                          {:count count
+                           :text text
+                           :dictionary (urban-dictionary/search text)}
+                          ))
+
+
+                   )))
+       doall))
 
 (comment
 
-  (time
-   (get-all-common-phrases 1 100))
 
-  (get-common-phrases "j")
+  (generate-common-phrases)
 
 
-  (count (get-all-common-phrases (* 30 58) 30))
-
-  (get-all-common-phrases 0 50)
 
   )

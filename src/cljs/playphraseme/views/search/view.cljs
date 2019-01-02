@@ -45,43 +45,43 @@
 (defn search-phrase
   ([text] (search-phrase text nil))
   ([text first-phrase]
-   (let [text (some-> text
+   (when-let [text (some-> text
                       (string/replace #"\s+" " ")
                       (string/replace #"^\s+" ""))]
-    (when text
-      (when (or
-             first-phrase
-             (not= (some-> text string/trim)
-                   (some-> @(rf/subscribe [:search-text]) string/trim)))
-        (let [id  (swap! search-id inc)]
-          (rf/dispatch [::model/search-result []])
-          (rf/dispatch [:current-phrase-index nil])
-          (go
-            (reset! scroll-loaded 0)
-            (let [res (<! (rest-api/search-phrase text 10 0))]
-              ;; (ga/track (str "/#/search=q=" text))
+    (when (or
+           first-phrase
+           (not= (some-> text string/trim)
+                 (some-> @(rf/subscribe [:search-text]) string/trim)))
+      (let [id  (swap! search-id inc)]
+        (rf/dispatch [::model/search-result []])
+        (rf/dispatch [:current-phrase-index nil])
+        (go
+          (reset! scroll-loaded 0)
+          (let [res (<! (rest-api/search-phrase text 10 0))]
+            ;; (ga/track (str "/#/search=q=" text))
+            (when (= id @search-id)
               (when (= id @search-id)
-                (when (= id @search-id)
-                  (when (and
-                         @(rf/subscribe [:first-search])
-                         (pos? @(rf/subscribe [:search-count])))
-                    (rf/dispatch [:first-search false])
-                    (rf/dispatch [:stopped false])))
-                (rf/dispatch [:search-count])
-                (when (-> res :count pos?)
-                  (util/set-history-url! "search" (merge {:q text}
-                                                         #_(when first-phrase {:p first-phrase}))))
-                (rf/dispatch-sync [::model/search-result
-                                   (if first-phrase
-                                     (let [first-phrase-info (<! (rest-api/get-phrase first-phrase))]
-                                       (if (phrases/phrase? first-phrase-info)
-                                         (update res :phrases
-                                                 (fn [ex]
-                                                   (concat [first-phrase-info] ex)))
-                                         res))
-                                     res)])
-                (load-favorited)
-                (load-common-phrases text)))))))
+                (when (and
+                       @(rf/subscribe [:first-search])
+                       (pos? @(rf/subscribe [:search-count])))
+                  (rf/dispatch [:first-search false])
+                  (rf/dispatch [:stopped false])))
+              (rf/dispatch [:search-count])
+              (when (-> res :count pos?)
+                (util/lazy-call
+                 #(util/set-history-url! "search" (merge {:q text}
+                                                         #_(when first-phrase {:p first-phrase})))))
+              (rf/dispatch-sync [::model/search-result
+                                 (if first-phrase
+                                   (let [first-phrase-info (<! (rest-api/get-phrase first-phrase))]
+                                     (if (phrases/phrase? first-phrase-info)
+                                       (update res :phrases
+                                               (fn [ex]
+                                                 (concat [first-phrase-info] ex)))
+                                       res))
+                                   res)])
+              (load-favorited)
+              (load-common-phrases text))))))
     (rf/dispatch [:search-text text]))))
 
 (defn scroll-end []
