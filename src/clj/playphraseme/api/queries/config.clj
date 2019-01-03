@@ -28,12 +28,12 @@
 
 (comment
 
-  (update-config! :any "value2")
-  (update-config! :any2 "value222")
+  (update-config! :work-on-mobile false)
 
-  (get-config :any)
+  (get-config :work-on-mobile)
 
-  (delete-config! :any)
+  (delete-config! :any2)
+
 
   )
 
