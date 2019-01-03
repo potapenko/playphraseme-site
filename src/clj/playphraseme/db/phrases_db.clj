@@ -28,12 +28,8 @@
       (q/skip skip)
       (q/limit limit))))
 
-(defn find-doc
-  [coll {:keys [pred sort skip]
-               :or   {skip 0 sort {:_id 1} pred {}}
-               :as   params}]
-  (first
-   (find-docs coll params)))
+(defn find-doc [coll pred]
+  (mc/find-one-as-map db coll pred))
 
 (defn get-docs [coll pred]
   (mc/find-maps db coll pred))
@@ -50,8 +46,11 @@
 (defn add-docs [coll docs]
   (mc/insert-batch db coll docs))
 
-(defn update-doc [coll pred data]
-  (mc/update db coll pred {$set data}))
+(defn update-doc
+  ([coll pred doc options]
+   (mc/update db coll pred doc options))
+  ([coll pred data]
+   (mc/update db coll pred {$set data})))
 
 (defn update-doc-by-id [coll id data]
   (mc/update-by-id db coll id {$set data}))

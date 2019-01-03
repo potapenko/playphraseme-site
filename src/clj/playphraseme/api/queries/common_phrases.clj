@@ -29,11 +29,13 @@
    (add-doc coll data)))
 
 (defn update-common-phrase!
-  [^String common-phrase-id {:keys [email name password refresh-token] :as user-data}]
-  (update-doc-by-id coll (str->id common-phrase-id) user-data))
+  ([data] (update-common-phrase! (:id data) (dissoc data :id)))
+  ([^String common-phrase-id data]
+   (update-doc-by-id coll (str->id common-phrase-id) data)))
 
 (defn delete-common-phrase!
   [^String common-phrase-id]
   (delete-doc-by-id coll (str->id common-phrase-id)))
 
-
+(defn count-common-phrases [pred]
+  (count-docs coll pred))

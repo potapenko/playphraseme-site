@@ -45,8 +45,11 @@
 (defn add-docs [coll docs]
   (mc/insert-batch db coll docs))
 
-(defn update-doc [coll pred data]
-  (mc/update db coll pred {$set data}))
+(defn update-doc
+  ([coll pred doc options]
+   (mc/update db coll pred doc options))
+  ([coll pred data]
+   (mc/update db coll pred {$set data})))
 
 (defn update-doc-by-id [coll id data]
   (mc/update-by-id db coll id {$set data}))

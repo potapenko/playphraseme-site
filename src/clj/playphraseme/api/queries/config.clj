@@ -12,25 +12,14 @@
 (mount/defstate migrations-configs
   :start (migrate))
 
-(defn get-config-by-id [^String config-id]
-  (stringify-id
-   (get-doc-by-id coll (str->id config-id))))
+(defn get-config [^String key]
+  (:value (find-doc coll {:key key})))
 
-(defn find-configs [params]
-  (stringify-id
-   (find-docs coll params)))
-
-(defn find-one-config [pred]
-  (stringify-id
-   (find-doc coll pred)))
-
-(defn insert-config! [data]
-  (stringify-id
-   (add-doc coll data)))
-
-(defn update-config!
-  [^String config-id {:keys [email name password refresh-token] :as user-data}]
-  (update-doc-by-id coll (str->id config-id) user-data))
+(defn update-config! [^String key value]
+  (update-doc
+   {:key key}
+   {"$set" {:value value}}
+   {:upsert true}))
 
 (defn delete-config!
   [^String config-id]

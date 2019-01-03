@@ -14,8 +14,8 @@
    (search-strings/find-search-strings {:search-next text :count {"$gt" 10}})
    (pmap #(select-keys % [:text :count :words-count :words-count-without-stops]))
    (pmap #(assoc %
-                :left (build-map-left (:text %))
-                :right (build-map-right (:text %))))
+                 :left (build-map-left (:text %))
+                 :right (build-map-right (:text %))))
    vec))
 
 (defn- build-map-right [text]
@@ -23,8 +23,8 @@
    (search-strings/find-search-strings {:search-pred text :count {"$gt" 10}})
    (pmap #(select-keys % [:text :count :words-count :words-count-without-stops]))
    (pmap #(assoc %
-                :right (build-map-right (:text %))
-                :left (build-map-left (:text %))))
+                 :right (build-map-right (:text %))
+                 :left (build-map-left (:text %))))
    vec))
 
 (defn create-phrases-map [text]
@@ -35,21 +35,20 @@
 
 (defn- flat-phrases-map [m]
   (->> m
-   (clojure.walk/postwalk
-    (fn [e]
-      (if (and (map? e))
-        [(when (and (-> e :left (= [])) (-> e :right (= [])))
-           (select-keys e [:count :text :words-count :words-count-without-stops]))
-         (:left e)
-         (:right e)]
-        e)))
-   flatten
-   (remove nil?)
-   distinct
-   (sort-by :words-count-without-stops)
-   reverse
-   vec))
-
+       (clojure.walk/postwalk
+        (fn [e]
+          (if (and (map? e))
+            [(when (and (-> e :left (= [])) (-> e :right (= [])))
+               (select-keys e [:count :text :words-count :words-count-without-stops]))
+             (:left e)
+             (:right e)]
+            e)))
+       flatten
+       (remove nil?)
+       distinct
+       (sort-by :words-count-without-stops)
+       reverse
+       vec))
 
 (defn- compact-common-phrases [phrases]
   (loop [min-count 10
@@ -59,7 +58,6 @@
       (if (-> new-phrases count (< 20))
         phrases
         (recur (inc min-count) new-phrases)))))
-
 
 (defn- distinct-texts [strings]
   (util/distinct-by :text (fn [a b]
@@ -93,8 +91,6 @@
 (defn get-common-phrases-response [text]
   (ok (get-common-phrases text)))
 
-
-
 (def ^:private ignore-strings [#"captain's log stardate" #"final frontier"
                                #"starship" #"hunting things"
                                #"saving people" #"people hunting"
@@ -108,10 +104,10 @@
 
 (defn search-string-is-ignored? [text]
   (let [text (string/lower-case text)]
-   (->> ignore-strings
-        (drop-while #(nil? (re-find % text)))
-        empty?
-        not)))
+    (->> ignore-strings
+         (drop-while #(nil? (re-find % text)))
+         empty?
+         not)))
 
 (defn get-all-common-phrases
   ([] (get-all-common-phrases 0 10))
@@ -128,24 +124,38 @@
   (ok (get-all-common-phrases skip limit)))
 
 (defn generate-common-phrases []
-  (->> (range 1 2)
-       (map (fn [pos]
-              (->> (get-all-common-phrases pos 100)
-                   (map (fn [{:keys [count text]}]
-                          {:count count
-                           :text text
-                           :dictionary (urban-dictionary/search text)}
-                          ))
-
-
-                   )))
-       doall))
+  (let [index (atom 0)]
+   (->> (range 1 31)
+        (map (fn [pos]
+               (println "\n")
+               (println "pos:" pos)
+               (println "\n")
+               (let [phrases (get-all-common-phrases (* (dec pos) 100) 100)]
+                 (println "phrases:" (count phrases))
+                 (->> phrases
+                      (map-indexed
+                       (fn [i {:keys [count text]}]
+                         (if-let [exists (common-phrases-db/find-one-common-phrase {:text text})]
+                           (common-phrases-db/update-common-phrase!
+                            (assoc exists :index (swap! index inc) :count count))
+                           (let [urban (urban-dictionary/search text)]
+                             (common-phrases-db/insert-common-phrase!
+                              {:index      (swap! index inc)
+                               :count      count
+                               :text       text
+                               :dictionary urban})))))
+                      doall))))
+        doall
+        flatten
+        count)))
 
 (comment
 
 
   (generate-common-phrases)
 
+  (common-phrases-db/count-common-phrases {})
 
+  (string/lower-case "2TlGRIY")
 
   )
