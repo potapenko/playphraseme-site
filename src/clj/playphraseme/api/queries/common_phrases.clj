@@ -7,7 +7,8 @@
 
 (def coll "common-phrases")
 
-(defn- migrate [])
+(defn- migrate []
+  (mc/ensure-index db coll {:index 1}))
 
 (mount/defstate migrations-common-phrases
   :start (migrate))
