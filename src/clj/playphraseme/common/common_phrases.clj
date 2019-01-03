@@ -5,7 +5,8 @@
             [playphraseme.common.nlp :as nlp]
             [playphraseme.api.queries.common-phrases :as common-phrases-db]
             [playphraseme.common.util :as util]
-            [playphraseme.common.urban-dictionary :as urban-dictionary]))
+            [playphraseme.common.urban-dictionary :as urban-dictionary]
+            [playphraseme.api.queries.phrases :as phrases]))
 
 (declare build-map-right build-map-left)
 
@@ -121,7 +122,8 @@
         (remove #(-> % :text search-string-is-ignored?)))))
 
 (defn get-all-common-phrases-response [skip limit]
-  (ok (get-all-common-phrases skip limit)))
+  #_(ok (get-all-common-phrases skip limit))
+  (ok (common-phrases-db/find-common-phrases {:pred {} :skip skip :limit limit :sort {:index 1}}) ))
 
 (defn generate-common-phrases []
   (let [index (atom 0)]
