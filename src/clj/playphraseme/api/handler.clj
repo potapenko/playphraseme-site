@@ -9,6 +9,7 @@
             [playphraseme.api.routes.password :refer :all]
             [playphraseme.api.routes.phrases :refer :all]
             [playphraseme.api.routes.playlists :refer :all]
+            [playphraseme.api.routes.config :refer :all]
             [playphraseme.api.routes.favorites :refer :all]
             [ring.util.http-response :refer :all]
             [playphraseme.api.routes.google-cloud :refer :all]
@@ -29,6 +30,7 @@
                   {:name "Phrases" :description "Search phrases"}
                   {:name "Favorites" :description "Phrases favorites"}
                   {:name "Playlists" :description "Mobile app playlists"}
+                  {:name "Configs" :description "Configs for front end"}
                   {:name "Google Cloud" :description "Google Cloud API"}
                   {:name "Password" :description "Request and confirm password resets"}]}}}
   preflight-route
@@ -41,4 +43,5 @@
   phrases-routes
   favorites-routes
   playlists-routes
-  google-cloud-routes)
+  google-cloud-routes
+  configs-routes)

@@ -312,8 +312,8 @@
        [:input#search-input.filter-input.form-control.input-lg
         {:type           "text" :placeholder "Search Phrase"
          :value          @search-text
-         :autocorrect    "off"
-         :autocapitalize "off"
+         ;; :autocorrect    "off"
+         ;; :autocapitalize "off"
          :on-focus       (fn []
                            (rf/dispatch [::model/input-focused? true])
                            (set-input-cursor))

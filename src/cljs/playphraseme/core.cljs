@@ -15,11 +15,14 @@
             [playphraseme.views.register.view :as register-page]
             [clojure.string :as string]
             [playphraseme.views.reset-password.view :as reset-password-page]
+            [cljs.core.async :as async :refer [<! >! put! chan timeout]]
             [playphraseme.views.search.view :as search-page]
             [playphraseme.views.support.view :as support-page]
             [re-frame.core :as rf]
             [reagent.core :as r]
             [secretary.core :as secretary])
+  (:require-macros
+   [cljs.core.async.macros :refer [go go-loop]])
   (:import goog.History))
 
 (def pages
@@ -31,7 +34,7 @@
     :support        #'support-page/page
     :mobile-app     #'mobile-app-page/page
     :playlist       #'playlist-page/page}
-   (when-not config/mobile-layout?
+   (when-not config/disable-search?
      {:search #'search-page/page})))
 
 (defn page []
@@ -46,14 +49,14 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (if config/mobile-layout?
+  (if config/disable-search?
     (util/go-url! "/#/mobile-app")
     (util/go-url! "/#/search")))
 
 (secretary/defroute "/search" [query-params]
   (let [{:keys [q p]} query-params
-        q             (string/replace q #"\+" " ")]
-   (if config/mobile-layout?
+        q             (some-> q (string/replace #"\+" " "))]
+   (if config/disable-search?
      (util/go-url! (str "playphraseme://search/" q))
      (route/goto-page! :search (merge
                                 query-params

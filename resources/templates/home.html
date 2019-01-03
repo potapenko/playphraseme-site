@@ -40,6 +40,7 @@
     <script type="text/javascript">
      var context = "{{servlet-context}}";
      var csrfToken = "{{csrf-token}}";
+     var searchOnMobile = {{search-on-mobile}}; 
     </script>
     {% script "/js/app.js" %}
 
@@ -48,7 +49,6 @@
      window.dataLayer = window.dataLayer || [];
      function gtag(){dataLayer.push(arguments);}
      gtag('js', new Date());
-
      gtag('config', 'UA-56061701-1');
     </script>
 

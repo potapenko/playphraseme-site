@@ -4,6 +4,7 @@
             [markdown.core :refer [md-to-html-string]]
             [ring.util.http-response :refer [content-type ok]]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [playphraseme.api.queries.config :as config]
             [playphraseme.app.config :refer [env]]
             [ring.middleware.anti-forgery :refer [*anti-forgery-token*]]))
 
@@ -22,6 +23,7 @@
         (assoc params
           :page template
           :csrf-token *anti-forgery-token*
+          :search-on-mobile (str (config/get-config :search-on-mobile))
           :servlet-context *app-context*)))
     "text/html; charset=utf-8"))
 

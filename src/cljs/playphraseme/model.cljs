@@ -26,7 +26,7 @@
  :initialize-db
  (fn [_ _]
    (merge
-    {:page (if-not config/mobile-layout? :search :mobile-app)}
+    {:page (if-not config/disable-search? :search :mobile-app)}
     (localstorage/load-model))))
 
 (reg-event-db

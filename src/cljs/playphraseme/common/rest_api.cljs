@@ -163,6 +163,11 @@
   (call-api http/get (str "/playlists/" playlist-id)
             (api-headers) login-md :body))
 
+(defn get-config-value [key]
+  (call-api http/get "/configs"
+            (merge (api-headers) {:query-params {:id (name key)}})
+            login-md :body))
+
 (comment
   (go (println (<! (search-phrase "hello"))))
   (go (println (<! (count-phrase "hello"))))
@@ -177,6 +182,7 @@
   (go (println (<! (delete-favorite "543bd8c8d0430558da9bfeb1"))))
   (go (println (<! (get-phrase "543bd8c8d0430558da9bfeb1"))))
   (go (println (<! (common-phrases "hello"))))
+  (go (println (<! (get-config-value "search-on-mobile"))))
 
 
 

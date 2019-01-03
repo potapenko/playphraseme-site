@@ -67,7 +67,7 @@
        [:div.bottom
         (when @mobile?
           [ui/spacer 6])
-        [:div.logo (when-not config/mobile-layout?
+        [:div.logo (when-not config/disable-search?
                      {:on-click (fn [e]
                                   (if (-> e .-altKey)
                                     (phrases/search-random-bad-phrase)
