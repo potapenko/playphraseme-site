@@ -17,12 +17,23 @@
 
 (defn update-config! [^String key value]
   (update-doc
-   {:key key}
-   {"$set" {:value value}}
+   coll
+   {:key (name key)}
+   {"$set" {:key (name key) :value value}}
    {:upsert true}))
 
 (defn delete-config!
-  [^String config-id]
-  (delete-doc-by-id coll (str->id config-id)))
+  [^String key]
+  (delete-docs coll {:key key}))
 
+(comment
+
+  (update-config! :any "value2")
+  (update-config! :any2 "value222")
+
+  (get-config :any)
+
+  (delete-config! :any)
+
+  )
 
