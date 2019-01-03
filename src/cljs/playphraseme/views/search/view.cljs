@@ -342,8 +342,8 @@
                     :audio-volume
                     :stopped]
             [:li
-             ^{:keys [@audio-muted @audio-volume @stopped]}
-             [audio-volume-control @audio-muted @audio-volume]
+             ;; ^{:keys [@audio-muted @audio-volume @stopped]}
+             ;; [audio-volume-control @audio-muted @audio-volume]
              (when-not @(rf/subscribe [:audio-muted])
                [:audio {:id       "music-player"
                         :src      "http://uk7.internet-radio.com:8000/stream"
