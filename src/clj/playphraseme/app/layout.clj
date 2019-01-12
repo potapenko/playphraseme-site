@@ -23,7 +23,7 @@
         (assoc params
           :page template
           :csrf-token *anti-forgery-token*
-          :search-on-mobile (str (config/get-config :search-on-mobile))
+          :search-on-mobile (if (config/get-config :search-on-mobile) "true" "false")
           :servlet-context *app-context*)))
     "text/html; charset=utf-8"))
 
