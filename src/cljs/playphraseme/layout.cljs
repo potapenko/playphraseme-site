@@ -61,6 +61,8 @@
         (when-not @mobile?
           [header-button "Github" "https://github.com/potapenko/playphraseme-site" "fab fa-github-square"])
         (when-not @mobile?
+          [header-button "Youtube" "https://www.youtube.com/channel/UCD_uvkY4IcFDEkZ3fgYhFWA" "fab fa-youtube"])
+        (when-not @mobile?
           [header-button  "Facebook" "https://www.facebook.com/playphrase/" "fab fa-facebook"])
         ^{:key "fixed-key"}
         [facebook-like-button]]

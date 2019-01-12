@@ -1,7 +1,8 @@
 (ns playphraseme.common.util
   (:require [clojure.string :as string]
             [clojure.java.io :as io]
-            [clojure.walk :as walk]))
+            [clojure.walk :as walk])
+  (:import [java.net URL URLEncoder]))
 
 (defn- change-keys
   [data pred]
@@ -72,6 +73,12 @@
         (remove #(-> % :key (eq-fn (:key v))) t)
         (conj result (:value v)))
        result))))
+
+(defn- encode-url [s]
+  (URLEncoder/encode s))
+
+(defn make-phrase-url [search-text]
+  (str "https://www.playphrase.me/#/search?q=" (encode-url search-text)))
 
 (comment
 
