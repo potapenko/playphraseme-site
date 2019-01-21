@@ -43,8 +43,7 @@
 (defn count-common-phrases [pred]
   (count-docs coll pred))
 
-(defn generate-sitemap
-  []
+(defn generate-sitemap []
   (let [header "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd\">"
         footer "</urlset>"
         url-temlate "
@@ -52,7 +51,7 @@
     <loc>
       %s
     </loc>
-    <lastmod>2019-01-12T12:47:38+00:00</lastmod>
+    <lastmod>2019-01-20T12:47:38+00:00</lastmod>
   </url>"
         sitemap-f "./resources/public/sitemap.xml"]
 
