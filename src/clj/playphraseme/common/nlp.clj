@@ -18,6 +18,51 @@
 
 (def ^:private stop-words (-> "nlp/stop-words.txt" io/resource slurp string/split-lines set))
 
+(defn remove-meta-texts [s]
+  (let [one-sentence-fn (fn [s]
+                          (-> s
+                              (string/trim)
+                              (string/replace #"^(\w+:?)?\s*\[.+?\] ?:?\s*" "")
+                              (string/replace #"\[.+?\]" "")
+                              (string/replace "--*" "")
+                              (string/replace #"^\s*>>>*\s*:?\s*" "")
+                              (string/replace #">>*" "")
+                              (string/replace #"^\s*-\s*" "")
+                              (string/replace #"^([A-Z]\s*)+\s*:\s*" "")
+                              (string/trim)))]
+    (->> s
+         create-sentences
+         (map one-sentence-fn)
+         (string/join " ")
+         (string/trim))))
+
+(defn remove-punctuation [s]
+  (-> s
+      string/lower-case
+      (string/replace #"[.,\/#!$%\^&\*\?+\[\]\+\";:{}=\-_`~()—>]" " ")
+      (string/replace #"\s+" " ")
+      string/trim))
+
+(defn remove-punctuation-only [s]
+  (-> s
+      (string/replace #"[.,\/#!$%\^&\*\?+\[\]\+\";:{}=\-_`~()—>]" " ")
+      (string/replace #"\s+" " ")
+      string/trim))
+
+(defn remove-numbers [s]
+  (-> s
+      string/lower-case
+      (string/replace #"\d+" " ")
+      (string/replace #"\s+" " ")
+      string/trim))
+
+(defn clean-text [s]
+  (->> s
+       remove-meta-texts
+       string/lower-case
+       remove-punctuation
+       string/trim))
+
 (defn create-words [s]
   (-> s
       (->

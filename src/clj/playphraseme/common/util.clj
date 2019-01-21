@@ -74,11 +74,11 @@
         (conj result (:value v)))
        result))))
 
-(defn- encode-url [s]
+(defn encode-url [s]
   (URLEncoder/encode s))
 
 (defn make-phrase-url [search-text]
-  (str "https://www.playphrase.me/?q=" (encode-url search-text)))
+  (str "https://www.playphrase.me/?q=" (-> search-text string/trim string/lower-case encode-url)))
 
 (defn format-phrase-text [s]
   (format "\"%s\"" (string/capitalize s)))

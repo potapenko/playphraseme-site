@@ -30,7 +30,7 @@
              :servlet-context *app-context*
              :page-title (google-search/generate-page-title q)
              :page-description (google-search/generate-page-description q)
-             :static-content (google-search/generate-page-static-content q)
+             :page-static-content (google-search/generate-page-static-content q)
              :searched-phrase (some-> q URLDecoder/decode))))
     "text/html; charset=utf-8")))
 
