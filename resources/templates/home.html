@@ -3,8 +3,8 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	  <meta name="viewport" content="width=600,user-scalable=no">
-    <title>PlayPhrase.me: Endless stream of movie clips of specific phrases</title>
-    <meta name="description" content="" />
+    <title>{{page-title}}</title>
+    <meta name="description" content="{{page-description}}" />
 	  <!-- <meta name="google-site-verification" content="MhTRfnejZ0JQzlv5U0Uk3cd7gwp5zPp6_ESyEYZJy4w" /> -->
     <meta name="google-site-verification" content="Y0UnA_-WvGLPD-d1ctaHnwJ2q2yzb8wdqgJbKHPJCUw" />
     <meta property="fb:app_id" content="{{ facebook-app-id }}" />
@@ -44,7 +44,7 @@
      var context = "{{servlet-context}}";
      var csrfToken = "{{csrf-token}}";
      var searchOnMobile = {{search-on-mobile}}; 
-     var searchedPhrase = {{searched-phrase}}; 
+     var searchedPhrase = "{{searched-phrase}}"; 
     </script>
     {% script "/js/app.js" %}
 

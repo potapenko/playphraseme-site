@@ -78,7 +78,10 @@
   (URLEncoder/encode s))
 
 (defn make-phrase-url [search-text]
-  (str "https://www.playphrase.me/#/search?q=" (encode-url search-text)))
+  (str "https://www.playphrase.me/?q=" (encode-url search-text)))
+
+(defn format-phrase-text [s]
+  (format "\"%s\"" (string/capitalize s)))
 
 (comment
 

@@ -48,23 +48,23 @@
 ;; Routes
 (secretary/set-config! :prefix "#")
 
-(secretary/defroute "/" []
+(secretary/defroute "/" [query-params]
   (if config/disable-search?
     (util/go-url! "/#/mobile-app")
-    (util/go-url! "/#/search")))
+    (util/go-url! (str "/#/search?q=" js/searchedPhrase))))
 
 (secretary/defroute "/search" [query-params]
-  (let [{:keys [q p]} query-params
+  (let [{:keys [q]} query-params
         q             (some-> q (string/replace #"\+" " "))]
    (if config/disable-search?
      (util/go-url! (str "playphraseme://search/" q))
      (route/goto-page! :search (merge
                                 query-params
-                                (when-not p
-                                  {:q (or-str
-                                       q
-                                       @(rf/subscribe [:search-text])
-                                       (phrases/random-phrase))}))))))
+                                {:q (or-str
+                                     q
+                                     js/searchedPhrase
+                                     @(rf/subscribe [:search-text])
+                                     (phrases/random-phrase))})))))
 
 
 (secretary/defroute "/register" []

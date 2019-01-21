@@ -6,7 +6,9 @@
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [playphraseme.api.queries.config :as config]
             [playphraseme.app.config :refer [env]]
-            [ring.middleware.anti-forgery :refer [*anti-forgery-token*]]))
+            [ring.middleware.anti-forgery :refer [*anti-forgery-token*]]
+            [playphraseme.common.google-search :as google-search])
+  (:import [java.net URLDecoder]))
 
 (declare ^:dynamic *app-context*)
 (parser/set-resource-path!  (clojure.java.io/resource "templates"))
@@ -16,16 +18,21 @@
 (defn render
   "renders the HTML template located relative to resources/templates"
   [template & [params]]
-  (content-type
+  (let [{:keys [q]} params]
+   (content-type
     (ok
-      (parser/render-file
-        template
-        (assoc params
-          :page template
-          :csrf-token *anti-forgery-token*
-          :search-on-mobile (if (config/get-config :search-on-mobile) "true" "false")
-          :servlet-context *app-context*)))
-    "text/html; charset=utf-8"))
+     (parser/render-file
+      template
+      (assoc params
+             :page template
+             :csrf-token *anti-forgery-token*
+             :search-on-mobile (if (config/get-config :search-on-mobile) "true" "false")
+             :servlet-context *app-context*
+             :page-title (google-search/generate-page-title q)
+             :page-description (google-search/generate-page-description q)
+             :static-content (google-search/generate-page-static-content q)
+             :searched-phrase (some-> q URLDecoder/decode))))
+    "text/html; charset=utf-8")))
 
 (defn error-page
   "error-details should be a map containing the following keys:
