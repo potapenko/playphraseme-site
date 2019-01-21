@@ -18,24 +18,6 @@
 
 (def ^:private stop-words (-> "nlp/stop-words.txt" io/resource slurp string/split-lines set))
 
-(defn remove-meta-texts [s]
-  (let [one-sentence-fn (fn [s]
-                          (-> s
-                              (string/trim)
-                              (string/replace #"^(\w+:?)?\s*\[.+?\] ?:?\s*" "")
-                              (string/replace #"\[.+?\]" "")
-                              (string/replace "--*" "")
-                              (string/replace #"^\s*>>>*\s*:?\s*" "")
-                              (string/replace #">>*" "")
-                              (string/replace #"^\s*-\s*" "")
-                              (string/replace #"^([A-Z]\s*)+\s*:\s*" "")
-                              (string/trim)))]
-    (->> s
-         create-sentences
-         (map one-sentence-fn)
-         (string/join " ")
-         (string/trim))))
-
 (defn remove-punctuation [s]
   (-> s
       string/lower-case
@@ -58,7 +40,6 @@
 
 (defn clean-text [s]
   (->> s
-       remove-meta-texts
        string/lower-case
        remove-punctuation
        string/trim))
