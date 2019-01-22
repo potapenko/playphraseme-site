@@ -43,30 +43,3 @@
 (defn count-common-phrases [pred]
   (count-docs coll pred))
 
-(defn generate-sitemap []
-  (let [header "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd\">"
-        footer "</urlset>"
-        url-temlate "
-  <url>
-    <loc>
-      %s
-    </loc>
-    <lastmod>2019-01-20T12:47:38+00:00</lastmod>
-  </url>"
-        sitemap-f "./resources/public/sitemap.xml"]
-
-    (spit sitemap-f header)
-    (->> (find-common-phrases {:pred {} :limit 10000 :sort {:index 1}})
-         (map (fn [{:keys [text]}]
-                (spit sitemap-f (format url-temlate (util/make-phrase-url text)) :append true)))
-         (string/join "")
-         doall)
-    (spit sitemap-f "\n" :append true)
-    (spit sitemap-f footer :append true)))
-
-(comment
-  (generate-sitemap)
-
-
-
-  )

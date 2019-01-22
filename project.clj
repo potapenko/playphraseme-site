@@ -62,6 +62,7 @@
                  [lib-noir "0.9.9"]
                  [clj-oauth2 "0.2.0"]
                  [malcontent "0.1.0-SNAPSHOT"]
+                 [sitemap "0.2.4"]
 
                  ;; custom cljs
 

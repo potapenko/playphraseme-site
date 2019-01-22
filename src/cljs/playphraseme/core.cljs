@@ -51,7 +51,9 @@
 (secretary/defroute "/" [query-params]
   (if config/disable-search?
     (util/go-url! "/#/mobile-app")
-    (util/go-url! (str "/#/search?q=" js/searchedPhrase))))
+    (if-not (string/blank? js/searchedPhrase)
+      (route/goto-page! :search {:q js/searchedPhrase})
+      (util/go-url! (str "/#/search")))))
 
 (secretary/defroute "/search" [query-params]
   (let [{:keys [q]} query-params
@@ -62,7 +64,6 @@
                                 query-params
                                 {:q (or-str
                                      q
-                                     js/searchedPhrase
                                      @(rf/subscribe [:search-text])
                                      (phrases/random-phrase))})))))
 

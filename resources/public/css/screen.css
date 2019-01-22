@@ -1039,3 +1039,11 @@ img.app-button {
   }
   .white-text {color: white;}
 }
+#static-content {
+  overflow:hidden;
+  width: 1px;
+  height: 1px;
+  position: fixed;
+  top: 0px;
+  height: 0px;
+}

@@ -89,6 +89,13 @@
            (map #(dissoc % :words-count-without-stops))
            (map #(dissoc % :words-count))))))
 
+(defn get-bad-common-phrases []
+  (->> ["fuck" "bitter" "wanker" "bitch" "pussy" "shit" "crap" "ass" "asshole" "fucker"
+        "blowjob" "dumbass" "dickhead" "fucking" "motherfucker"]
+       (map get-common-phrases)
+       flatten
+       distinct))
+
 (defn get-common-phrases-response [text]
   (ok (get-common-phrases text)))
 

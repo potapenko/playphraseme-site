@@ -16,8 +16,10 @@
   (some-> q string/trim (string/replace #"\++" " ")))
 
 (defroutes home-routes
-  (GET "/" [q]
+  (GET "/" [q :as request]
+       (clojure.pprint/pprint request)
        (home-page {:q (prepare-search-text q)}))
-  (GET "/search" [q]
+  (GET "/search" [q :as request]
+       (clojure.pprint/pprint request)
        (home-page {:q (prepare-search-text q)})))
 
