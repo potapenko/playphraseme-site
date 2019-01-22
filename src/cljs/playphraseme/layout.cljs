@@ -82,12 +82,12 @@
          [:a (if (-> @page (= :mobile-app))
                {:href "https://itunes.apple.com/app/playphraseme/id1441967668" :target "_blank"}
                {:href "/#/mobile-app"})
-          [:img.app-button {:src "./img/apple-store-button@1x.png"}]]
+          [:img.app-button {:src "/img/apple-store-button@1x.png"}]]
          [ui/spacer 12]
          [:a (if (-> @page (= :mobile-app))
                {:href "https://play.google.com/store/apps/details?id=com.playphrasemewalk" :target "_blank"}
                {:href "/#/mobile-app"})
-          [:img.app-button {:src "./img/google-play-button@1x.png"}]]]
+          [:img.app-button {:src "/img/google-play-button@1x.png"}]]]
         (when-not @mobile?
           [ui/flexer])
         (when-not @mobile?

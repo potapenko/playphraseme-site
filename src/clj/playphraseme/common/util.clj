@@ -79,10 +79,11 @@
   (URLEncoder/encode s))
 
 (defn make-phrase-url [search-text]
-  (str "https://www.playphrase.me/phrase/"
+  (str "https://www.playphrase.me/search/"
        (some-> search-text
                nlp/remove-punctuation
-               string/trim string/lower-case (string/replace #" +" "_") encode-url)))
+               string/trim string/lower-case (string/replace #" +" "_") encode-url)
+       "/"))
 
 (defn format-phrase-text [s]
   (format "\"%s\"" (string/capitalize s)))

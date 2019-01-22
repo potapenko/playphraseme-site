@@ -21,9 +21,7 @@
 (defroutes home-routes
   (GET "/" [q :as request]
        (home-page {:q (prepare-search-text q)}))
-  (GET "/search" [q :as request]
-       (home-page {:q (prepare-search-text q)}))
-  (GET "/phrase/:phrase" [phrase]
+  (GET "/search/:phrase/" [phrase]
        (clojure.pprint/pprint phrase)
        (home-page {:q (prepare-search-text phrase)})))
 

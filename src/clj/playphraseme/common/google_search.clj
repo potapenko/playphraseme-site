@@ -48,12 +48,17 @@
                        new-val
                        val))) ""))))
 
+(defn generate-rel-canonical [search-text]
+  (if-not search-text
+    ""
+    (format "<link rel=\"canonical\" href=\"%s\" />" (util/make-phrase-url search-text))))
 
 (defn- make-phrase-url [search-text]
-  (str "/phrase/"
+  (str "/search/"
        (some-> search-text
                nlp/remove-punctuation
-               string/trim string/lower-case (string/replace #" +" "_") util/encode-url)))
+               string/trim string/lower-case (string/replace #" +" "_") util/encode-url)
+       "/"))
 
 (defn generate-page-static-content [search-text]
   (let [search-text (if (string/blank? search-text) "hello" search-text)]

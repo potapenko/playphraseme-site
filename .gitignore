@@ -14,5 +14,6 @@ profiles.clj
 .idea/
 *.iml
 figwheel_server.log
-sitemap.xml
-sitemap-1.xml
+/public/resources/sitemap.xml
+/public/resources/sitemap-1.xml
+/public/resources/sitemap-2.xml

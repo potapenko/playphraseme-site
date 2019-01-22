@@ -31,7 +31,8 @@
              :page-title (google-search/generate-page-title q)
              :page-description (google-search/generate-page-description q)
              :page-static-content (google-search/generate-page-static-content q)
-             :searched-phrase (some-> q URLDecoder/decode))))
+             :searched-phrase (some-> q URLDecoder/decode)
+             :rel-canonical (google-search/generate-rel-canonical q))))
     "text/html; charset=utf-8")))
 
 (defn error-page
