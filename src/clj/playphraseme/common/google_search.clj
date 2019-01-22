@@ -8,7 +8,9 @@
             [playphraseme.common.common-phrases :as common-phrases]
             [playphraseme.api.queries.common-phrases :as common-phrases-db]
             [clj-time.core :as t]
-            [clj-time.format :as f]))
+            [clj-time.format :as f]
+            [sitemap.core :as sitemap]
+            [clojure.java.io :as io]))
 
 (def default-title "PlayPhrase.me: Improve your pronunciation. Endless stream of movie clips of specific phrases")
 (def default-description "Improve your pronunciation. Look for phrases in movies and watch videos with them.")
@@ -46,8 +48,12 @@
                        new-val
                        val))) ""))))
 
+
 (defn- make-phrase-url [search-text]
-  (str "/?q=" (-> search-text nlp/remove-punctuation string/trim string/lower-case util/encode-url)))
+  (str "/phrase/"
+       (some-> search-text
+               nlp/remove-punctuation
+               string/trim string/lower-case (string/replace #" +" "_") util/encode-url)))
 
 (defn generate-page-static-content [search-text]
   (let [search-text (if (string/blank? search-text) "hello" search-text)]
@@ -68,50 +74,27 @@
 (defn- timestamp []
   (->> (t/now) (f/unparse (:year-month-day f/formatters))))
 
-(defn- sitemap-entry [url priority]
-  (format
-        "<url>
-  <loc>
-      %s
-  </loc>
-  <lastmod>%s</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>%s</priority>
-</url>
-" url (timestamp) priority))
-
-(defn- save-sitemap-part
-  ([pos part]
-   (println ">>" pos)
-   (save-sitemap-part
-    (common-phrases/get-all-common-phrases pos part)))
-  ([phrases]
-   (->> phrases
-        (map (fn [{:keys [text]}]
-               (spit
-                sitemap-f
-                (sitemap-entry (util/make-phrase-url text) 0.8)
-                :append true)))
-        (string/join "")
-        doall)))
-
-(defn generate-sitemap []
-  (let [header "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd\">"
-        footer "</urlset>"]
-    (spit sitemap-f header)
-    (spit
-     sitemap-f
-     (sitemap-entry "https://www.playphrase.me/" 1.0)
-     :append true)
-    (dotimes [pos 49]
-      (save-sitemap-part pos 1000))
-    (save-sitemap-part
-     (common-phrases/get-bad-common-phrases))
-    (spit sitemap-f "\n" :append true)
-    (spit sitemap-f footer :append true)))
+(defn generate-sitemap [file-num]
+  (let [lastmod (timestamp)
+        limit    (dec 50000)
+        skip (* file-num limit)]
+    (->> (search-strings/find-search-strings
+          {:count {"$gte" 5}} skip limit
+          {:words-count -1 :words-count-without-stops -1 :count -1})
+         (map :text)
+         (map util/make-phrase-url)
+         (concat ["https://www.playphrase.me/"])
+         (map (fn [x]
+                {:loc        x
+                 :lastmod    lastmod
+                 :changefreq "monthly"
+                 :priority   "1.0"}))
+         (sitemap/generate-sitemap)
+         (sitemap/save-sitemap
+          (io/file (format "./resources/public/sitemap-%s.xml" (inc file-num)))))))
 
 (comment
-  (generate-sitemap)
+  (generate-sitemap 1)
 
 
 

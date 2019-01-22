@@ -4,7 +4,8 @@
             [ring.util.http-response :as response]
             [playphraseme.app.config :refer [env]]
             [clojure.java.io :as io]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [playphraseme.common.util :as util]))
 
 (defn home-page [params]
   (layout/render "home.html"
@@ -13,13 +14,16 @@
                   params)))
 
 (defn prepare-search-text [q]
-  (some-> q string/trim (string/replace #"\++" " ")))
+  (some-> q
+          string/trim
+          (string/replace #"[_+]" " ")))
 
 (defroutes home-routes
   (GET "/" [q :as request]
-       (clojure.pprint/pprint request)
        (home-page {:q (prepare-search-text q)}))
   (GET "/search" [q :as request]
-       (clojure.pprint/pprint request)
-       (home-page {:q (prepare-search-text q)})))
+       (home-page {:q (prepare-search-text q)}))
+  (GET "/phrase/:phrase" [phrase]
+       (clojure.pprint/pprint phrase)
+       (home-page {:q (prepare-search-text phrase)})))
 

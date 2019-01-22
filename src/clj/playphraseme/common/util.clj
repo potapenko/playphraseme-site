@@ -1,7 +1,8 @@
 (ns playphraseme.common.util
   (:require [clojure.string :as string]
             [clojure.java.io :as io]
-            [clojure.walk :as walk])
+            [clojure.walk :as walk]
+            [playphraseme.common.nlp :as nlp])
   (:import [java.net URL URLEncoder]))
 
 (defn- change-keys
@@ -78,7 +79,10 @@
   (URLEncoder/encode s))
 
 (defn make-phrase-url [search-text]
-  (str "https://www.playphrase.me/?q=" (-> search-text string/trim string/lower-case encode-url)))
+  (str "https://www.playphrase.me/phrase/"
+       (some-> search-text
+               nlp/remove-punctuation
+               string/trim string/lower-case (string/replace #" +" "_") encode-url)))
 
 (defn format-phrase-text [s]
   (format "\"%s\"" (string/capitalize s)))

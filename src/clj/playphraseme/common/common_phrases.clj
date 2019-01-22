@@ -117,12 +117,15 @@
          empty?
          not)))
 
+(defn get-search-strings [skip limit]
+  (search-strings/find-search-strings {:count {"$gte" 10}} skip limit
+                                      {:words-count -1 :words-count-without-stops -1 :count -1}))
+
 (defn get-all-common-phrases
   ([] (get-all-common-phrases 0 10))
   ([limit] (get-all-common-phrases 0 limit))
   ([skip limit]
-   (->> (search-strings/find-search-strings {:count {"$gte" 10}} skip limit
-                                            {:words-count -1 :words-count-without-stops -1 :count -1})
+   (->> (get-search-strings skip limit)
         (map #(select-keys % [:text :count]))
         distinct-texts
         ;; distinct-texts-by-stops
