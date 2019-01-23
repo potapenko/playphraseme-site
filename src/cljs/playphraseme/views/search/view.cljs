@@ -68,18 +68,12 @@
                   (rf/dispatch [:stopped false])))
               (rf/dispatch [:search-count])
               (when (-> res :count pos?)
-                (util/lazy-call
-                 #(util/set-history-url! "search" (merge {:q text}
-                                                         #_(when first-phrase {:p first-phrase})))))
-              (rf/dispatch-sync [::model/search-result
-                                 (if first-phrase
-                                   (let [first-phrase-info (<! (rest-api/get-phrase first-phrase))]
-                                     (if (phrases/phrase? first-phrase-info)
-                                       (update res :phrases
-                                               (fn [ex]
-                                                 (concat [first-phrase-info] ex)))
-                                       res))
-                                   res)])
+                (when-not first-phrase
+                  (util/lazy-call
+                   #(util/set-history-url!
+                     "search" (merge {:q text}
+                                     #_(when first-phrase {:p first-phrase}))))))
+              (rf/dispatch-sync [::model/search-result res])
               (load-favorited)
               (load-common-phrases text))))))
     (rf/dispatch [:search-text text]))))
@@ -497,72 +491,72 @@
             :stopped
             ::model/suggestions
             :mobile?]
-           (r/create-class
-            {:component-did-mount
-             (fn [this]
-               (when-not @(rf/subscribe [::model/inited])
-                 (util/add-document-listener "keyup" work-with-keys-up)
-                 (util/add-document-listener "keydown" work-with-keys-down)
-                 (rf/dispatch [::model/inited false]))
-               (update-music-volume)
-               (focus-input))
-             :component-will-unmount
-             (fn [this]
-               (when @(rf/subscribe [::model/inited])
-                (util/remove-document-listener "keyup" work-with-keys-up)
-                (util/remove-document-listener "keydown" work-with-keys-down)
-                (rf/dispatch [::model/inited true])))
-             :reagent-render
-             (fn []
-               (let [lang (util/locale-name)]
-                 (search-phrase q p)
-                 (fn []
-                   [:div.search-container
-                    ^{:key (str "video-list- " @current-phrase-index)}
-                    [:div.video-player-container
-                     (doall
-                      (for [x     @phrases
-                            :let  [{:keys [index id]} x]
-                            :when (<= @current-phrase-index index (inc @current-phrase-index))]
-                        ^{:key (str "phrase-" index "-" id)}
-                        [player/video-player {:phrase         x
-                                              :hide?          (not= @current-phrase-index index)
-                                              :on-play        (fn []
-                                                                (scroll-to-phrase index))
-                                              :on-pause       (fn []
-                                                                (rf/dispatch [:stopped true]))
-                                              :on-play-click  toggle-play
-                                              :on-end         (fn []
-                                                                (rf/dispatch [:playing false])
-                                                                (next-phrase))
-                                              :on-pos-changed update-current-word
-                                              :stopped?       @stopped}]))
-                     [:div.video-overlay {:class (util/class->str (when @stopped :stopped))}
-                      [:ul.video-overlay-menu
-                       [:li
-                        {:on-click #(util/go-url!
-                                     (str "/api/v1/phrases/video-download?id="
-                                          (:id (get-current-phrase)))
-                                     true)}
-                        [:i.material-icons "file_download"]
-                        [:div.info-text "Download"]
-                        [:div.info-text "Video"]]]
-                      [:div.overlay-logo
-                       [:span.red "Play"]
-                       [:span.black "Phrase"]
-                       [:span.gray ".me"]]
-                      (when (resp/landscape?)
-                        ^{:key [@(rf/subscribe [:layout])]}
-                        [overlay-current-phrase])]]
-                    [:div.search-ui-container
-                     [search-input]]
-                    (if (show-suggestions-list?)
-                      [suggestions-list @suggestions]
-                      [search-results-list @phrases])
-                    (when-not
-                     (or
-                      (not resp/mobile?)
-                      (and util/ios? @(rf/subscribe [:playing])))
-                      [:div.overlay-play-icon-bottom
-                       [play-button]])])))})))
+    (r/create-class
+     {:component-did-mount
+      (fn [this]
+        (when-not @(rf/subscribe [::model/inited])
+          (util/add-document-listener "keyup" work-with-keys-up)
+          (util/add-document-listener "keydown" work-with-keys-down)
+          (rf/dispatch [::model/inited false]))
+        (update-music-volume)
+        (focus-input))
+      :component-will-unmount
+      (fn [this]
+        (when @(rf/subscribe [::model/inited])
+          (util/remove-document-listener "keyup" work-with-keys-up)
+          (util/remove-document-listener "keydown" work-with-keys-down)
+          (rf/dispatch [::model/inited true])))
+      :reagent-render
+      (fn []
+        (let [lang (util/locale-name)]
+          (search-phrase q true)
+          (fn []
+            [:div.search-container
+             ^{:key (str "video-list- " @current-phrase-index)}
+             [:div.video-player-container
+              (doall
+               (for [x     @phrases
+                     :let  [{:keys [index id]} x]
+                     :when (<= @current-phrase-index index (inc @current-phrase-index))]
+                 ^{:key (str "phrase-" index "-" id)}
+                 [player/video-player {:phrase         x
+                                       :hide?          (not= @current-phrase-index index)
+                                       :on-play        (fn []
+                                                         (scroll-to-phrase index))
+                                       :on-pause       (fn []
+                                                         (rf/dispatch [:stopped true]))
+                                       :on-play-click  toggle-play
+                                       :on-end         (fn []
+                                                         (rf/dispatch [:playing false])
+                                                         (next-phrase))
+                                       :on-pos-changed update-current-word
+                                       :stopped?       @stopped}]))
+              [:div.video-overlay {:class (util/class->str (when @stopped :stopped))}
+               [:ul.video-overlay-menu
+                [:li
+                 {:on-click #(util/go-url!
+                              (str "/api/v1/phrases/video-download?id="
+                                   (:id (get-current-phrase)))
+                              true)}
+                 [:i.material-icons "file_download"]
+                 [:div.info-text "Download"]
+                 [:div.info-text "Video"]]]
+               [:div.overlay-logo
+                [:span.red "Play"]
+                [:span.black "Phrase"]
+                [:span.gray ".me"]]
+               (when (resp/landscape?)
+                 ^{:key [@(rf/subscribe [:layout])]}
+                 [overlay-current-phrase])]]
+             [:div.search-ui-container
+              [search-input]]
+             (if (show-suggestions-list?)
+               [suggestions-list @suggestions]
+               [search-results-list @phrases])
+             (when-not
+                 (or
+                  (not resp/mobile?)
+                  (and util/ios? @(rf/subscribe [:playing])))
+               [:div.overlay-play-icon-bottom
+                [play-button]])])))})))
 

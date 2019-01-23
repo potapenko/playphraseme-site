@@ -12,8 +12,8 @@
             [sitemap.core :as sitemap]
             [clojure.java.io :as io]))
 
-(def default-title "PlayPhrase.me: Improve your pronunciation. Endless stream of movie clips of specific phrases")
-(def default-description "Improve your pronunciation. Look for phrases in movies and watch videos with them.")
+(def default-title "PlayPhrase.me: Largest collection of video quotes from movies on the web")
+(def default-description "Improve your pronunciation: search phrases in movies and watch and listen videos with them.")
 (def default-search-text "hello")
 (def sitemap-f "./resources/public/sitemap.xml")
 
@@ -36,21 +36,24 @@
            distinct))))
 
 (defn generate-page-description [search-text]
-  (if-not search-text
-    default-description
-    (->> (search-phrases search-text)
-         (map util/format-phrase-text)
-         (reduce (fn [x val]
-                   (let [new-val (if (string/blank? x)
-                                   val
-                                   (str val ", " x))]
-                     (if (-> new-val count (< 500))
-                       new-val
-                       val))) ""))))
+  (str
+   default-description
+   " "
+   (if-not search-text
+     ""
+     (->> (search-phrases search-text)
+          (map util/format-phrase-text)
+          (reduce (fn [x val]
+                    (let [new-val (if (string/blank? x)
+                                    val
+                                    (str val ", " x))]
+                      (if (-> new-val count (< 200))
+                        new-val
+                        val))) "")))))
 
 (defn generate-rel-canonical [search-text]
   (if-not search-text
-    ""
+    "<link rel=\"canonical\" href=\"https://www.playphrase.me/\" />"
     (format "<link rel=\"canonical\" href=\"%s\" />" (util/make-phrase-url search-text))))
 
 (defn- make-phrase-url [search-text]
@@ -96,10 +99,18 @@
                  :priority   "1.0"}))
          (sitemap/generate-sitemap)
          (sitemap/save-sitemap
-          (io/file (format "./resources/public/sitemap-%s.xml" (inc file-num)))))))
+          (io/file (format "./resources/public/sitemap%s.xml" (if (= file-num 0)
+                                                                ""
+                                                                (str "-" (inc file-num)))))))))
+
+(defn generate-all-sitemaps []
+  (generate-sitemap 0)
+  (generate-sitemap 1))
+
 
 (comment
-  (generate-sitemap 1)
+
+  (generate-all-sitemaps)
 
 
 
