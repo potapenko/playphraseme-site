@@ -105,41 +105,30 @@
 (defn- timestamp []
   (->> (t/now) (f/unparse (:year-month-day f/formatters))))
 
-(defn generate-sitemap [file-num]
-  (let [lastmod    (timestamp)
-        limit      50000
-        skip       (* file-num limit)
-        local-part 10000]
-    (->> (loop [result     ["https://www.playphrase.me/"]]
-           (println (count result))
-           (let [new-result (concat result (->>
-                                            (phrases/find-phrases {} (count result) local-part)
-                                            (map :text)))]
-            (if (-> result count (<= limit))
-              (recur new-result)
-              (take limit new-result))))
-         (map util/make-phrase-url)
-         (map (fn [x]
-                {:loc        x
-                 :lastmod    lastmod
-                 :changefreq "monthly"
-                 :priority   "1.0"}))
-         (sitemap/generate-sitemap)
-         (sitemap/save-sitemap
-          (io/file (format "./resources/public/sitemap%s.xml" (if (= file-num 0)
-                                                                ""
-                                                                (str "-" (inc file-num)))))))))
-
-(defn generate-all-sitemaps []
-  (generate-sitemap 0)
-  (generate-sitemap 1)
-  (generate-sitemap 2)
-  (generate-sitemap 3))
-
+(defn generate-sitemap []
+  (let [lastmod (timestamp)]
+    (->>
+     (concat
+      ["https://www.playphrase.me/"]
+      (search-strings/find-search-strings
+       {:count {"$gte" 5} :words-count {"$gt" 1 "$lte" 5}} 0 0
+       {:words-count -1 :words-count-without-stops -1 :count -1})
+      (phrases/find-phrases {} 0 49000))
+     (map :text)
+     (map util/make-phrase-url)
+     (take 50000)
+     (map (fn [x]
+            {:loc        x
+             :lastmod    lastmod
+             :changefreq "monthly"
+             :priority   "1.0"}))
+     sitemap/generate-sitemap
+     (sitemap/save-sitemap
+      (io/file "./resources/public/sitemap.xml")))))
 
 (comment
 
-  (generate-all-sitemaps)
+  (generate-sitemap)
 
 
 

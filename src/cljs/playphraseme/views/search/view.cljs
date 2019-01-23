@@ -402,20 +402,20 @@
 
 (defn karaoke-words-current [phrase-index words text]
   (let-sub [::model/current-word-index]
-           (fn []
-             [:a.karaoke
-              ;; {:href (util/make-phrase-url text)}
-              (for [w    words
-                    :let [{:keys [formated-text text index searched]} w]]
-                ^{:key (str "word-" index)}
-                [:span.s-word {:on-click #(goto-word % phrase-index index)
-                            :id       (str "word-" index)
-                            :class    (util/class->str
-                                       (when searched "s-word-searched")
-                                       (when (= index current-word-index) "s-word-played"))}
-                 formated-text])
-              [flexer]
-              [copy-icon text]])))
+    (fn []
+      [:a.karaoke
+       ;; {:href (util/make-phrase-url text)}
+       (for [w    words
+             :let [{:keys [formated-text text index searched]} w]]
+         ^{:key (str "word-" index)}
+         [:span.s-word {:on-click #(goto-word % phrase-index index)
+                        :id       (str "word-" index)
+                        :class    (util/class->str
+                                   (when searched "s-word-searched")
+                                   (when (= index current-word-index) "s-word-played"))}
+          formated-text])
+       [flexer]
+       [copy-icon text]])))
 
 (defn karaoke-words [phrase-index words text]
   [:a.karaoke
@@ -529,8 +529,11 @@
                                                          (rf/dispatch [:stopped true]))
                                        :on-play-click  toggle-play
                                        :on-end         (fn []
+                                                         (println "on next")
                                                          (rf/dispatch [:playing false])
-                                                         (next-phrase))
+                                                         (if (-> @phrases count (= 1))
+                                                           (rf/dispatch [:stopped true])
+                                                           (next-phrase)))
                                        :on-pos-changed update-current-word
                                        :stopped?       @stopped}]))
               [:div.video-overlay {:class (util/class->str (when @stopped :stopped))}
