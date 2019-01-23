@@ -403,7 +403,8 @@
 (defn karaoke-words-current [phrase-index words text]
   (let-sub [::model/current-word-index]
            (fn []
-             [:div.karaoke
+             [:a.karaoke
+              ;; {:href (util/make-phrase-url text)}
               (for [w    words
                     :let [{:keys [formated-text text index searched]} w]]
                 ^{:key (str "word-" index)}
@@ -417,7 +418,8 @@
               [copy-icon text]])))
 
 (defn karaoke-words [phrase-index words text]
-  [:div.karaoke
+  [:a.karaoke
+   ;; {:href (util/make-phrase-url text)}
    (for [w    words
          :let [{:keys [formated-text index searched]} w]]
      ^{:key (str "word-" index)}

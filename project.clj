@@ -63,6 +63,7 @@
                  [clj-oauth2 "0.2.0"]
                  [malcontent "0.1.0-SNAPSHOT"]
                  [sitemap "0.2.4"]
+                 [etaoin "0.2.5"]
 
                  ;; custom cljs
 
@@ -74,8 +75,7 @@
                  [bux "0.3.0"]
                  [com.cognitect/transit-cljs "0.8.243"]
                  [re-frame-macros "0.1.14-SNAPSHOT"]
-                 [cljs-await "1.0.1-SNAPSHOT"]
-                 [org.webjars.npm/copy-to-clipboard "3.0.4"]]
+                 [cljs-await "1.0.1-SNAPSHOT"]]
 
   :min-lein-version "2.0.0"
 

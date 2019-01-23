@@ -6,6 +6,7 @@
             [goog.string.format]
             [camel-snake-kebab.core :as keb :refer [->camelCase ->kebab-case ->kebab-case-keyword]]
             [cljs.pprint :refer [pprint]]
+            [playphraseme.common.nlp :as nlp]
             [goog.crypt.base64 :as base-64]
             [re-frame.core :refer [subscribe dispatch reg-event-db reg-event-fx reg-sub] :as rf])
   (:require-macros
@@ -244,11 +245,19 @@
   [fmt & args]
   (apply gstring/format (concat [fmt] args)))
 
-(comment
-  (or-str nil "" "hello" "world")
-  (nil-or-blank? "hello")
-  (nil-or-blank? "")
 
-  (format "%,12d" 100000)
+(defn encode-url [s]
+  (js/encodeURIComponent s))
+
+(defn make-phrase-url [search-text]
+  (str "https://www.playphrase.me/search/"
+       (some-> search-text
+               nlp/remove-punctuation
+               string/trim string/lower-case (string/replace #" +" "_") encode-url)
+       "/"))
+
+(comment
+
+  (make-phrase-url "hello world")
 
   )

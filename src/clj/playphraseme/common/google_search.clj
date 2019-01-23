@@ -10,12 +10,33 @@
             [clj-time.core :as t]
             [clj-time.format :as f]
             [sitemap.core :as sitemap]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [playphraseme.app.config :refer [env]]
+            [etaoin.api :as etaoin]
+            [mount.core :as mount]
+            [clojure.tools.logging :as log]))
 
 (def default-title "PlayPhrase.me: Largest collection of video quotes from movies on the web")
 (def default-description "Improve your pronunciation: search phrases in movies and watch and listen videos with them.")
 (def default-search-text "hello")
 (def sitemap-f "./resources/public/sitemap.xml")
+
+;; (mount/defstate driver
+;;   :start
+;;   (do
+;;     (log/info "Starting prerendering driver")
+;;     (etaoin/chrome))
+;;   :stop
+;;   (do
+;;     (log/info "Stopping prerendering driver")
+;;     (etaoin/quit driver)))
+
+;; (defn- server-uri []
+;;   (let [{:keys [prerender-host port]} env]
+;;     (str prerender-host ":" port)))
+
+;; (defn prerender []
+;;   (etaoin/go driver (server-uri)))
 
 (defn generate-page-title [search-text]
   (if-not search-text
@@ -66,32 +87,38 @@
 (defn generate-page-static-content [search-text]
   (let [search-text (if (string/blank? search-text) "hello" search-text)]
     (str
-     (format "<h1 style=\"color:white;\">%s</h1>" (string/capitalize search-text))
-     (format "<div style=\"color:white;\"/>%s</div>" (generate-page-description search-text))
+     "<div class=\"static-content\">"
+     (format "<h1 style=\"color:rgba(0,0,0,0.02);\">%s</h1>" (string/capitalize search-text))
+     (format "<div style=\"color:rgba(0,0,0,0.02);\"/>%s</div>" (generate-page-description search-text))
      (->> (search-phrases search-text)
           (map string/capitalize)
-          (map (fn [x] (format "<a href=\"%s\" style=\"color:white;\">%s</a>" (make-phrase-url x) x)))
+          (map (fn [x] (format "<a href=\"%s\" style=\"color:rgba(0,0,0,0.02);\">%s</a>" (make-phrase-url x) x)))
           (string/join "\n"))
      "\n"
      (let [t (nlp/remove-first-word search-text)]
-       (format "<a href=\"%s\" style=\"color:white;\">%s</a>" (make-phrase-url t) t))
+       (format "<a href=\"%s\" style=\"color:rgba(0,0,0,0.02);\">%s</a>" (make-phrase-url t) t))
      "\n"
      (let [t (nlp/remove-last-word search-text)]
-       (format "<a href=\"%s\" style=\"color:white;\">%s</a>" (make-phrase-url t) t)))))
+       (format "<a href=\"%s\" style=\"color:rgba(0,0,0,0.02);\">%s</a>" (make-phrase-url t) t))
+     "</div>")))
 
 (defn- timestamp []
   (->> (t/now) (f/unparse (:year-month-day f/formatters))))
 
 (defn generate-sitemap [file-num]
-  (let [lastmod (timestamp)
-        limit    (dec 50000)
-        skip (* file-num limit)]
-    (->> (search-strings/find-search-strings
-          {:count {"$gte" 5}} skip limit
-          {:words-count -1 :words-count-without-stops -1 :count -1})
-         (map :text)
+  (let [lastmod    (timestamp)
+        limit      50000
+        skip       (* file-num limit)
+        local-part 10000]
+    (->> (loop [result     ["https://www.playphrase.me/"]]
+           (println (count result))
+           (let [new-result (concat result (->>
+                                            (phrases/find-phrases {} (count result) local-part)
+                                            (map :text)))]
+            (if (-> result count (<= limit))
+              (recur new-result)
+              (take limit new-result))))
          (map util/make-phrase-url)
-         (concat ["https://www.playphrase.me/"])
          (map (fn [x]
                 {:loc        x
                  :lastmod    lastmod
@@ -105,7 +132,9 @@
 
 (defn generate-all-sitemaps []
   (generate-sitemap 0)
-  (generate-sitemap 1))
+  (generate-sitemap 1)
+  (generate-sitemap 2)
+  (generate-sitemap 3))
 
 
 (comment
