@@ -5,6 +5,7 @@
   (:require-macros [re-frame-macros.core :as mcr]))
 
 (mcr/reg-sub-event :layout nil)
+(mcr/reg-sub-event :first-render false)
 (mcr/reg-sub-event :responsive-scale 1)
 (mcr/reg-sub-event :responsive-show-left-column? true)
 (mcr/reg-sub-event :responsive-show-right-column? true)
@@ -21,6 +22,7 @@
 
 (mcr/reg-sub-event :modal-images [""])
 (mcr/reg-sub-event :modal-images-index 0)
+
 
 (reg-event-db
  :initialize-db

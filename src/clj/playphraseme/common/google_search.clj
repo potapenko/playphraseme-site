@@ -21,23 +21,6 @@
 (def default-search-text "hello")
 (def sitemap-f "./resources/public/sitemap.xml")
 
-;; (mount/defstate driver
-;;   :start
-;;   (do
-;;     (log/info "Starting prerendering driver")
-;;     (etaoin/chrome))
-;;   :stop
-;;   (do
-;;     (log/info "Stopping prerendering driver")
-;;     (etaoin/quit driver)))
-
-;; (defn- server-uri []
-;;   (let [{:keys [prerender-host port]} env]
-;;     (str prerender-host ":" port)))
-
-;; (defn prerender []
-;;   (etaoin/go driver (server-uri)))
-
 (defn generate-page-title [search-text]
   (if-not search-text
     default-title
@@ -77,12 +60,6 @@
     "<link rel=\"canonical\" href=\"https://www.playphrase.me/\" />"
     (format "<link rel=\"canonical\" href=\"%s\" />" (util/make-phrase-url search-text))))
 
-(defn- make-phrase-url [search-text]
-  (str "/search/"
-       (some-> search-text
-               nlp/remove-punctuation
-               string/trim string/lower-case (string/replace #" +" "_") util/encode-url)
-       "/"))
 
 (defn generate-page-static-content [search-text]
   (let [search-text (if (string/blank? search-text) "hello" search-text)]

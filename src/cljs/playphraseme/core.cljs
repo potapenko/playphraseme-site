@@ -25,6 +25,9 @@
    [cljs.core.async.macros :refer [go go-loop]])
   (:import goog.History))
 
+(defn ^:export ready-for-prerender? []
+  @(rf/subscribe [:first-render]))
+
 (def pages
   (merge
    {:login          #'login-page/page

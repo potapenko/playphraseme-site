@@ -409,10 +409,10 @@
              :let [{:keys [formated-text text index searched]} w]]
          ^{:key (str "word-" index)}
          [:span.s-word {:on-click #(goto-word % phrase-index index)
-                        :id       (str "word-" index)
-                        :class    (util/class->str
-                                   (when searched "s-word-searched")
-                                   (when (= index current-word-index) "s-word-played"))}
+                         :id       (str "word-" index)
+                         :class    (util/class->str
+                                    (when searched "s-word-searched")
+                                    (when (= index current-word-index) "s-word-played"))}
           formated-text])
        [flexer]
        [copy-icon text]])))
@@ -492,6 +492,8 @@
             ::model/phrases
             :stopped
             ::model/suggestions
+            :search-text
+            :first-render
             :mobile?]
     (r/create-class
      {:component-did-mount
@@ -508,6 +510,10 @@
           (util/remove-document-listener "keyup" work-with-keys-up)
           (util/remove-document-listener "keydown" work-with-keys-down)
           (rf/dispatch [::model/inited true])))
+      :component-did-update
+      (fn []
+        (if (and (not @first-render) @search-text (not (nil? @phrases)))
+          (rf/dispatch [:first-render true])))
       :reagent-render
       (fn []
         (let [lang (util/locale-name)]
@@ -529,7 +535,6 @@
                                                          (rf/dispatch [:stopped true]))
                                        :on-play-click  toggle-play
                                        :on-end         (fn []
-                                                         (println "on next")
                                                          (rf/dispatch [:playing false])
                                                          (if (-> @phrases count (= 1))
                                                            (rf/dispatch [:stopped true])
