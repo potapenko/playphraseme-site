@@ -6,7 +6,9 @@
             [playphraseme.api.queries.prerenders :as prerenders]
             [playphraseme.app.config :refer [env]]
             [playphraseme.common.nlp :as nlp]
-            [playphraseme.common.util :as util]))
+            [playphraseme.common.util :as util]
+            [playphraseme.api.queries.search-strings :as search-strings]
+            [playphraseme.api.queries.phrases :as phrases]))
 
 (defn- make-phrase-url [search-text]
   (str "/search/"
@@ -18,8 +20,6 @@
 (defn- server-uri [search-text]
   (let [{:keys [prerender-host port]} env]
     (str prerender-host ":" port (make-phrase-url search-text))))
-
-;; document.getElementById("app").innerHTML
 
 (defn wait-ready [driver]
   (loop [counter 0]
@@ -42,10 +42,21 @@
                                 (println ">>>" html-text)))
       (etaoin/quit driver))))
 
+
+(defn generate-prerenders []
+  (->>
+   (concat
+    (search-strings/find-search-strings
+     {:count {"$gte" 5} :words-count {"$gt" 1 "$lte" 5}} 0 0
+     {:words-count -1 :words-count-without-stops -1 :count -1})
+    (phrases/find-phrases {} 0 49000))
+   (map :text)
+   (map prerender)
+   doall))
+
 (comment
 
-  (prerender "hello")
-
+  (generate-prerenders)
 
   )
 
