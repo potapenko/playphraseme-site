@@ -7,11 +7,6 @@
             [playphraseme.common.nlp :as nlp]
             [playphraseme.common.util :as util]))
 
-(defonce driver
-  (do
-    (log/info "Starting prerendering driver")
-    (etaoin/chrome)))
-
 (defn- make-phrase-url [search-text]
   (str "/search/"
        (some-> search-text
@@ -25,9 +20,9 @@
 
 ;; document.getElementById("app").innerHTML
 
-(defn wait-ready []
+(defn wait-ready [driver]
   (loop [counter 0]
-    (when (> counter 20)
+    (when (< counter 20)
       (if (etaoin/js-execute driver "return playphraseme.core.ready_for_prerender_QMARK_()")
         true
         (do
@@ -35,11 +30,13 @@
           (recur (inc counter)))))))
 
 (defn prerender [search-text]
-  (etaoin/go driver (server-uri search-text))
-  (let [html-text (etaoin/js-execute driver "return document.getElementById('app').innerHTML;")]
-    html-text
-
-    ))
+  (let [driver (etaoin/chrome)]
+    (util/catch-and-log-err "Work with chrome browser"
+     (etaoin/go driver (server-uri search-text))
+     (wait-ready)
+     (let [html-text (etaoin/js-execute driver "return document.getElementById('app').innerHTML;")]
+       html-text))
+    (etaoin/quit driver)))
 
 (comment
 

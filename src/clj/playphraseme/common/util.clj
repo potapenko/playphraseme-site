@@ -88,6 +88,27 @@
 (defn format-phrase-text [s]
   (format "\"%s\"" (string/capitalize s)))
 
+(defmacro catch-and-log-err-and-throw [log-message & body]
+  `(try
+     ~@body
+     (catch Throwable e#
+       (log/error (str "[" ~log-message "]") "- catch error"
+                  (str "\"" (.getMessage e#) "\""))
+       (throw e#))))
+
+(defmacro catch-and-log-err [log-message & body]
+  `(try
+     ~@body
+     (catch Throwable e#
+       (log/error (str "[" ~log-message "]") "- catch error"
+                  (str "\"" (.getMessage e#) "\"")))))
+
+(defmacro nil-if-throw [& body]
+  `(try
+     ~@body
+     (catch Throwable e#
+       nil)))
+
 (comment
 
   (distinct-by :a [{:a 1} {:a 1} {:a 2}])

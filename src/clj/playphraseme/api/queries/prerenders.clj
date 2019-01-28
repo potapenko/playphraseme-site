@@ -7,10 +7,6 @@
 
 (def coll "prerenders")
 
-(defn migrate []
-  (mc/ensure-index db coll {:search-strings 1 :have-video 1 :random 1})
-  (mc/ensure-index db coll {:random 1}))
-
 (mount/defstate migrations-prerenders
   :start (migrate))
 
@@ -18,24 +14,25 @@
   (stringify-id
    (get-doc-by-id coll (str->id prerender-id))))
 
-(defn find-prerenders
-  ([pred] (find-prerenders pred 0 10))
-  ([pred limit] (find-prerenders pred 0 limit))
-  ([pred skip limit]
-   (stringify-id
-    (find-docs coll {:pred pred :skip skip :limit limit :sort {:random -1}}))))
+(defn find-prerenders [params]
+  (stringify-id
+   (find-docs coll params)))
 
-(def get-prerenders-count
-  (memoize
-   (fn [_]
-     (count-docs coll {:have-video true}))))
+(defn find-one-prerender [pred]
+  (stringify-id
+   (find-doc coll pred)))
 
-(def get-movies-count
-  (memoize
-   (fn [_]
-     (->> (aggregate-docs
-           coll [{$match {:have-video true}}
-                 {$group {:_id {:movie "$movie"}}}
-                 {"$count" "count"}])
-          first
-          :count))))
+(defn insert-prerender! [data]
+  (stringify-id
+   (add-doc coll data)))
+
+(defn update-prerender!
+  [^String prerender-id {:keys [email name password refresh-token] :as user-data}]
+  (update-doc-by-id coll (str->id prerender-id) user-data))
+
+(defn delete-prerender!
+  [^String prerender-id]
+  (delete-doc-by-id coll (str->id prerender-id)))
+
+(defn get-prerender-by-text [text]
+  (find-one-prerender {:text text}))
