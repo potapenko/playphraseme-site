@@ -3,6 +3,7 @@
             [clojure.tools.logging :as log]
             [etaoin.api :as etaoin]
             [mount.core :as mount]
+            [playphraseme.api.queries.prerenders :as prerenders]
             [playphraseme.app.config :refer [env]]
             [playphraseme.common.nlp :as nlp]
             [playphraseme.common.util :as util]))
@@ -22,21 +23,24 @@
 
 (defn wait-ready [driver]
   (loop [counter 0]
-    (when (< counter 20)
+    (if (< counter 20)
       (if (etaoin/js-execute driver "return playphraseme.core.ready_for_prerender_QMARK_()")
         true
         (do
           (Thread/sleep 300)
-          (recur (inc counter)))))))
+          (recur (inc counter))))
+      (throw (new IllegalStateException "Chrome not responded")))))
 
 (defn prerender [search-text]
-  (let [driver (etaoin/chrome)]
-    (util/catch-and-log-err "Work with chrome browser"
-     (etaoin/go driver (server-uri search-text))
-     (wait-ready)
-     (let [html-text (etaoin/js-execute driver "return document.getElementById('app').innerHTML;")]
-       html-text))
-    (etaoin/quit driver)))
+  (when-not (prerenders/get-prerender-by-text search-text)
+    (let [driver (etaoin/chrome)]
+      (util/catch-and-log-err "Work with chrome browser"
+                              (etaoin/go driver (server-uri search-text))
+                              (wait-ready driver)
+                              (let [html-text (etaoin/js-execute driver "return document.getElementById('app').innerHTML;")]
+                                (prerenders/insert-prerender! search-text html-text)
+                                (println ">>>" html-text)))
+      (etaoin/quit driver))))
 
 (comment
 

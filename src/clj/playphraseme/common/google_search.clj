@@ -14,12 +14,20 @@
             [playphraseme.app.config :refer [env]]
             [etaoin.api :as etaoin]
             [mount.core :as mount]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log]
+            [playphraseme.api.queries.prerenders :as prerenders]))
 
 (def default-title "PlayPhrase.me: Largest collection of video quotes from movies on the web")
 (def default-description "Improve your pronunciation: search phrases in movies and watch and listen videos with them.")
 (def default-search-text "hello")
 (def sitemap-f "./resources/public/sitemap.xml")
+
+(defn- make-phrase-url [search-text]
+  (str "/search/"
+       (some-> search-text
+               nlp/remove-punctuation
+               string/trim string/lower-case (string/replace #" +" "_") util/encode-url)
+       "/"))
 
 (defn generate-page-title [search-text]
   (if-not search-text
@@ -62,22 +70,24 @@
 
 
 (defn generate-page-static-content [search-text]
-  (let [search-text (if (string/blank? search-text) "hello" search-text)]
-    (str
-     "<div class=\"static-content\">"
-     (format "<h1 style=\"color:rgba(0,0,0,0.02);\">%s</h1>" (string/capitalize search-text))
-     (format "<div style=\"color:rgba(0,0,0,0.02);\"/>%s</div>" (generate-page-description search-text))
-     (->> (search-phrases search-text)
-          (map string/capitalize)
-          (map (fn [x] (format "<a href=\"%s\" style=\"color:rgba(0,0,0,0.02);\">%s</a>" (make-phrase-url x) x)))
-          (string/join "\n"))
-     "\n"
-     (let [t (nlp/remove-first-word search-text)]
-       (format "<a href=\"%s\" style=\"color:rgba(0,0,0,0.02);\">%s</a>" (make-phrase-url t) t))
-     "\n"
-     (let [t (nlp/remove-last-word search-text)]
-       (format "<a href=\"%s\" style=\"color:rgba(0,0,0,0.02);\">%s</a>" (make-phrase-url t) t))
-     "</div>")))
+  (if-let [prerender-html (prerenders/get-prerender-by-text search-text)]
+    prerender-html
+    (let [search-text (if (string/blank? search-text) "hello" search-text)]
+      (str
+       "<div class=\"static-content\">"
+       (format "<h1 style=\"color:rgba(0,0,0,0.02);\">%s</h1>" (string/capitalize search-text))
+       (format "<div style=\"color:rgba(0,0,0,0.02);\"/>%s</div>" (generate-page-description search-text))
+       (->> (search-phrases search-text)
+            (map string/capitalize)
+            (map (fn [x] (format "<a href=\"%s\" style=\"color:rgba(0,0,0,0.02);\">%s</a>" (make-phrase-url x) x)))
+            (string/join "\n"))
+       "\n"
+       (let [t (nlp/remove-first-word search-text)]
+         (format "<a href=\"%s\" style=\"color:rgba(0,0,0,0.02);\">%s</a>" (make-phrase-url t) t))
+       "\n"
+       (let [t (nlp/remove-last-word search-text)]
+         (format "<a href=\"%s\" style=\"color:rgba(0,0,0,0.02);\">%s</a>" (make-phrase-url t) t))
+       "</div>"))))
 
 (defn- timestamp []
   (->> (t/now) (f/unparse (:year-month-day f/formatters))))

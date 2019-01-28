@@ -1047,3 +1047,5 @@ img.app-button {
 .static-content {
   color: rgba(0,0,0,0.05);
 }
+
+#loadOverlay{display: none;}

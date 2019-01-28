@@ -1,14 +1,25 @@
-(ns playphraseme.api.queries.prerender
+(ns playphraseme.api.queries.prerenders
   (:require [playphraseme.api.general-functions.doc-id :refer :all]
             [monger.operators :refer :all]
             [mount.core :as mount]
             [monger.collection :as mc]
-            [playphraseme.db.prerenders-db :refer :all]))
+            [playphraseme.db.prerenders-db :refer :all]
+            [clojure.string :as string]))
 
 (def coll "prerenders")
 
+(defn migrate []
+  (mc/ensure-index db coll {:search-strings 1 :have-video 1 :random 1})
+
+  )
+
 (mount/defstate migrations-prerenders
   :start (migrate))
+
+(defn- trim [text]
+  (some-> text
+          string/trim
+          string/lower-case))
 
 (defn get-prerender-by-id [^String prerender-id]
   (stringify-id
@@ -22,17 +33,13 @@
   (stringify-id
    (find-doc coll pred)))
 
-(defn insert-prerender! [data]
+(defn insert-prerender! [text html]
   (stringify-id
-   (add-doc coll data)))
+   (add-doc coll {:text (trim text) :html html})))
 
-(defn update-prerender!
-  [^String prerender-id {:keys [email name password refresh-token] :as user-data}]
-  (update-doc-by-id coll (str->id prerender-id) user-data))
-
-(defn delete-prerender!
-  [^String prerender-id]
-  (delete-doc-by-id coll (str->id prerender-id)))
+(defn delete-prerender-by-text!
+  [^String text]
+  (delete-docs coll {:text (trim text)}))
 
 (defn get-prerender-by-text [text]
-  (find-one-prerender {:text text}))
+  (:html (find-one-prerender {:text (trim text)})))
