@@ -494,7 +494,8 @@
             ::model/suggestions
             :search-text
             :first-render
-            :mobile?]
+            :mobile?
+            replay-counter (r/atom 0)]
     (r/create-class
      {:component-did-mount
       (fn [this]
@@ -526,7 +527,7 @@
                (for [x     @phrases
                      :let  [{:keys [index id]} x]
                      :when (<= @current-phrase-index index (inc @current-phrase-index))]
-                 ^{:key (str "phrase-" index "-" id)}
+                 ^{:key (str "phrase-" index "-" id "-" @replay-counter)}
                  [player/video-player {:phrase         x
                                        :hide?          (not= @current-phrase-index index)
                                        :on-play        (fn []
@@ -537,7 +538,10 @@
                                        :on-end         (fn []
                                                          (rf/dispatch [:playing false])
                                                          (if (-> @phrases count (= 1))
-                                                           (rf/dispatch [:stopped true])
+                                                           (do
+                                                             (swap! replay-counter inc)
+                                                             (player/jump-and-play 0 index)
+                                                             #_(rf/dispatch [:stopped true]))
                                                            (next-phrase)))
                                        :on-pos-changed update-current-word
                                        :stopped?       @stopped}]))

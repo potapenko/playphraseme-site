@@ -108,9 +108,28 @@
      (sitemap/save-sitemap
       (io/file "./resources/public/sitemap.xml")))))
 
+
+(defn generate-phrases-sitemaps []
+  (let [lastmod (timestamp)]
+    (->>
+     (phrases/find-phrases {:have-video true} 0 150000)
+     (map :text)
+     (map util/make-phrase-url)
+     (map (fn [x]
+            {:loc        x
+             :lastmod    lastmod
+             :changefreq "monthly"
+             :priority   "1.0"}))
+     (partition-all 50000)
+     (map-indexed (fn [i x]
+                    (->> x
+                         sitemap/generate-sitemap
+                         (sitemap/save-sitemap
+                          (io/file (format "./resources/public/sitemap-phrases-%s.xml" i)))))))))
+
 (comment
 
-  (generate-sitemap)
+  (generate-phrases-sitemaps)
 
 
 
