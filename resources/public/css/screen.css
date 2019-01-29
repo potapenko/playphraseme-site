@@ -279,25 +279,11 @@ form h1 {
 
 .overlay-play-icon {
   position: absolute;
-  font-size: 55px;
-  right: 20px;
-  top: 20px;
+  font-size: 75px;
+  left: 220px;
+  top: 100px;
   color: black;
-}
-
-.overlay-play-icon .material-icons{
-  opacity: 0.3 !important;
-}
-
-.overlay-play-icon-bottom {
-  display: none;
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  opacity: 0.4;
-}
-.overlay-play-icon-bottom .material-icons {
-  font-size: 225px;
+  opacity: 0.3;
 }
 
 .audio-control {

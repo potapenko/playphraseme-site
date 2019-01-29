@@ -127,6 +127,11 @@
            :plays-inline true
            :controls     false
            :id           (index->id index)}]
+         (when (and stopped? (not util/ios?))
+           [:div.overlay-play-icon
+            [:span.fa-stack.fa-1x
+             [:i.fa.fa-circle.fa-stack-2x.fa-inverse]
+             [:i.fa.fa-play.fa-stack-1x.play-icon2]]])
          (let [{:keys [imdb info]} video-info]
            [:a.overlay-video-info
             {:href (str "https://www.imdb.com/title/" imdb) :target "_blank"}

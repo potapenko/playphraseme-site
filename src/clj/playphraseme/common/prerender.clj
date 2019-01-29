@@ -41,8 +41,11 @@
                               (prerenders/insert-prerender! search-text html-text)
                               (println search-text)))))
 
+(defn create-driver []
+  (etaoin/chrome {:headless true}))
+
 (defn generate-prerenders []
-  (let [driver (etaoin/chrome {:headless true})]
+  (let [driver (create-driver)]
    (->>
     (concat
      (search-strings/find-search-strings
@@ -57,7 +60,8 @@
 
 (comment
 
-  (generate-prerenders)
+  (future
+   (generate-prerenders))
 
 
 

@@ -72,8 +72,7 @@
 (defn generate-page-static-content [search-text]
   (if-let [prerender-html (prerenders/get-prerender-by-text search-text)]
     prerender-html
-    ""
-    #_(let [search-text (if (string/blank? search-text) "hello" search-text)]
+    (let [search-text (if (string/blank? search-text) "hello" search-text)]
       (str
        "<div class=\"static-content\">"
        (format "<h1 style=\"color:rgba(0,0,0,0.02);\">%s</h1>" (string/capitalize search-text))
