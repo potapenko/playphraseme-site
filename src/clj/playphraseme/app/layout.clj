@@ -30,6 +30,7 @@
              :servlet-context *app-context*
              :page-title (google-search/generate-page-title q)
              :page-description (google-search/generate-page-description q)
+             :video-url (google-search/get-video-url q)
              :page-static-content (google-search/generate-page-static-content q)
              :searched-phrase (some-> q URLDecoder/decode)
              :rel-canonical (google-search/generate-rel-canonical q))))

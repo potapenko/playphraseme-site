@@ -22,6 +22,5 @@
   (GET "/" [q :as request]
        (home-page {:q (prepare-search-text q)}))
   (GET "/search/:phrase/" [phrase]
-       (clojure.pprint/pprint phrase)
        (home-page {:q (prepare-search-text phrase)})))
 

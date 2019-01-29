@@ -15,6 +15,7 @@
             [etaoin.api :as etaoin]
             [mount.core :as mount]
             [clojure.tools.logging :as log]
+            [playphraseme.api.route-functions.search.phrases-search :as phrases-search]
             [playphraseme.api.queries.prerenders :as prerenders]))
 
 (def default-title "PlayPhrase.me: Largest collection of video quotes from movies on the web")
@@ -43,9 +44,7 @@
       []
       (->> (phrases/find-phrases {:search-strings (:text search-string)
                                   :have-video     true}
-                                 0 100)
-           (map :text)
-           distinct))))
+                                 0 100)))))
 
 (defn generate-page-description [search-text]
   (str
@@ -54,6 +53,8 @@
    (if-not search-text
      ""
      (->> (search-phrases search-text)
+          (map :text)
+          distinct
           (map util/format-phrase-text)
           (reduce (fn [x val]
                     (let [new-val (if (string/blank? x)
@@ -69,6 +70,13 @@
     (format "<link rel=\"canonical\" href=\"%s\" />" (util/make-phrase-url search-text))))
 
 
+(defn get-video-url [search-text]
+  (some-> search-text
+          search-phrases
+          first
+          :id
+          phrases-search/get-video-url))
+
 (defn generate-page-static-content [search-text]
   (if-let [prerender-html (prerenders/get-prerender-by-text search-text)]
     prerender-html
@@ -78,6 +86,8 @@
        (format "<h1 style=\"color:rgba(0,0,0,0.02);\">%s</h1>" (string/capitalize search-text))
        (format "<div style=\"color:rgba(0,0,0,0.02);\"/>%s</div>" (generate-page-description search-text))
        (->> (search-phrases search-text)
+            (map :text)
+            distinct
             (map string/capitalize)
             (map (fn [x] (format "<a href=\"%s\" style=\"color:rgba(0,0,0,0.02);\">%s</a>" (make-phrase-url x) x)))
             (string/join "\n"))

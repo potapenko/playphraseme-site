@@ -66,7 +66,6 @@
         result))))
 
 (defn- generate-phrases [phrase]
-  (println "phrase:" phrase ())
   (loop [[c & t] (create-words phrase) phrases []]
     (if c
       (recur t (create-generation phrases c))

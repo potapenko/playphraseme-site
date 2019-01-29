@@ -42,7 +42,7 @@
   (let [phrase (db/get-phrase-by-id id)]
     (str (:id phrase) ".mp4")))
 
-(defn- get-video-url [id]
+(defn get-video-url [id]
   (let [cdn-url (:cdn-url env)
         phrase (db/get-phrase-by-id id)]
     (str cdn-url "/" (:movie phrase) "/" (:id phrase) ".mp4")))
