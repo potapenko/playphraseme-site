@@ -72,7 +72,8 @@
 (defn generate-page-static-content [search-text]
   (if-let [prerender-html (prerenders/get-prerender-by-text search-text)]
     prerender-html
-    (let [search-text (if (string/blank? search-text) "hello" search-text)]
+    ""
+    #_(let [search-text (if (string/blank? search-text) "hello" search-text)]
       (str
        "<div class=\"static-content\">"
        (format "<h1 style=\"color:rgba(0,0,0,0.02);\">%s</h1>" (string/capitalize search-text))
@@ -95,12 +96,7 @@
 (defn generate-sitemap []
   (let [lastmod (timestamp)]
     (->>
-     (concat
-      ["https://www.playphrase.me/"]
-      (search-strings/find-search-strings
-       {:count {"$gte" 5} :words-count {"$gt" 1 "$lte" 5}} 0 0
-       {:words-count -1 :words-count-without-stops -1 :count -1})
-      (phrases/find-phrases {} 0 49000))
+     (prerenders/find-prerenders {:pred {} :limit 0})
      (map :text)
      (map util/make-phrase-url)
      (take 50000)

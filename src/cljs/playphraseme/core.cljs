@@ -26,7 +26,8 @@
   (:import goog.History))
 
 (defn ^:export ready-for-prerender? []
-  @(rf/subscribe [:first-render]))
+  (and @(rf/subscribe [:first-render])
+       (util/id->elem "phrase-text-0")))
 
 (def pages
   (merge
