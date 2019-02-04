@@ -5,33 +5,29 @@
             [monger.collection :as mc]
             [playphraseme.db.users-db :refer :all]))
 
-(def coll "favoritePhrase")
+(def coll "favorites")
 
-(defn migrate [])
+(defn- migrate [])
 
 (mount/defstate migrations-favorites
   :start (migrate))
 
-(defn get-favorite-by-id
-  [^String favorite-id]
+(defn get-favorite-by-id [^String favorite-id]
   (stringify-id
    (get-doc-by-id coll (str->id favorite-id))))
 
-(defn get-favorite-by-phrase-id
-  [^String phrase-id ^String user-id]
+(defn get-favorite-by-phrase-id [^String phrase-id ^String user-id]
   (stringify-id
    (find-doc coll {:phrase (str->id phrase-id) :user (str->id user-id)})))
 
 (defn insert-favorite! [^String phrase-id ^String user-id ]
   (let [exists (get-favorite-by-phrase-id phrase-id user-id)]
    (if-not exists
-     (let [phrase (phrases/get-phrase-by-id phrase-id)]
+     (let [{:keys [text]} (phrases/get-phrase-by-id phrase-id)]
        (stringify-id
-        (add-doc coll (merge
-                       {:user (str->id user-id)
-                        :phrase (str->id phrase-id)
-                        :movieInfo (-> phrase :video_info :info)}
-                       (select-keys phrase [:text])))))
+        (add-doc coll {:user   (str->id user-id)
+                       :phrase (str->id phrase-id)
+                       :text   text})))
      exists)))
 
 (defn update-favorite!
@@ -56,7 +52,6 @@
 (defn get-favorites-count
   [^String user-id]
   (count-docs coll {:user (str->id user-id)}))
-
 
 
 (comment

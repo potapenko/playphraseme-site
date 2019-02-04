@@ -1,5 +1,6 @@
 {:production true
- :port       8080
+ :port       3033
+ :cdn-url    "/video"
 
  ;; :facebook-client-id     "<env variable>"
  ;; :facebook-client-secret "<env variable>"

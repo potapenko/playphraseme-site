@@ -9,9 +9,7 @@
             [playphraseme.common.ui :as ui :refer [flexer spacer]]
             [playphraseme.views.search.model :as model]
             [playphraseme.common.rest-api :as rest-api]
-            [playphraseme.views.favorites.view :as favorites-page]
-            [playphraseme.common.phrases :as phrases]
-            [playphraseme.common.nlp :as nlp])
+            [playphraseme.common.phrases :as phrases])
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]
    [re-frame-macros.core :as mcr :refer [let-sub]]))
@@ -33,5 +31,4 @@
   [:div.under-contsuction
    "Page Under Construction."
    [ui/spacer 16]
-   [:div "Functionality will be ready for several days. You can support us with like :)"]
    [:div {:style {:display "flex" :flex-direction "row"}}]])

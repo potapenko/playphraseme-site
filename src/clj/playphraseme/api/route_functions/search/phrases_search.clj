@@ -19,15 +19,16 @@
             [ring.util.response :refer [response]]
             [playphraseme.common.debug-util :as debug-util :refer [...]]
             [clojure.tools.logging :as log]
+            [playphraseme.api.queries.movies :as movies]
             [playphraseme.common.suggestions :refer [phrase-candidates]]
-            [playphraseme.api.queries.phrases :as phrases]))
+            [playphraseme.api.queries.phrases :as phrases]
+            [playphraseme.common.dates-util :as date-util]))
 
 (defn drop-last-word [s]
   (-> s
       (string/split #" +")
       drop-last
       (->> (string/join " "))))
-
 
 (defn- remove-punctuation [s]
   (-> s
@@ -37,75 +38,30 @@
       string/lower-case
       string/trim))
 
-(defn add-search-string-pred [id]
-  (let [doc (search-strings/get-search-string-by-id id)]
-    (let [new-text (-> doc
-                       :text
-                       (string/replace "\"" "")
-                       (string/trim))]
-      (-> doc
-          (assoc :text new-text)
-          (assoc :searchPred (drop-last-word new-text))
-          search-strings/update-search-string!))))
-
-(defn add-search-strings-pred-migration []
-  (log/info "count search strings without searchPred:" (search-strings/count-search-string {:searchPred nil}))
-  (let [part-size 1000]
-    (loop [pos 0]
-      (log/info "pos:" pos)
-      (let [part (search-strings/find-search-strings {:searchPred nil} part-size)]
-        (when-not (empty? part)
-          (pmap (fn [{:keys [id]}]
-                  (add-search-string-pred id)) part)
-          (recur (+ pos part-size)))))
-    (log/info "done")))
-
-
-(defn remove-search-string-punctuation [id]
-  (let [doc (search-strings/get-search-string-by-id id)]
-    (-> doc
-        (assoc :text (remove-punctuation (:text doc)))
-        (assoc :searchPred (remove-punctuation (:searchPred doc)))
-        search-strings/update-search-string!)))
-
-(defn remove-string-search-punctuation-migration []
-  (let [part-size 1000]
-    (loop [pos 0]
-      (log/info "fix punctuation pos:" pos)
-      (let [part (search-strings/find-search-strings {:text       {$regex "[.,\\/#!$%\\^&\\*;:{}=\\-_`~()—]"}
-                                                      :searchPred {$ne nil}})]
-        (when-not (empty? part)
-          (pmap (fn [{:keys [id]}]
-                  (remove-search-string-punctuation id)) part)
-          (recur (+ pos part-size)))))
-    (log/info "done")))
-
-(mount/defstate search-phrases-fixes
-  :start (future
-           (remove-string-search-punctuation-migration)
-           (add-search-strings-pred-migration)))
-
 (defn- get-video-file [id]
   (let [phrase (db/get-phrase-by-id id)]
     (str (:id phrase) ".mp4")))
 
-(defn- get-video-url [id]
-  (let [cdn-url "https://cdn.playphrase.me/phrases/"
+(defn get-video-url [id]
+  (let [cdn-url (:cdn-url env)
         phrase (db/get-phrase-by-id id)]
-    (str cdn-url (:movie phrase) "/" (:id phrase) ".mp4")))
+    (str cdn-url "/" (:movie phrase) "/" (:id phrase) ".mp4")))
 
-(defn use-shifts [p]
-  (-> p
-      (update :start + (or (some-> p :shifts :left) 0))
-      (update :end + (or (some-> p :shifts :right) 0))
-      (dissoc :shifts)))
+(defn get-video-info [movie-id]
+  (let [movie (movies/get-movie-by-id movie-id)
+        serie (some-> movie :serie-imdb movies/get-movie-by-imdb)]
+    {:info (str (if-not serie
+                  (:title movie)
+                  (string/join " / " [(:title serie) (:season movie) (:episode movie)]))
+                " (" (:year movie) ")")
+     :imdb (:imdb movie)}))
 
-(defn prepare-phrase-data [phrase]
+(defn prepare-phrase-data [{:keys [id start] :as phrase}]
   (some-> phrase
-          (util/remove-keys [:random :haveVideo :__v :state])
+          (util/remove-keys [:random :have-video :__v :state :search-strings])
           (util/remove-keys :words [:id])
-          (assoc :video-url (get-video-url (:id phrase)))
-          use-shifts))
+          (assoc :video-info (update (get-video-info (:movie phrase)) :info str " [" (date-util/timestamp start) "]") )
+          (assoc :video-url (get-video-url id))))
 
 (defn get-phrase-data [id]
   (prepare-phrase-data (db/get-phrase-by-id id)))
@@ -118,21 +74,15 @@
   ([text word-end?]
    (let [text      (-> text string/trim string/lower-case)
          text-pred (if word-end? (drop-last-word text) text)
-         rx        (str "^" text (if-not word-end? " " "") "\\S+$")
-         strings   (->>
-                    (search-strings/find-search-strings
-                     {:searchPred text-pred
-                      :text       {$regex rx}} 20)
-                    (remove #(-> % :validCount (= 0)))
-                    (map #(select-keys % [:text :validCount])))]
-     (loop [[v & t] strings
-            result  []]
-       (if v
-         (recur
-          (remove #(-> % :text (= (:text v))) t)
-          (conj result {:text  (:text v)
-                        :count (:validCount v)}))
-         result)))))
+         rx        (str "^" text (if-not word-end? " " "") "\\S+$")]
+     (->>
+      (search-strings/find-search-strings
+       {:search-pred text-pred
+        :text        {$regex rx}} 20)
+      (remove #(-> % :count (= 0)))
+      (remove #(->> % :text (re-find #"\s\d+$")))
+      (map #(select-keys % [:text :count]))
+      (util/distinct-by :text)))))
 
 (defn update-phrases-suggestions [{:keys [count suggestions] :as search-result} text]
   (if (string/blank? text)
@@ -153,19 +103,43 @@
 
 (defn search-response [q skip limit]
   (assert (< limit 100))
-  (let [search-string (first
-                       (search-strings/find-search-strings {:text (nlp/remove-punctuation q)}))]
-    (ok
-     (update-phrases-suggestions
-      (if-not search-string
-        {:count 0 :phrases [] :suggestions []}
-        (let [phrases (->> (phrases/find-phrases {:links (:text search-string)} skip limit)
-                           (map prepare-phrase-data))]
-          (merge
-           {:count (:validCount search-string) :phrases phrases}
-           (when (empty? phrases)
-             {:suggestions (phrase-candidates q)}))))
-      q))))
+  (ok
+   (let [q (some-> q string/trim (string/replace #"\s+" " "))]
+    (if (some-> q count (<= 2))
+      {:count 0 :phrases [] :suggestions []}
+      (let [search-string (first
+                           (search-strings/find-search-strings
+                            {:text (nlp/remove-punctuation q)}))]
+        (update-phrases-suggestions
+         (if (or (not search-string) )
+           {:count 0 :phrases [] :suggestions []}
+           (let [phrases (->> (phrases/find-phrases {:search-strings (:text search-string)
+                                                     :have-video     true}
+                                                    (if (> skip 1000) 1000 skip)
+                                                    limit)
+                              (map prepare-phrase-data))]
+             (merge
+              {:count (:count search-string) :phrases phrases}
+              (when (empty? phrases)
+                {:suggestions (phrase-candidates q)}))))
+         q))))))
+
+(defn search-batch-response [search-texts]
+  (ok
+   (->> search-texts
+        (map
+         (fn [q]
+
+           (let [search-string (first
+                                (search-strings/find-search-strings
+                                 {:text (nlp/remove-punctuation q)}))]
+             (if-not search-string
+               {:count 0 :phrases [] :suggestions [] :search-text q}
+               (let [phrases (->> (phrases/find-phrases {:search-strings (:text search-string)
+                                                         :have-video     true}
+                                                        0 30)
+                                  (map prepare-phrase-data))]
+                 {:count (:count search-string) :phrases phrases :search-text q}))))))))
 
 (defn phrase-response [id]
   (ok (util/nil-when-throw
@@ -177,10 +151,10 @@
     (ok (some-> res :body (parse-string true) :count))))
 
 (defn all-phrases-count-response []
-  (ok (db/get-phrases-count)))
+  (ok (db/get-phrases-count (util/time-stamp-10-min))))
 
 (defn all-movies-count-response []
-  (ok (db/get-movies-count)))
+  (ok (db/get-movies-count (util/time-stamp-10-min))))
 
 (defn video-url-response [id]
   (ok (get-video-url id)))

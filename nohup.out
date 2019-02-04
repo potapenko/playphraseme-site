@@ -1,0 +1,3 @@
+WARNING: any? already refers to: #'clojure.core/any? in namespace: monger.collection, being replaced by: #'monger.collection/any?
+WARNING: boolean? already refers to: #'clojure.core/boolean? in namespace: clojure.tools.analyzer.utils, being replaced by: #'clojure.tools.analyzer.utils/boolean?
+WARNING: boolean? already refers to: #'clojure.core/boolean? in namespace: clojure.tools.analyzer, being replaced by: #'clojure.tools.analyzer.utils/boolean?

@@ -132,7 +132,7 @@
                               (+ (when show-left-column? column-width) 600 (when show-right-column? column-width))
                               700))]
     (dispatch [:responsive-scale scale])
-    (dispatch [:layout {:width w :hight h :scale scale}])
+    (dispatch [:layout {:width w :height h :scale scale}])
     (dispatch [:responsive-show-left-column? show-left-column?])
     (dispatch [:responsive-show-right-column? show-right-column?]))
   (when-not (= @(subscribe [:mobile?]) mobile?)

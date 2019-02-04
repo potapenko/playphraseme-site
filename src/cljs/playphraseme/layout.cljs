@@ -3,6 +3,7 @@
             [re-frame.core :as rf]
             [markdown.core :refer [md->html]]
             [playphraseme.common.ui :as ui]
+            [playphraseme.common.config :as config]
             [playphraseme.common.util :as util]
             [playphraseme.views.search.view :as search-page]
             [playphraseme.common.localization :refer [ls]]
@@ -35,47 +36,68 @@
 (defn header []
   (let-sub [:page
             :all-movies-count
-            :all-phrases-count]
-           (go
-             (rf/dispatch [:all-phrases-count (<! (rest-api/count-all-phrases))])
-             (rf/dispatch [:all-movies-count (<! (rest-api/count-all-movies))]))
-           (fn []
-             [:div.header
-              {:class (util/class->str (when-not (= @page :search) "invert"))}
-              [:div.top
-               (when-not (= @page :search)
-                 [header-button "Home" "/#/" "fas fa-home"])
-               (when-not (= @page :login)
-                 (if (rest-api/authorized?)
-                   [header-button
-                    (str (ls :navigation.logout) " (" (:name @(rf/subscribe [:auth-data])) ")")
-                    "/#/logout" "fas fa-user-circle"]
-                   [header-button (ls :navigation.login.register) "/#/login" "fas fa-user-circle"]))
-               (when-not (= @page :support)
-                 [header-button (ls :navigation.support) "/#/support" "far fa-envelope"])
-               [ui/flexer]
-               [header-button "Github" "https://github.com/potapenko/playphraseme-site" "fab fa-github-square"]
-               [header-button  "Facebook" "https://www.facebook.com/playphrase/" "fab fa-facebook"]
-               ^{:key "fixed-key"}
-               [facebook-like-button]]
-              [:div.bottom
-               [:div.logo {:on-click (fn [e]
-                                       (if (-> e .-altKey)
-                                         (phrases/search-random-bad-phrase)
-                                         (phrases/search-random-phrase)))}
-                [:span.red "Play"]
-                [:span.black "Phrase"]
-                [:span.gray ".me"]]
-               [ui/flexer]
-               [:div.statistic
-                [:span.count @all-movies-count]
-                [:span.info (ls :statistic.movies)]]
-               [ui/spacer 10]
-               [:div.statistic
-                [:span.count @all-phrases-count]
-                [:span.info (ls :statistic.phrases)]]
-               #_[:div.translate-direction
-                  [:span.select-button "En"] [:span.arrow ">"] [:span.select-button "En"]]]])))
+            :all-phrases-count
+            :mobile?]
+    (go
+      (rf/dispatch [:all-phrases-count (<! (rest-api/count-all-phrases))])
+      #_(rf/dispatch [:all-movies-count (<! (rest-api/count-all-movies))]))
+    (fn []
+      [:div.header
+       {:class (util/class->str (when-not (= @page :search) "invert"))}
+       [:div.top
+        (when @mobile?
+          [ui/spacer 6])
+        (when-not (= @page :search)
+          [header-button "Home" "/#/" "fas fa-home"])
+        (when-not (= @page :login)
+          (if (rest-api/authorized?)
+            [header-button
+             (str (ls :navigation.logout) " (" (:name @(rf/subscribe [:auth-data])) ")")
+             "/#/logout" "fas fa-user-circle"]
+            [header-button (ls :navigation.login.register) "/#/login" "fas fa-user-circle"]))
+        (when-not @mobile?
+          [header-button (ls :navigation.support) "/#/support" "far fa-envelope"])
+        [ui/flexer]
+        (when-not @mobile?
+          [header-button "Github" "https://github.com/potapenko/playphraseme-site" "fab fa-github-square"])
+        (when-not @mobile?
+          [header-button "Youtube" "https://www.youtube.com/channel/UCD_uvkY4IcFDEkZ3fgYhFWA" "fab fa-youtube"])
+        (when-not @mobile?
+          [header-button  "Facebook" "https://www.facebook.com/playphrase/" "fab fa-facebook"])
+        ^{:key "fixed-key"}
+        [facebook-like-button]]
+       [:div.bottom
+        (when @mobile?
+          [ui/spacer 6])
+        [:div.logo (when-not config/disable-search?
+                     {:on-click (fn [e]
+                                  (if (-> e .-altKey)
+                                    (phrases/search-random-bad-phrase)
+                                    (phrases/search-random-phrase)))})
+         [:span.red "Play"]
+         [:span.black "Phrase"]
+         [:span.gray ".me"]]
+        [ui/flexer]
+        [:div.mobile-apps
+         [:a (if (-> @page (= :mobile-app))
+               {:href "https://itunes.apple.com/app/playphraseme/id1441967668" :target "_blank"}
+               {:href "/#/mobile-app"})
+          [:img.app-button {:src    "/img/apple-store-button@1x.png"
+                            :height 24
+                            :width  66}]]
+         [ui/spacer 12]
+         [:a (if (-> @page (= :mobile-app))
+               {:href "https://play.google.com/store/apps/details?id=com.playphrasemewalk" :target "_blank"}
+               {:href "/#/mobile-app"})
+          [:img.app-button {:src    "/img/google-play-button@1x.png"
+                            :height 24
+                            :width  66}]]]
+        (when-not @mobile?
+          [ui/flexer])
+        (when-not @mobile?
+          [:div.statistic
+           [:span.count @all-phrases-count]
+           [:span.info (ls :statistic.phrases)]])]])))
 
 (defn left-column []
   [:div.left-column ""])
@@ -85,6 +107,7 @@
 
 (defn root []
   (let-sub [scale :responsive-scale
+            :page
             :responsive-show-left-column?
             :responsive-show-right-column?]
     (r/create-class
@@ -95,7 +118,10 @@
       :reagent-render
       (fn [current-page]
        [:div.layout-container
-        {:style (resp/zoom-css @scale)
+        {:style (merge
+                 (resp/zoom-css @scale)
+                 #_(when-not (-> @page (= :search))
+                     {:overflow-y "auto"}))
          :class (util/class->str
                  (when resp/ios? :ios)
                  (when resp/android? :android)

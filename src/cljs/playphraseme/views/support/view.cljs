@@ -61,5 +61,7 @@
     :reagent-render
     (fn []
       [:div.page-container
-       [:h1 "Support page"]
-       [shared/under-construction]])}))
+       [:h1 "Support"]
+       [:p "All questions you can ask by writing us an email to "
+        [:a {:href "mailto:info@playphrase.me"}
+         "info@playphrase.me"]]])}))

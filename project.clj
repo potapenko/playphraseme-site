@@ -62,6 +62,8 @@
                  [lib-noir "0.9.9"]
                  [clj-oauth2 "0.2.0"]
                  [malcontent "0.1.0-SNAPSHOT"]
+                 [sitemap "0.2.4"]
+                 [etaoin "0.2.5"]
 
                  ;; custom cljs
 
@@ -85,7 +87,7 @@
   :main ^:skip-aot playphraseme.core
   :plugins [[lein-cprop "1.0.3"]
             [lein-cljsbuild "1.1.5"]
-            [lein-figwheel "0.5.14"]
+            [lein-figwheel "0.5.17"]
             [lein-immutant "2.1.0"]
             [lein-dotenv "RELEASE"]
             [lein-midje "3.1.3"]]
@@ -93,8 +95,8 @@
   [:target-path [:cljsbuild :builds :app :compiler :output-dir] [:cljsbuild :builds :app :compiler :output-to]]
   :figwheel
   {:http-server-root "public"
+   ;; :server-port      9999
    :nrepl-port       7002
-   :server-ip        "192.168.0.200"
    :css-dirs         ["resources/public/css"]
    :nrepl-middleware
    [cemerick.piggieback/wrap-cljs-repl cider.nrepl/cider-middleware]}
@@ -128,17 +130,15 @@
                                 [com.cemerick/piggieback "0.2.2"]
                                 [midje "1.8.3"]
                                 [doo "0.1.8"]
-                                [figwheel-sidecar "0.5.14"]]
+                                [figwheel-sidecar "0.5.17"]]
                  :plugins      [[com.jakemccrary/lein-test-refresh "0.19.0"]
                                 [lein-doo "0.1.8"]
-                                [lein-figwheel "0.5.14"]
                                 [org.clojure/clojurescript "1.9.946"]]
                  :cljsbuild
                  {:builds
                   {:app
                    {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-                    :figwheel     {:on-jsload      "playphraseme.core/mount-components"
-                                   :websocket-host "192.168.0.200"}
+                    :figwheel     {:on-jsload "playphraseme.core/mount-components"}
                     :compiler
                     {:main          "playphraseme.app"
                      :asset-path    "/js/out"

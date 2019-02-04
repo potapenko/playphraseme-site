@@ -132,6 +132,11 @@
             (merge (api-headers) {:query-params {:id id}})
             login-md :body))
 
+(defn common-phrases [text]
+  (call-api http/get "/phrases/common-phrases"
+            (merge (api-headers) {:query-params {:q text}})
+            login-md :body))
+
 (defn favorites
   ([] (favorites 10 0))
   ([limit skip]
@@ -151,6 +156,18 @@
   (call-api http/delete (str "/favorites/" phrase-id)
             (api-headers) login-md :body))
 
+(defn add-playlist [playlist-data]
+  (call-api http/post "/playlists" {:json-params {:playlist playlist-data}} :body))
+
+(defn get-playlist [playlist-id]
+  (call-api http/get (str "/playlists/" playlist-id)
+            (api-headers) login-md :body))
+
+(defn get-config-value [key]
+  (call-api http/get "/configs"
+            (merge (api-headers) {:query-params {:id (name key)}})
+            login-md :body))
+
 (comment
   (go (println (<! (search-phrase "hello"))))
   (go (println (<! (count-phrase "hello"))))
@@ -164,6 +181,8 @@
   (go (println (<! (get-favorite "543bd8c8d0430558da9bfeb1"))))
   (go (println (<! (delete-favorite "543bd8c8d0430558da9bfeb1"))))
   (go (println (<! (get-phrase "543bd8c8d0430558da9bfeb1"))))
+  (go (println (<! (common-phrases "hello"))))
+  (go (println (<! (get-config-value "search-on-mobile"))))
 
 
 

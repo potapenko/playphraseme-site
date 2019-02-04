@@ -1,44 +1,45 @@
 (ns playphraseme.core
-  (:require [reagent.core :as r]
-            [re-frame.core :as rf]
-            [secretary.core :as secretary]
-            [goog.events :as events]
+  (:require [goog.events :as events]
             [goog.history.EventType :as HistoryEventType]
+            [playphraseme.common.config :as config]
+            [playphraseme.common.phrases :as phrases]
+            [playphraseme.common.responsive :as responsive]
+            [playphraseme.common.rest-api :as rest-api]
             [playphraseme.common.route :as route]
             [playphraseme.common.util :as util :refer [or-str]]
-            [playphraseme.views.search.view :as search-page]
-            [playphraseme.views.login.view :as login-page]
-            [playphraseme.views.not-found.view :as not-found-page]
-            [playphraseme.views.register.view :as register-page]
-            [playphraseme.views.reset-password.view :as reset-password-page]
-            [playphraseme.views.phrase.view :as phrase-page]
-            [playphraseme.views.article.view :as articles]
-            [playphraseme.views.support.view :as support-page]
-            [playphraseme.views.history.view :as history-page]
-            [playphraseme.views.favorites.view :as favorites-page]
-            [playphraseme.views.settings.view :as settings-page]
-            [playphraseme.views.learn.view :as learn-page]
             [playphraseme.layout :as layout]
-            [playphraseme.model]
-            [playphraseme.common.ga :as ga]
-            [playphraseme.common.responsive :as responsive]
-            [playphraseme.common.phrases :as phrases]
-            [playphraseme.common.rest-api :as rest-api])
+            [playphraseme.views.login.view :as login-page]
+            [playphraseme.views.mobile-app.view :as mobile-app-page]
+            [playphraseme.views.not-found.view :as not-found-page]
+            [playphraseme.views.playlist.view :as playlist-page]
+            [playphraseme.views.register.view :as register-page]
+            [clojure.string :as string]
+            [playphraseme.views.reset-password.view :as reset-password-page]
+            [cljs.core.async :as async :refer [<! >! put! chan timeout]]
+            [playphraseme.views.search.view :as search-page]
+            [playphraseme.views.support.view :as support-page]
+            [re-frame.core :as rf]
+            [reagent.core :as r]
+            [secretary.core :as secretary])
+  (:require-macros
+   [cljs.core.async.macros :refer [go go-loop]])
   (:import goog.History))
 
+(defn ^:export ready-for-prerender? []
+  (and @(rf/subscribe [:first-render])
+       (util/id->elem "phrase-text-0")))
+
 (def pages
-  {:search         #'search-page/page
-   :login          #'login-page/page
-   :register       #'register-page/page
-   :reset-password #'reset-password-page/page
-   :not-found      #'not-found-page/page
-   :guest-tour     #'articles/guest-tour
-   :phrase         #'phrase-page/page
-   :support        #'support-page/page
-   :history        #'history-page/page
-   :favorites      #'favorites-page/page
-   :settings       #'settings-page/page
-   :learn          #'learn-page/page})
+  (merge
+   {:login          #'login-page/page
+    :register       #'register-page/page
+    :reset-password #'reset-password-page/page
+    :not-found      #'not-found-page/page
+    :support        #'support-page/page
+    :mobile-app     #'mobile-app-page/page
+    :playlist       #'playlist-page/page}
+   (when-not config/disable-search?
+     {:search #'search-page/page})))
 
 (defn page []
   (let [page-id @(rf/subscribe [:page])
@@ -51,22 +52,25 @@
 ;; Routes
 (secretary/set-config! :prefix "#")
 
-(secretary/defroute "/" []
-  (util/go-url! "/#/search"))
+(secretary/defroute "/" [query-params]
+  (if config/disable-search?
+    (util/go-url! "/#/mobile-app")
+    (if-not (string/blank? js/searchedPhrase)
+      (route/goto-page! :search {:q js/searchedPhrase})
+      (util/go-url! (str "/#/search")))))
 
 (secretary/defroute "/search" [query-params]
-  (let [{:keys [q p]} query-params]
-   (route/goto-page! :search (merge
-                              query-params
-                              (when-not p
+  (let [{:keys [q]} query-params
+        q             (some-> q (string/replace #"\+" " "))]
+   (if config/disable-search?
+     (util/go-url! (str "playphraseme://search/" q))
+     (route/goto-page! :search (merge
+                                query-params
                                 {:q (or-str
                                      q
                                      @(rf/subscribe [:search-text])
                                      (phrases/random-phrase))})))))
 
-
-(secretary/defroute "/phrase" []
-  (route/goto-page! :phrase))
 
 (secretary/defroute "/register" []
   (route/goto-page! :register))
@@ -83,29 +87,20 @@
 
 (secretary/defroute "/auth" [query-params]
   (let [{:keys [auth-token]} query-params]
-   (rest-api/auth auth-token)
-   (util/go-url! "/#/search")))
+    (rest-api/auth auth-token)
+    (util/go-url! "/#/search")))
 
 (secretary/defroute "/article" []
   (route/goto-page! :article))
 
 (secretary/defroute "/support" []
-  (route/goto-page-or-login! :support))
+  (route/goto-page! :support))
 
-(secretary/defroute "/history" []
-  (route/goto-page-or-login! :history))
+(secretary/defroute "/mobile-app" []
+  (route/goto-page! :mobile-app))
 
-(secretary/defroute "/favorites" []
-  (route/goto-page-or-login! :favorites))
-
-(secretary/defroute "/learn" []
-  (route/goto-page! :learn))
-
-(secretary/defroute "/settings" []
-  (route/goto-page-or-login! :settings))
-
-(secretary/defroute "/guest-tour" []
-  (route/goto-page! :guest-tour))
+(secretary/defroute "/playlist/:id" {id :id}
+  (route/goto-page! :playlist {:playlist id}))
 
 (secretary/defroute "*" []
   (route/goto-page! :not-found))

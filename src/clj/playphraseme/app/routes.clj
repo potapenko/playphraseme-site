@@ -3,13 +3,24 @@
             [compojure.core :refer [defroutes GET]]
             [ring.util.http-response :as response]
             [playphraseme.app.config :refer [env]]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [clojure.string :as string]
+            [playphraseme.common.util :as util]))
 
-(defn home-page []
+(defn home-page [params]
   (layout/render "home.html"
-                {:facebook-app-id (:facebook-client-id env)}))
+                 (merge
+                  {:facebook-app-id (:facebook-client-id env)}
+                  params)))
+
+(defn prepare-search-text [q]
+  (some-> q
+          string/trim
+          (string/replace #"[_+]" " ")))
 
 (defroutes home-routes
-  (GET "/" []
-       (home-page)))
+  (GET "/" [q :as request]
+       (home-page {:q (prepare-search-text q)}))
+  (GET "/search/:phrase/" [phrase]
+       (home-page {:q (prepare-search-text phrase)})))
 

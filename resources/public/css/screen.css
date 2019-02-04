@@ -74,12 +74,10 @@ body{
 }
 
 .left-column {
-  background-color: rgba(0,0,0,0.3);
   flex-grow: 1;
 }
 
 .right-column {
-  background-color: rgba(0,0,0,0.3);
   flex-grow: 1;
 }
 
@@ -107,7 +105,7 @@ form h1 {
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  background-color: white;
+  background-color: rgba(0,0,0,0.3);
 }
 
 .layout-main {
@@ -116,6 +114,7 @@ form h1 {
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
+  background-color: white;
 }
 
 .header {
@@ -224,6 +223,7 @@ form h1 {
 .article-container {
   overflow-y: auto;
   padding: 16px;
+  background-color: white;
 }
 
 .page-container {
@@ -231,6 +231,7 @@ form h1 {
   position: absolute;
   left: 0px; right: 0px; bottom: 0px; top: 0px;
   overflow-y: auto;
+  background-color: white !important;
 }
 
 .video-player-container {
@@ -278,14 +279,11 @@ form h1 {
 
 .overlay-play-icon {
   position: absolute;
-  font-size: 55px;
-  right: 20px;
-  top: 20px;
+  font-size: 75px;
+  left: 220px;
+  top: 100px;
   color: black;
-}
-
-.overlay-play-icon .material-icons{
-  opacity: 0.3 !important;
+  opacity: 0.3;
 }
 
 .overlay-play-icon-bottom {
@@ -421,6 +419,11 @@ form h1 {
 .karaoke {
   display: flex;
   flex-wrap: wrap;
+  text-decoration: none !important;
+}
+
+.karaoke:hover {
+  text-decoration: none !important;
 }
 
 /* -------------- */
@@ -432,14 +435,22 @@ form h1 {
 	cursor: pointer;
 	padding: 3px;
 	outline: none;
-
-	/*font-family: 'Roboto';*/
-	/*font-weight: 400;*/
+  display: inline;
 }
 
 word, word:active, word:focus{
 	outline:none !important;
 	border: none;
+}
+
+.karaoke .copy-icon {
+  display: none;
+  align-items: center;
+}
+
+.karaoke:hover .copy-icon {
+	cursor: pointer;
+  display: flex;
 }
 
 .s-word-searched {
@@ -536,7 +547,7 @@ word, word:active, word:focus{
   flex-direction: row;
   font-size: 10px;
   color: rgba(0,0,0,0.4);
-  margin-top: 4px;
+  margin-top: 5px;
   align-items: center;
   padding-left: 5px;
 	transition: opacity 0.4s ease-in-out;
@@ -552,6 +563,32 @@ word, word:active, word:focus{
 .shortcuts-info i{
   font-size: 16px;
   /* margin-right: 6px; */
+}
+
+.common-phrases {
+  display: flex;
+  flex-direction: row;
+  font-size: 10px;
+  color: rgba(0,0,0,0.4);
+  margin-top: 5px;
+  align-items: center;
+  padding-left: 5px;
+  margin-right: 5px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+	transition: opacity 0.4s ease-in-out;
+}
+.common-phrases .one-common-phrase {
+  padding-right: 6px;
+  flex-wrap: nowrap;
+  color: rgba(0,0,0,0.4);
+  text-decoration: underline !important;
+	white-space: nowrap;
+}
+
+.common-phrases .one-common-phrase:hover {
+  color: rgba(0,0,0,0.9);
+	white-space: nowrap;
 }
 
 .filter-input:focus {
@@ -615,7 +652,7 @@ word, word:active, word:focus{
   position: absolute;
   width: 50px;
   left: 10px;
-  top: 12px;
+  bottom: 12px;
   bottom: 12px;
   cursor: pointer;
   list-style-type: none;
@@ -629,10 +666,7 @@ word, word:active, word:focus{
   font-size: 24px;
 }
 .stopped .video-overlay-menu {
-  opacity: 1;
-}
-.video-player-container:hover .video-overlay-menu {
-  opacity: 1;
+  opacity: 0.7;
 }
 .video-overlay-menu-right li {
   display: inline-block;
@@ -651,19 +685,6 @@ word, word:active, word:focus{
   margin-bottom: 2px;
   font-size: 8px;
   font-weight: 300;
-}
-
-h1, .page-title {
-	font-size: 24px;
-  margin: 5px 0px 20px 0px;
-	color: rgba(0,0,0,0.8);
-  text-align: left;
-	font-family: Roboto;
-	font-weight: 500;
-	line-height: 26px;
-  text-decoration: underline;
-  text-decoration-color: rgba(0,0,0,0.1);
-  text-decoration-style: solid;
 }
 
 h2 {
@@ -764,6 +785,11 @@ h2 {
   display: none;
 }
 
+img.app-button {
+  height: 24px;
+  width: 66px;
+}
+
 
 @media only screen and (max-device-width: 800px) and (orientation : portrait){
   .search-ui-container {
@@ -845,6 +871,22 @@ h2 {
   .shortcuts-info {
     display: none;
   }
+  h1 {
+    font-size: 55px;
+  }
+  .mobile-text {
+    font-size: 33px !important;
+  }
+  .mobile-text-2 {
+    font-size: 25px !important;
+  }
+
+  img.app-button {
+    height: 53px;
+    width: 145px;
+    margin-right: 8px;
+  }
+
 }
 
 @media only screen and (max-device-width : 800px) and (orientation : landscape){
@@ -914,3 +956,93 @@ h2 {
     display: none;
   }
 }
+
+.mobile-apps {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  padding-bottom: 8px;
+  opacity: 0.5;
+}
+
+.mobile-red{
+  color: #fe4c4c;
+}
+
+.android-coming-soon {
+  font-size: 22px;
+  padding: 8px;
+  color: rgba(0,0,0,0.5);
+}
+
+.mobile-app-page h2 {
+  padding: 8px;
+  background-color: rgba(0,0,0,0.1);
+  line-height: 38px;
+  /* color: #fe4c4c; */
+}
+.mobile-app-page h2 a{
+  color: black;
+  text-decoration: underline;
+}
+
+.mobile-app-page .futures-app {
+  color: #fe4c4c;
+  /* text-decoration: underline; */
+}
+
+.mobile-app-page ul {
+  list-style-type: none;
+  padding-left: 20px;
+}
+
+.mobile-app-page  li{
+  /* margin-bottom: 8px; */
+  margin-top: 18px;
+  font-weight: bold;
+  color: rgba(0,0,0,0.7);
+  margin-left: 0px;
+  /* background-color: rgba(0,0,0,0.1); */
+}
+.mobile-app-page .install-buttons {
+  text-align: center;
+  opacity: 0.8;
+}
+
+.mobile-app-page .install-buttons img{
+  height: 106px;
+  width: 290px;
+  margin-right: 8px;
+}
+.mobile-app-page .logo {
+  background-color: rgba(0,0,0,0.1);
+  padding: 4px;
+}
+.mobile-app-page .no-wrap{
+  display: inline-block;
+  padding-right: 20px;
+  white-space: nowrap;
+}
+
+.mobile-app-page .logo .red {color: red}
+.mobile-app-page .logo .black {color: black}
+.mobile-app-page .logo .gray {color: gray}
+
+@media only screen and (max-device-width: 800px) and (orientation : portrait) {
+  .mobile-app-page  li {
+    font-size: 28px;
+  }
+  .mobile-app-page h2 {
+    font-size: 33px;
+    padding: 18px;
+  }
+  .mobile-app-page h5 {
+    font-size: 28px;
+  }
+  .white-text {color: white;}
+}
+.static-content {
+  color: rgba(0,0,0,0.05);
+}
+
+#loadOverlay{display: none;}

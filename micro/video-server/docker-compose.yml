@@ -1,0 +1,13 @@
+version: '3'
+services:
+  web:
+    build: .
+    volumes:
+      - "/Volumes/Server/extractor-work-dir/final-phrases:/video"
+    ports:
+     - "8099:8099"
+    restart:
+      always
+
+
+

@@ -1,0 +1,9 @@
+**/.git
+**/micro
+**/work
+**/target/cljbuild
+**/target/uberjar/classes
+**/target/uberjar/cljsbuild-compiler-0
+**/target/uberjar/stale
+**/target/uberjar/playphraseme-site-0.1.0-SNAPSHOT.jar
+

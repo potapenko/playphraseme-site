@@ -3,25 +3,41 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	  <meta name="viewport" content="width=600,user-scalable=no">
-    <title>PlayPhrase.me: Endless stream of movie clips of specific phrases</title>
-	  <meta name="google-site-verification" content="MhTRfnejZ0JQzlv5U0Uk3cd7gwp5zPp6_ESyEYZJy4w" />
-
-   <meta property="fb:app_id" content="{{ facebook-app-id }}" />
+    <title>{{page-title}}</title>
+    <meta name="description" content="{{page-description}}" />
+	  <!-- <meta name="google-site-verification" content="MhTRfnejZ0JQzlv5U0Uk3cd7gwp5zPp6_ESyEYZJy4w" /> -->
+    <meta name="google-site-verification" content="Y0UnA_-WvGLPD-d1ctaHnwJ2q2yzb8wdqgJbKHPJCUw" />
+    <meta property="fb:app_id" content="{{ facebook-app-id }}" />
 	  <meta name="twitter:site" content="@playphraseme">
-	  <meta name="twitter:title" content="Playphrase.me">
+	  <meta name="twitter:title" content="{{page-title}}">
+	  <meta name="twitter:description" content="{{page-description}}">
 
-	  <meta property="og:title" content="Playphrase.me">
+    <meta property="og:video:type" content="video/mp4">
+	  <meta property="og:video:url" content="{{video-url|safe}}">
+	  <meta property="og:video:secure_url" content="{{video-url|safe}}">
+	  <meta property="og:video:width" content="640">
+	  <meta property="og:video:height" content="360">
+
+	  <meta property="og:title" content="{{page-title}}">
+	  <meta property="og:description" content="{{page-description}}">
 	  <meta property="og:locale" content="en_US">
+    <meta content="Playphraseme" name="apple-mobile-web-app-title">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    {{rel-canonical|safe}}
   </head>
   <body>
+    <div id="loadOverlay" style="background-color:#333; position:absolute; top:0px; left:0px; width:100%; height:100%; z-index:2000;"></div>
 
-
-    <div id="app"> </div>
+    <div id="app">
+      <!-- static content here -->
+      {{page-static-content|safe}}
+    </div>
 
     <!-- scripts and styles -->
     {% style "/assets/bootstrap/css/bootstrap.min.css" %}
     {% style "/assets/font-awesome/web-fonts-with-css/css/fontawesome-all.min.css" %}
     {% style "/css/screen.css" %}
+    {% style "/css/modal-image.css" %}
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -30,13 +46,17 @@
     <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    rel="stylesheet">
+      rel="stylesheet">
+
+    <!-- <script src="https://wzrd.in/standalone/copy-to-clipboard@latest" async></script> -->
 
     <script src="/js/iphone-inline-video.min.js"></script>
 
     <script type="text/javascript">
      var context = "{{servlet-context}}";
      var csrfToken = "{{csrf-token}}";
+     var searchOnMobile = {{search-on-mobile}}; 
+     var searchedPhrase = "{{searched-phrase|safe}}"; 
     </script>
     {% script "/js/app.js" %}
 
@@ -45,7 +65,6 @@
      window.dataLayer = window.dataLayer || [];
      function gtag(){dataLayer.push(arguments);}
      gtag('js', new Date());
-
      gtag('config', 'UA-56061701-1');
     </script>
 

@@ -1,4 +1,0 @@
-{:sources {
-           ;; :default [:self "http:" "https:" :unsafe-inline "ws:"]
-           :media   ["https://cdn.playphrase.me"
-                     "http://uk7.internet-radio.com:8000"]}}

@@ -1,6 +1,7 @@
 (ns playphraseme.api.queries.user.registered-user
   (:require [playphraseme.api.general-functions.doc-id :refer :all]
-            [playphraseme.db.users-db :refer :all]))
+            [playphraseme.db.users-db :refer :all]
+            [clojure.string :as string]))
 
 (def coll "users")
 
@@ -63,3 +64,35 @@
   "Delete a single user matching provided id"
   [^String user-id]
   (delete-doc-by-id coll (str->id user-id)))
+
+
+(comment
+
+  (let [names (->> "names.txt" slurp string/split-lines (remove string/blank?) set)]
+    (->> (find-docs coll {:pred  {:email {"$nin" [nil 0 "0"]}
+                                  :name  {"$nin" [nil 0 "0"]}}
+                          :skip  0
+                          :limit 0})
+         (map (fn [{:keys [name email]}]
+                (let [[name surname] (string/split name #" +" )]
+                  {:name    name
+                   :surname surname
+                   :email   email})))
+         (remove #(-> % :name nil?))
+         (remove #(-> % :surname nil?))
+         (filter #(->> % :email (re-find #"^.+@.+\..+$")))
+         (filter (fn [{:keys [name surname email]}]
+                   (or (-> email (string/ends-with? "ru"))
+                       (->> name string/lower-case (re-find #"^[а-я]+$"))
+                       (some->> surname string/lower-case (re-find #"(ov|ko|va|ev|in|na|ik|ak|ih|ki)$"))
+                       (names name))))
+         (map (fn [{:keys [name surname email]}] (string/join "," [email name surname])))
+         (shuffle)
+         (partition-all 20000)
+         (map-indexed (fn [index part]
+                        (->> part
+                             (map #(spit (format "emails-en-%s.csv" index) (str % "\n") :append true))
+                             (doall))))))
+
+
+  )

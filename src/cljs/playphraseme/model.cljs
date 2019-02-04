@@ -1,9 +1,11 @@
 (ns playphraseme.model
   (:require [re-frame.core :refer [dispatch subscribe reg-event-db reg-sub]]
+            [playphraseme.common.config :as config]
             [playphraseme.common.localstorage :as localstorage])
   (:require-macros [re-frame-macros.core :as mcr]))
 
 (mcr/reg-sub-event :layout nil)
+(mcr/reg-sub-event :first-render false)
 (mcr/reg-sub-event :responsive-scale 1)
 (mcr/reg-sub-event :responsive-show-left-column? true)
 (mcr/reg-sub-event :responsive-show-right-column? true)
@@ -18,11 +20,15 @@
 (mcr/reg-sub-event :all-movies-count nil)
 (mcr/reg-sub :auth-data {})
 
+(mcr/reg-sub-event :modal-images [""])
+(mcr/reg-sub-event :modal-images-index 0)
+
+
 (reg-event-db
  :initialize-db
  (fn [_ _]
    (merge
-    {:page :search}
+    {:page (if-not config/disable-search? :search :mobile-app)}
     (localstorage/load-model))))
 
 (reg-event-db

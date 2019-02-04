@@ -1,0 +1,7 @@
+docker-machine env mongodb
+set DOCKER_TLS_VERIFY=1
+set DOCKER_HOST=tcp://35.204.108.202:2376
+set DOCKER_CERT_PATH=/Volumes/Scratch/Projects/playphrase.me/phrases-extractor/gc/gc-playphraseme-db.json
+set DOCKER_MACHINE_NAME=mongodb
+# Run this command to configure your shell:
+# eval "$(docker-machine env mongodb)"

@@ -4,47 +4,34 @@
             [monger.collection :as mc]
             [playphraseme.db.phrases-db :refer :all]))
 
-(def coll "searchString")
+(def coll "search-strings")
 
 (defn migrate []
-  (mc/ensure-index db coll {:validCount 1})
+  (mc/ensure-index db coll {:count 1})
   (mc/ensure-index db coll {:text 1})
-  (mc/ensure-index db coll {:needRecalculate 1})
-  (mc/ensure-index db coll {:text 1 :validCount 1})
-  (mc/ensure-index db coll {:searchPred 1 :text 1 :validCount 1}))
+  (mc/ensure-index db coll {:text 1 :count 1})
+  (mc/ensure-index db coll {:search-next 1 :count 1})
+  (mc/ensure-index db coll {:search-pred 1 :text 1 :count 1})
+  (mc/ensure-index db coll {:words-count 1 :words-count-without-stops 1 :count 1 :text 1}))
 
 (mount/defstate migrations-search-phrases
   :start
   (migrate))
 
-(defn get-search-string-by-id
-  [^String search-string-id]
+(defn get-search-string-by-id [^String search-string-id]
   (stringify-id
    (get-doc-by-id coll (str->id search-string-id))))
-
-(defn insert-search-string!
-  [{:keys [email name password refresh-token] :as user-data}]
-  (stringify-id
-   (add-doc coll user-data)))
-
-(defn update-search-string!
-  ([data] (update-search-string! (:id data) (dissoc data :id)))
-  ([^String search-string-id data]
-   (update-doc-by-id coll (str->id search-string-id) data)))
-
-(defn delete-search-string!
-  [^String search-string-id]
-  (delete-doc-by-id coll (str->id search-string-id)))
 
 (defn count-all []
   (count-docs coll {}))
 
-(defn count-search-string [pred]
+(defn count-search-strings [pred]
   (count-docs coll pred))
 
 (defn find-search-strings
   ([pred] (find-search-strings pred 0 10))
   ([pred limit] (find-search-strings pred 0 limit))
-  ([pred skip limit]
+  ([pred skip limit] (find-search-strings pred skip limit {:count -1}))
+  ([pred skip limit sort]
    (stringify-id
-    (find-docs coll {:pred pred :skip skip :limit limit :sort {:random -1}}))))
+    (find-docs coll {:pred pred :skip skip :limit limit :sort sort}))))

@@ -45,6 +45,7 @@
                         mount/start-with-args
                         :started)]
     (log/info component "started"))
+  (log/info "Listening on port:" (-> env :port))
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 (defn -main [& args]

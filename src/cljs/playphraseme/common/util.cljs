@@ -6,6 +6,7 @@
             [goog.string.format]
             [camel-snake-kebab.core :as keb :refer [->camelCase ->kebab-case ->kebab-case-keyword]]
             [cljs.pprint :refer [pprint]]
+            [playphraseme.common.nlp :as nlp]
             [goog.crypt.base64 :as base-64]
             [re-frame.core :refer [subscribe dispatch reg-event-db reg-event-fx reg-sub] :as rf])
   (:require-macros
@@ -87,11 +88,22 @@
               (cb)) idle))))
 
 (defn params-to-url [params]
-  (string/join "&" (map (fn [[k v]] (str (name k) "=" (js/encodeURIComponent v))) params)))
+  (string/join "&" (map (fn [[k v]]
+                          (str (name k) "=" (-> v
+                                                (string/replace #"\s+" "+")
+                                                js/encodeURIComponent
+                                                (string/replace #"(%2B)+" "+"))))
+                        params)))
 
 (defn set-url! [url params]
-  (js/history.pushState nil nil (str "/#/" url "?" (params-to-url params)))
-  #_(aset js/window.location "hash" (str "/" url "?" (params-to-url params))))
+  (js/history.replaceState nil nil (str "/#/" url "?" (params-to-url params))))
+
+(def history-last (atom nil))
+
+(defn set-history-url! [url params]
+  (when-not (= @history-last [url params])
+    (reset! history-last [url params])
+    (js/history.pushState nil nil (str "/#/" url "?" (params-to-url params)))))
 
 (defn body []
   js/document.body)
@@ -135,6 +147,7 @@
     (some->> user-agent string/lower-case (re-find rx) nil? not)))
 
 (def ios? (check-navigator #"ipad|iphone"))
+(def macos? (check-navigator #"mac os"))
 (def android? (check-navigator #"android"))
 (def windows-phone? (check-navigator #"windows phone"))
 (def chrome? (check-navigator #"chrome"))
@@ -230,11 +243,21 @@
   "Formats a string using goog.string.format.
    e.g: (format \"Cost: %.2f\" 10.0234)"
   [fmt & args]
-  (apply gstring/format fmt args))
+  (apply gstring/format (concat [fmt] args)))
+
+
+(defn encode-url [s]
+  (js/encodeURIComponent s))
+
+(defn make-phrase-url [search-text]
+  (str "https://www.playphrase.me/search/"
+       (some-> search-text
+               nlp/remove-punctuation
+               string/trim string/lower-case (string/replace #" +" "_") encode-url)
+       "/"))
 
 (comment
-  (or-str nil "" "hello" "world")
-  (nil-or-blank? "hello")
-  (nil-or-blank? "")
+
+  (make-phrase-url "hello world")
 
   )

@@ -1,6 +1,8 @@
 (ns playphraseme.common.suggestions
   (:require [clojure.string :as string]
-            [playphraseme.api.queries.search-strings :as search-strings])
+            [playphraseme.api.queries.search-strings :as search-strings]
+            [playphraseme.common.util :as util]
+            [clojure.java.io :as io])
   (:gen-class))
 
 (defn- words [text]
@@ -12,7 +14,7 @@
       (recur t (assoc model v pos) (inc pos))
       model)))
 
-(def nwords (train (words (slurp "resources/search/big-text.txt"))))
+(def nwords-base (delay (train (words (slurp (io/resource "nlp/big-text.txt"))))))
 
 (defn- edits [word]
   (let [alphabet "abcdefghijklmnopqrstuvwxyz" n (count word)]
@@ -35,17 +37,18 @@
                                       nil
                                       result)))
 (defn get-candidates [word]
-  (sort #(compare (get nwords %2 1) (get nwords %1 1))
-        (or (known [word] nwords)
-            (known (edits word) nwords)
-            (known-edits2 word nwords) [word])))
+  (let [nwords @nwords-base]
+   (sort #(compare (get nwords %2 1) (get nwords %1 1))
+         (or (known [word] nwords)
+             (known (edits word) nwords)
+             (known-edits2 word nwords) [word]))))
 
 (defn correct [word]
   (first (get-candidates word)))
 
 (defn- count-in-db [text]
   (or
-   (:validCount (first (search-strings/find-search-strings {:text text})))
+   (:count (first (search-strings/find-search-strings {:text text})))
    0))
 
 (defn- create-words [text]
@@ -63,7 +66,6 @@
         result))))
 
 (defn- generate-phrases [phrase]
-  (println "phrase:" phrase ())
   (loop [[c & t] (create-words phrase) phrases []]
     (if c
       (recur t (create-generation phrases c))

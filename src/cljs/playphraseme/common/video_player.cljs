@@ -44,6 +44,12 @@
     (when el
       (aset el "currentTime" (/ position 1000)))))
 
+(defn jump-and-play [index position]
+  (let [el (some-> index index->element)]
+    (when el
+      (aset el "currentTime" (/ position 1000))
+      (-> el .play (.catch #())))))
+
 (defn stop [index]
   (some-> index index->element .pause))
 
@@ -56,10 +62,6 @@
       (when-not (playing? index)
         (when (ended? index)
           (jump index 0))
-        (when-let [audio (some-> "#music-player" util/selector)]
-          (-> audio .play
-              (.then (fn [] #_(println "audio success") ))
-              (.catch (fn [e] (println "audio error" e)))))
         (-> el .play
             (.then (fn []
                      (reset! success true)
@@ -115,7 +117,7 @@
     (fn [{:keys [hide? stopped? phrase
                  on-load on-pause on-play on-load-start
                  on-end on-pos-changed on-play-click]}]
-      (let [{:keys [index video_info]} phrase]
+      (let [{:keys [index video-info]} phrase]
         [:div.video-player-box
          {:style    (merge {:opacity (if hide? 0 1)}
                            (when hide? {:display :none}))
@@ -125,20 +127,15 @@
            :plays-inline true
            :controls     false
            :id           (index->id index)}]
-         (when (and
-                util/safari?
-                (false? @(rf/subscribe [:autoplay-enabled])))
+         (when (and stopped? (not util/ios?))
            [:div.overlay-play-icon
             [:span.fa-stack.fa-1x
-             [:i.fa.fa-circle.fa-stack-2x]
-             [:i.fa.fa-play.fa-stack-1x.fa-inverse.play-icon2]]
-            (when @(rf/subscribe [:desktop?])
-              [:div
-               [:div.auto-play-info-1 "Autoplay disabled"]
-               [:div.auto-play-info "Enable Auto-Play for our site"]
-               [:div.auto-play-info "in your browser settings"]])])
-         (let [{:keys [imdb info]} video_info]
+             [:i.fa.fa-circle.fa-stack-2x.fa-inverse]
+             [:i.fa.fa-play.fa-stack-1x.play-icon2]]])
+         (let [{:keys [imdb info]} video-info]
            [:a.overlay-video-info
-            {:href imdb :target "_blank"}
-            info])]))}))
+            {:href (str "https://www.imdb.com/title/" imdb) :target "_blank"}
+            (if-not stopped?
+              (string/replace info #"\s*\[.+\]" "")
+              info)])]))}))
 

@@ -1,6 +1,7 @@
 (ns playphraseme.api.routes.phrases
   (:require [playphraseme.api.middleware.cors :refer [cors-mw]]
             [playphraseme.api.route-functions.search.phrases-search :refer :all]
+            [playphraseme.common.common-phrases :as common-phrases]
             [compojure.api.sweet :refer :all]
             [schema.core :as s]))
 
@@ -55,14 +56,6 @@
       :summary       "Phrase stream video"
       (video-response id))
 
-    ;; (GET "/video-stream"   request
-    ;;      :tags          ["Phrases"]
-    ;;      :return        s/Str
-    ;;      :middleware    [cors-mw]
-    ;;      :query-params  [id :- s/Str]
-    ;;      :summary       "Phrase stream video"
-    ;;      (video-stream-response id))
-
     (GET "/video-download"   request
       :tags          ["Phrases"]
       :middleware    [cors-mw]
@@ -75,5 +68,29 @@
          :return        s/Any
          :middleware    [cors-mw]
          :summary       "Return phrase by id"
-         (phrase-response id))))
+         (phrase-response id))
+
+    (GET "/common-phrases" request
+         :tags          ["Phrases"]
+         :return        s/Any
+         :middleware    [cors-mw]
+         :query-params  [q :- s/Str]
+         :summary       "Return common phrases"
+         (common-phrases/get-common-phrases-response q))
+
+    (GET "/all-common-phrases" request
+         :tags          ["Phrases"]
+         :return        s/Any
+         :middleware    [cors-mw]
+         :query-params  [{skip :- s/Num 0} {limit :- s/Num 10}]
+         :summary       "Return all common phrases"
+         (common-phrases/get-all-common-phrases-response skip limit))
+
+    (GET "/search-batch"   request
+         :tags          ["Phrases"]
+         :return        s/Any
+         :middleware    [cors-mw]
+         :query-params  [q :- [s/Str]]
+         :summary       "Return batch phrases search result for mobile"
+         (search-batch-response q))))
 

@@ -1,31 +1,45 @@
 (ns playphraseme.api.queries.common-phrases
   (:require [playphraseme.api.general-functions.doc-id :refer :all]
+            [playphraseme.api.queries.phrases :as phrases]
             [mount.core :as mount]
             [monger.collection :as mc]
-            [playphraseme.db.phrases-db :refer :all]))
+            [playphraseme.db.phrases-db :refer :all]
+            [playphraseme.common.util :as util]
+            [clojure.string :as string]))
 
-(def coll "searchStrings")
+(def coll "common-phrases")
 
-(defn migrate [])
+(defn- migrate []
+  (mc/ensure-index db coll {:index 1}))
 
 (mount/defstate migrations-common-phrases
   :start (migrate))
 
-(defn get-search-string-by-id
-  [^String search-string-id]
+(defn get-common-phrase-by-id [^String common-phrase-id]
   (stringify-id
-   (get-doc-by-id coll (str->id search-string-id))))
+   (get-doc-by-id coll (str->id common-phrase-id))))
 
-(defn insert-search-string!
-  [{:keys [email name password refresh-token] :as user-data}]
+(defn find-common-phrases [params]
   (stringify-id
-   (add-doc coll user-data)))
+   (find-docs coll params)))
 
-(defn update-search-string!
-  [^String search-string-id {:keys [email name password refresh-token] :as user-data}]
-  (update-doc-by-id coll (str->id search-string-id) user-data))
+(defn find-one-common-phrase [pred]
+  (stringify-id
+   (find-doc coll pred)))
 
-(defn delete-search-string!
-  [^String search-string-id]
-  (delete-doc-by-id coll (str->id search-string-id)))
+(defn insert-common-phrase! [data]
+  (stringify-id
+   (add-doc coll data)))
+
+(defn update-common-phrase!
+  ([data] (update-common-phrase! (:id data) (dissoc data :id)))
+  ([^String common-phrase-id data]
+   (update-doc-by-id coll (str->id common-phrase-id) data)))
+
+(defn delete-common-phrase!
+  [^String common-phrase-id]
+  (delete-doc-by-id coll (str->id common-phrase-id)))
+
+(defn count-common-phrases [pred]
+  (count-docs coll pred))
 
