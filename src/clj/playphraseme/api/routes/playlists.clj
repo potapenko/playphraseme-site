@@ -1,6 +1,6 @@
 (ns playphraseme.api.routes.playlists
   (:require [playphraseme.api.middleware.cors :refer [cors-mw]]
-            [playphraseme.api.queries.playlists :refer :all]
+            [playphraseme.api.queries.playlists :as playlists]
             [compojure.api.sweet :refer :all]
             [ring.util.http-response :refer :all]
             [schema.core :as s]))
@@ -13,19 +13,31 @@
                             (s/optional-key :info) s/Str}]})
 
 (defn add-new-playlist [playlist-data]
-  (println "add-new-playlist:" playlist-data)
-  (let [exists      (find-one-playlist playlist-data)
+  (let [exists      (playlists/find-one-playlist playlist-data)
         playlist-id (if exists
                       (:id exists)
-                      (:id (insert-playlist! playlist-data)))]
+                      (:id (playlists/insert-playlist! playlist-data)))]
     playlist-id))
+
+(defn save-device-playplist [device-id playlist]
+  (let [exists      (playlists/find-one-playlist {:device-id device-id
+                                        :title     (:title playlist)})
+        playlist-id (if exists
+                      (do
+                        (playlists/update-playlist! (merge exists (dissoc playlist :id)))
+                        (:id exists))
+                      (:id (playlists/insert-playlist! (assoc playlist :device-id device-id))))]
+    playlist-id))
+
+(defn get-device-playplists [device-id]
+  (playlists/find-playlists {:device-id device-id}))
 
 (def playlists-routes
   "Specify routes for Mobile Playlists"
   (context "/api/v1/playlists" []
     :tags ["Playlists"]
 
-    (POST "/"             {:as request}
+    (POST "/"            {:as request}
           :return        s/Str
           :middleware    [cors-mw]
           :body-params   [playlist :- Playlist]
@@ -38,14 +50,25 @@
          :middleware    [cors-mw]
          :summary       "Return playlist by id"
          (ok
-          (get-playlist-by-id id)))))
-
+          (playlists/get-playlist-by-id id)))
+    (GET "/device/:id"  [id :as request]
+         :tags          ["Playlists"]
+         :return        s/Any
+         :middleware    [cors-mw]
+         :summary       "Return device playlists"
+         (ok
+          (get-device-playplists id)))
+    (POST "/device/:id" [id :as request]
+         :tags          ["Playlists"]
+         :return        s/Any
+         :body-params   [playlist :- s/Any]
+         :middleware    [cors-mw]
+         :summary       "Add device playlists"
+         (ok
+          (save-device-playplist id playlist)))))
 
 (comment
 
-  (add-new-playlist {:title "hello"
-                     :uuid "any id"
-                     :phrases [{:text "aaaasss" :info "nothing"}]})
 
 
   )

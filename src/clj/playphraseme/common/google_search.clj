@@ -112,7 +112,6 @@
      (map (fn [x]
             {:loc        x
              :lastmod    lastmod
-             :changefreq "monthly"
              :priority   "1.0"}))
      sitemap/generate-sitemap
      (sitemap/save-sitemap
@@ -128,7 +127,6 @@
      (map (fn [x]
             {:loc        x
              :lastmod    lastmod
-             :changefreq "monthly"
              :priority   "1.0"}))
      (partition-all 50000)
      (map-indexed (fn [i x]

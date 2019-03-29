@@ -20,6 +20,10 @@
   (stringify-id
    (find-docs coll params)))
 
+(defn find-playlists-by-device-id [device-id]
+  (stringify-id
+   (find-docs coll {:pred {:device-id device-id}})))
+
 (defn find-one-playlist [pred]
   (stringify-id
    (find-doc coll pred)))
@@ -29,8 +33,9 @@
    (add-doc coll data)))
 
 (defn update-playlist!
-  [^String playlist-id {:keys [email name password refresh-token] :as user-data}]
-  (update-doc-by-id coll (str->id playlist-id) user-data))
+  ([data] (update-playlist! (:id data) (dissoc data :id)))
+  ([^String playlist-id data]
+   (update-doc-by-id coll (str->id playlist-id) data)))
 
 (defn delete-playlist!
   [^String playlist-id]

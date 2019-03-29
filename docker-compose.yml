@@ -3,6 +3,8 @@ services:
   web:
     build: .
     env_file: .env-docker
+    depends_on:
+      - mongo
     volumes:
       - "~/.m2/:/root/.m2:ro"
     ports:
@@ -16,7 +18,7 @@ services:
     volumes:
       - /data/db:/data/db
     ports:
-      - 27037:27017
+      - 27017:27017
     networks:
       - playphraseme-site-net
   proxy:
@@ -24,6 +26,9 @@ services:
     restart: always
     ports:
       - 80:8080
+      - 443:443
+    depends_on:
+      - web
     networks:
       - playphraseme-site-net
 

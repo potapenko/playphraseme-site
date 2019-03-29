@@ -31,8 +31,8 @@
      exists)))
 
 (defn update-favorite!
-  [^String favorite-id {:keys [email name password refresh-token] :as user-data}]
-  (update-doc-by-id coll (str->id favorite-id) user-data))
+  [^String favorite-id data]
+  (update-doc-by-id coll (str->id favorite-id) data))
 
 (defn delete-favorite!
   [^String favorite-id]
