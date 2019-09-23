@@ -26,7 +26,7 @@
       (assoc params
              :page template
              :csrf-token *anti-forgery-token*
-             :search-on-mobile (if (config/get-config :search-on-mobile) "true" "false")
+             :search-on-mobile (if (or (config/get-config :search-on-mobile) (not (nil? q))) "true" "false")
              :servlet-context *app-context*
              :page-title (google-search/generate-page-title q)
              :page-description (google-search/generate-page-description q)

@@ -2,7 +2,7 @@
  :prerender-host         "http://localhost"
  :port                   3033
  :nrepl-port             7040
- :cdn-url                "https://storage.googleapis.com/playphraseme-phrases-video"
+ :cdn-url                "https://playphraseme8video.blob.core.windows.net/media"
  :facebook-client-id     "<env variable>"
  :facebook-client-secret "<env variable>"
  :facebook-callback-uri  "<env variable>"

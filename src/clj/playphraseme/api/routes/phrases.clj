@@ -94,3 +94,14 @@
          :summary       "Return batch phrases search result for mobile"
          (search-batch-response q))))
 
+
+
+(comment
+
+  (->
+   (common-phrases/get-all-common-phrases-response 1000 30)
+   :body
+   count
+   )
+
+  )

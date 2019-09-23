@@ -137,7 +137,7 @@
 
 (defn generate-common-phrases []
   (let [index (atom 0)]
-   (->> (range 1 31)
+   (->> (range 45 301)
         (map (fn [pos]
                (println "\n")
                (println "pos:" pos)
@@ -147,10 +147,11 @@
                  (->> phrases
                       (map-indexed
                        (fn [i {:keys [count text]}]
+                         (println ">>>" text)
                          (if-let [exists (common-phrases-db/find-one-common-phrase {:text text})]
                            (common-phrases-db/update-common-phrase!
                             (assoc exists :index (swap! index inc) :count count))
-                           (let [urban (urban-dictionary/search text)]
+                           (let [urban nil #_(urban-dictionary/search text)]
                              (common-phrases-db/insert-common-phrase!
                               {:index      (swap! index inc)
                                :count      count
@@ -168,6 +169,5 @@
 
   (common-phrases-db/count-common-phrases {})
 
-  (string/lower-case "2TlGRIY")
 
   )

@@ -43,3 +43,12 @@
 (defn count-common-phrases [pred]
   (count-docs coll pred))
 
+
+(comment
+
+
+  (count-common-phrases {})
+
+
+
+  )

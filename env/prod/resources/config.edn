@@ -1,6 +1,6 @@
 {:production true
  :port       3033
- :cdn-url    "/video"
+ :cdn-url    "https://playphraseme8video.blob.core.windows.net/media"
 
  ;; :facebook-client-id     "<env variable>"
  ;; :facebook-client-secret "<env variable>"

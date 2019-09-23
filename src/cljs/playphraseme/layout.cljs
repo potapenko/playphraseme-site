@@ -49,7 +49,7 @@
           [ui/spacer 6])
         (when-not (= @page :search)
           [header-button "Home" "/#/" "fas fa-home"])
-        (when-not (= @page :login)
+        #_(when-not (= @page :login)
           (if (rest-api/authorized?)
             [header-button
              (str (ls :navigation.logout) " (" (:name @(rf/subscribe [:auth-data])) ")")
