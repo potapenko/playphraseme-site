@@ -128,10 +128,9 @@
                                 [ring/ring-mock "0.3.1"]
                                 [ring/ring-devel "1.6.2"]
                                 [pjstadig/humane-test-output "0.8.3"]
-                                [binaryage/devtools "0.9.7"]
                                 [midje "1.8.3"]
                                 [doo "0.1.8"]
-                                [binaryage/devtools "0.9.10"]
+                                ;; [binaryage/devtools "0.9.10"]
                                 [cider/piggieback "0.4.2"]
                                 [figwheel-sidecar "0.5.19"]]
                  :plugins      [[com.jakemccrary/lein-test-refresh "0.19.0"]
@@ -146,7 +145,8 @@
                  {:builds
                   {:app
                    {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-                    :figwheel     {:on-jsload "playphraseme.core/mount-components"}
+                    :figwheel     {:on-jsload "playphraseme.core/mount-components"
+                                   :open-urls ["http://localhost:3033/#/search"]}
                     :compiler
                     {:main          "playphraseme.app"
                      :asset-path    "/js/out"
