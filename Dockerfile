@@ -1,21 +1,7 @@
-FROM java:8-alpine
-MAINTAINER Eugene Potapenko <eugene.john.potapenko@gmail.com>
+FROM openjdk:8-alpine
 
-ADD target/uberjar/playphraseme.jar /playphraseme/app.jar
+COPY target/uberjar/playphraseme.jar /playphraseme/app.jar
 
-EXPOSE 3033
+EXPOSE 3000
 
 CMD ["java", "-jar", "/playphraseme/app.jar"]
-
-# FROM clojure
-# MAINTAINER Eugene Potapenko <eugene.john.potapenko@gmail.com>
-
-# COPY . /app
-
-# WORKDIR /app
-
-# EXPOSE 3033
-
-# CMD ["lein", "run"]
-
-
