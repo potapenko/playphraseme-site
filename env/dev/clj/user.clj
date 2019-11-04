@@ -1,6 +1,5 @@
 (ns user
-  (:require 
-            [mount.core :as mount]
+  (:require [mount.core :as mount]
             [playphraseme.figwheel :refer [start-fw stop-fw cljs]]
             [playphraseme.core :refer [start-app]]))
 

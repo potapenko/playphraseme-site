@@ -3,10 +3,7 @@
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
 
-  :dependencies [[org.clojure/clojure "1.9.0"]
-                 [org.clojure/clojurescript "1.10.520"]
-                 [org.clojure/tools.reader "1.1.0"]
-                 [cider/cider-nrepl "0.19.0"]
+  :dependencies [[cider/cider-nrepl "0.15.1"]
                  [clj-time "0.14.0"]
                  [cljs-ajax "0.7.2"]
                  [com.google.guava/guava "20.0"]
@@ -22,6 +19,9 @@
                  [metosin/muuntaja "0.3.2"]
                  [metosin/ring-http-response "0.9.0"]
                  [mount "0.1.11"]
+                 [org.clojure/clojure "1.9.0-beta2"]
+                 [org.clojure/clojurescript "1.9.946"]
+                 [org.clojure/tools.reader "1.1.0"]
                  [org.clojure/tools.cli "0.3.5"]
                  [org.clojure/tools.logging "0.4.0"]
                  [org.webjars.bower/tether "1.4.0"]
@@ -36,7 +36,6 @@
                  [ring-webjars "0.2.0"]
                  [ring/ring-core "1.6.2"]
                  [ring/ring-defaults "0.3.1"]
-                 [org.flatland/ordered "1.5.7"]
                  [secretary "1.2.3"]
                  [selmer "1.11.1"]
                  [clj-oauth "1.5.5"]
@@ -87,9 +86,8 @@
   :target-path "target/%s/"
   :main ^:skip-aot playphraseme.core
   :plugins [[lein-cprop "1.0.3"]
+            [lein-cljsbuild "1.1.5"]
             [lein-figwheel "0.5.17"]
-            [refactor-nrepl "2.4.0"]
-            [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]
             [lein-immutant "2.1.0"]
             [lein-dotenv "RELEASE"]
             [lein-midje "3.1.3"]]
@@ -128,25 +126,19 @@
                                 [ring/ring-mock "0.3.1"]
                                 [ring/ring-devel "1.6.2"]
                                 [pjstadig/humane-test-output "0.8.3"]
+                                [binaryage/devtools "0.9.7"]
+                                [com.cemerick/piggieback "0.2.2"]
                                 [midje "1.8.3"]
                                 [doo "0.1.8"]
-                                ;; [binaryage/devtools "0.9.10"]
-                                [cider/piggieback "0.4.2"]
-                                [figwheel-sidecar "0.5.19"]]
+                                [figwheel-sidecar "0.5.17"]]
                  :plugins      [[com.jakemccrary/lein-test-refresh "0.19.0"]
                                 [lein-doo "0.1.8"]
-                                [org.clojure/clojurescript "1.10.516"]]
-                 :repl-options {:init-ns user :init (start-app [])
-                                :nrepl-middleware
-                                [cider.piggieback/wrap-cljs-repl]
-                                [cider.nrepl/cider-middleware]
-                                [refactor-nrepl.middleware/wrap-refactor]}
+                                [org.clojure/clojurescript "1.9.946"]]
                  :cljsbuild
                  {:builds
                   {:app
                    {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-                    :figwheel     {:on-jsload "playphraseme.core/mount-components"
-                                   :open-urls ["http://localhost:3033/#/search"]}
+                    :figwheel     {:on-jsload "playphraseme.core/mount-components"}
                     :compiler
                     {:main          "playphraseme.app"
                      :asset-path    "/js/out"
@@ -159,6 +151,9 @@
                  :doo            {:build "test"}
                  :source-paths   ["env/dev/clj"]
                  :resource-paths ["env/dev/resources"]
+                 :repl-options   {:init-ns user
+                                  :init (start-app [])
+                                  :open-urls ["http://localhost:3030/"]}
                  :injections     [(require 'pjstadig.humane-test-output)
                                   (pjstadig.humane-test-output/activate!)]}
    :project/test {:resource-paths ["env/test/resources"]
