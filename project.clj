@@ -39,6 +39,8 @@
 
                  ;; custom clj
 
+                 [compojure "1.6.0"]
+                 [metosin/compojure-api "1.1.11"]
                  [base64-clj "0.1.1"]
                  [org.clojure/core.match "0.3.0-alpha4"]
                  [org.clojure/core.async "0.3.443"]
@@ -57,10 +59,20 @@
                  [lib-noir "0.9.9"]
                  [clj-oauth2 "0.2.0"]
                  [malcontent "0.1.0-SNAPSHOT"]
-                 [sitemap "0.2.4"]
+                 [sitemap "0.4.0"]
                  [etaoin "0.2.5"]
+                 [camel-snake-kebab "0.4.0"]
+                 [luminus-immutant "0.2.5"]
 
+                 ;; custom cljs
 
+                 [soda-ash "0.4.0"]
+                 [cljs-http "0.1.44"]
+                 [cljsjs/c3 "0.4.14-0"]
+                 [com.andrewmcveigh/cljs-time "0.5.2"]
+                 [bux "0.3.0"]
+                 [re-frame-macros "0.1.14-SNAPSHOT"]
+                 [cljs-await "1.0.1-SNAPSHOT"]
                  ]
 
   :min-lein-version "2.0.0"
@@ -80,7 +92,6 @@
    :nrepl-port 7002
    :css-dirs ["resources/public/css"]
    :nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
-
 
   :profiles
   {:uberjar {:omit-source true
@@ -134,7 +145,6 @@
                       :main "playphraseme.app"
                       :pretty-print true}}}}
 
-
                   :doo {:build "test"}
                   :source-paths ["env/dev/clj"]
                   :resource-paths ["env/dev/resources"]
@@ -166,14 +176,12 @@
                  [cljs-ajax "0.7.2"]
                  [com.google.guava/guava "20.0"]
                  [com.novemberain/monger "3.1.0" :exclusions [com.google.guava/guava]]
-                 [compojure "1.6.0"]
                  [cprop "0.1.11"]
                  [funcool/struct "1.1.0"]
                  [luminus-immutant "0.2.3"]
                  [luminus-nrepl "0.1.4"]
                  [luminus/ring-ttl-session "0.3.2"]
                  [markdown-clj "1.0.1"]
-                 [metosin/compojure-api "1.1.11"]
                  [metosin/muuntaja "0.3.2"]
                  [metosin/ring-http-response "0.9.0"]
                  [mount "0.1.11"]
@@ -198,17 +206,7 @@
                  [selmer "1.11.1"]
                  [clj-oauth "1.5.5"]
 
-                 ;; custom cljs
-
-                 [soda-ash "0.4.0"]
-                 [cljs-http "0.1.44"]
-                 [camel-snake-kebab "0.4.0"]
-                 [cljsjs/c3 "0.4.14-0"]
-                 [com.andrewmcveigh/cljs-time "0.5.2"]
-                 [bux "0.3.0"]
-                 [com.cognitect/transit-cljs "0.8.243"]
-                 [re-frame-macros "0.1.14-SNAPSHOT"]
-                 [cljs-await "1.0.1-SNAPSHOT"]]
+                 ]
 
   :min-lein-version "2.0.0"
 

@@ -4,7 +4,7 @@
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.tools.logging :as log]
             [luminus.http-server :as http]
-            [playphraseme.nrepl :as nrepl]
+            [playphraseme.app.nrepl :as nrepl]
             [mount.core :as mount]
             [playphraseme.api.core]
             [playphraseme.app.config :refer [env]]

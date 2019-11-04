@@ -1,7 +1,7 @@
 (ns user
   "Userspace functions you can run by default in your local REPL."
   (:require
-   [playphraseme-site.config :refer [env]]
+   [playphraseme.app.config :refer [env]]
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
    [mount.core :as mount]

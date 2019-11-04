@@ -7,8 +7,8 @@
 (use-fixtures
   :once
   (fn [f]
-    (mount/start #'playphraseme.config/env
-                 #'playphraseme.handler/app)
+    (mount/start #'playphraseme.app.config/env
+                 #'playphraseme.app.handler/app)
     (f)))
 
 (deftest test-app
