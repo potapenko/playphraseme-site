@@ -62,7 +62,6 @@
                  [sitemap "0.4.0"]
                  [etaoin "0.2.5"]
                  [camel-snake-kebab "0.4.0"]
-                 [luminus-immutant "0.2.5"]
 
                  ;; custom cljs
 

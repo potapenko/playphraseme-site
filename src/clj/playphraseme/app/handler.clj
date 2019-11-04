@@ -19,10 +19,6 @@
   :start ((or (:init defaults) identity))
   :stop  ((or (:stop defaults) identity)))
 
-(defn authenticated? [name pass]
-  (and (= name (-> env :home-page-basic-login :name))
-       (= pass (-> env :home-page-basic-login :pass))))
-
 (def app-routes
   (routes
    (-> #'api-routes
