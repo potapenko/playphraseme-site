@@ -4,9 +4,9 @@
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.tools.logging :as log]
             [luminus.http-server :as http]
-            [playphraseme-site.nrepl :as nrepl]
+            [playphraseme.nrepl :as nrepl]
             [mount.core :as mount]
-            playphraseme.api.core
+            [playphraseme.api.core]
             [playphraseme.app.config :refer [env]]
             [playphraseme.app.handler :as handler]
             playphraseme.db.users-db))

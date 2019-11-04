@@ -107,8 +107,7 @@
    :dev           [:project/dev :profiles/dev]
    :test          [:project/dev :project/test :profiles/test]
 
-   :project/dev  {:jvm-opts ["-Dconf=dev-config.edn"]
-                  :dependencies [[binaryage/devtools "0.9.10"]
+   :project/dev  {:dependencies [[binaryage/devtools "0.9.10"]
                                  [cider/piggieback "0.4.1"]
                                  [doo "0.1.11"]
                                  [figwheel-sidecar "0.5.19"]
@@ -142,8 +141,7 @@
                   :repl-options {:init-ns user}
                   :injections [(require 'pjstadig.humane-test-output)
                                (pjstadig.humane-test-output/activate!)]}
-   :project/test {:jvm-opts ["-Dconf=test-config.edn"]
-                  :resource-paths ["env/test/resources"]
+   :project/test {:resource-paths ["env/test/resources"]
                   :cljsbuild
                   {:builds
                    {:test
