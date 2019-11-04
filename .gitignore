@@ -21,3 +21,7 @@ figwheel_server.log
 /resources/public/sitemap-2.xml
 /resources/public/sitemap-3.xml
 /resources/public/sitemap-4.xml
+micro/proxy/ssl/
+resources/public/sitemap-phrases-0.xml
+resources/public/sitemap-phrases-1.xml
+resources/public/sitemap-phrases-2.xml
