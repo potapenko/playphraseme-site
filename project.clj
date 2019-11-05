@@ -68,7 +68,7 @@
                  [com.cognitect/transit-cljs "0.8.243"]
                  [re-frame-macros "0.1.14-SNAPSHOT"]
                  [cljs-await "1.0.1-SNAPSHOT"]
-
+                 [secretary "1.2.3"]
 
                  ]
 
