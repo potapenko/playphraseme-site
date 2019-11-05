@@ -49,17 +49,13 @@
                  [buddy "2.0.0"]
                  [org.clojure/data.codec "0.1.0"]
                  [clojurewerkz/money "1.10.0"]
-                 [net.polyc0l0r/bote "0.1.0"]
                  [diehard "0.6.0"]
-                 [metrics-clojure "2.10.0"]
-                 [metrics-clojure-graphite "2.10.0"]
                  [bk/ring-gzip "0.2.1"]
                  [ring-basic-authentication "1.0.5"]
                  [lib-noir "0.9.9"]
                  [clj-oauth2 "0.2.0"]
                  [malcontent "0.1.0-SNAPSHOT"]
                  [sitemap "0.2.4"]
-                 [etaoin "0.2.5"]
 
                  ;; custom cljs
 
