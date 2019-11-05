@@ -35,7 +35,46 @@
                  [ring-webjars "0.2.0"]
                  [ring/ring-core "1.7.1"]
                  [ring/ring-defaults "0.3.2"]
-                 [selmer "1.12.14"]]
+                 [selmer "1.12.14"]
+
+                 ;; custom clj
+
+                 [base64-clj "0.1.1"]
+                 [org.clojure/core.match "0.3.0-alpha4"]
+                 [org.clojure/core.async "0.3.443"]
+                 [clj-http "3.7.0"]
+                 [com.draines/postal "2.0.2"]
+                 [ring-cors "0.1.11"]
+                 [clj-time "0.14.0"]
+                 [buddy "2.0.0"]
+                 [org.clojure/data.codec "0.1.0"]
+                 [clojurewerkz/money "1.10.0"]
+                 [net.polyc0l0r/bote "0.1.0"]
+                 [diehard "0.6.0"]
+                 [metrics-clojure "2.10.0"]
+                 [metrics-clojure-graphite "2.10.0"]
+                 [bk/ring-gzip "0.2.1"]
+                 [ring-basic-authentication "1.0.5"]
+                 [lib-noir "0.9.9"]
+                 [clj-oauth2 "0.2.0"]
+                 [malcontent "0.1.0-SNAPSHOT"]
+                 [sitemap "0.2.4"]
+                 [etaoin "0.2.5"]
+
+                 ;; custom cljs
+
+                 [soda-ash "0.4.0"]
+                 [cljs-http "0.1.44"]
+                 [camel-snake-kebab "0.4.0"]
+                 [cljsjs/c3 "0.4.14-0"]
+                 [com.andrewmcveigh/cljs-time "0.5.2"]
+                 [bux "0.3.0"]
+                 [com.cognitect/transit-cljs "0.8.243"]
+                 [re-frame-macros "0.1.14-SNAPSHOT"]
+                 [cljs-await "1.0.1-SNAPSHOT"]
+
+
+                 ]
 
   :min-lein-version "2.0.0"
 
