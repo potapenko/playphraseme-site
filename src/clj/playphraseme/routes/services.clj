@@ -49,7 +49,7 @@
 
    ["/ping"
     {:get (constantly (ok {:message "pong"}))}]
-   
+
 
    ["/math"
     {:swagger {:tags ["math"]}}

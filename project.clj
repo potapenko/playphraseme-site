@@ -132,7 +132,8 @@
                   :cljsbuild{:builds
                    {:app
                     {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-                     :figwheel {:on-jsload "playphraseme.core/mount-components"}
+                     :figwheel {:on-jsload "playphraseme.core/mount-components"
+                                :open-urls ["http://localhost:3000/"]}
                      :compiler
                      {:output-dir "target/cljsbuild/public/js/out"
                       :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}
