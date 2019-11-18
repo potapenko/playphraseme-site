@@ -9,7 +9,7 @@
             [playphraseme.common.debug-util :as debug-util :refer [...]]))
 
 (defstate db*
-  :start (-> env :phrases-database-url mg/connect-via-uri)
+  :start (-> env :phrases-database-url #_mg/connect-via-uri)
   :stop (-> db* :conn mg/disconnect))
 
 (defstate db
@@ -70,5 +70,8 @@
    (mc/count db coll pred)))
 
 (comment
-  (mount/start))
+  (mount/start)
+
+
+  )
 

@@ -1,0 +1,39 @@
+version: '3'
+services:
+  web:
+    build: .
+    env_file: .env-docker
+    depends_on:
+      - mongo
+    volumes:
+      - "~/.m2/:/root/.m2:ro"
+    ports:
+     - 3033:3033
+    networks:
+      - playphraseme-site-net
+  mongo:
+    image: mongo:3.4.14
+    restart: always
+    env_file: .env-docker
+    volumes:
+      - /data/db:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - playphraseme-site-net
+  proxy:
+    build: ./micro/proxy
+    restart: always
+    ports:
+      - 80:8080
+      - 443:443
+    depends_on:
+      - web
+    networks:
+      - playphraseme-site-net
+
+networks:
+  playphraseme-site-net:
+
+
+
