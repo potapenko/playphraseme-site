@@ -17,6 +17,7 @@ profiles.clj
 *.iml
 figwheel_server.log
 test-config.edn
+dev-config.edn
 /resources/public/sitemap.xml
 /resources/public/sitemap-1.xml
 /resources/public/sitemap-2.xml
