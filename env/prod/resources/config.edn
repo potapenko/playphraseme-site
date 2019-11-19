@@ -1,2 +1,11 @@
-{:prod true
- :port 3000}
+{:production true
+ :port       3033
+ :cdn-url    "https://playphraseme8video.blob.core.windows.net/media"
+
+ ;; :facebook-client-id     "<env variable>"
+ ;; :facebook-client-secret "<env variable>"
+ ;; :facebook-callback-uri  "<env variable>"
+ ;; :users-database-url     "<env variable>"
+ ;; :phrases-database-url   "<env variable>"
+ ;; :indexer-url            "<env variable>"
+ }

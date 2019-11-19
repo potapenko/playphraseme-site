@@ -1,1 +1,10 @@
-{}
+{:dev                    true
+ :prerender-host         "http://localhost"
+ :port                   3033
+ :nrepl-port             7040
+ :cdn-url                "https://playphraseme8video.blob.core.windows.net/media"
+ :users-database-url     "<env variable>"
+ :phrases-database-url   "<env variable>"
+ :facebook-client-id     "<env variable>"
+ :facebook-client-secret "<env variable>"
+ :facebook-callback-uri  "<env variable>"}
