@@ -1,22 +1,15 @@
 (ns playphraseme.common.google-search
-  (:require [clojure.string :as string]
-            [playphraseme.common.suggestions :as suggestions]
-            [playphraseme.api.queries.search-strings :as search-strings]
-            [playphraseme.common.nlp :as nlp]
-            [playphraseme.api.queries.phrases :as phrases]
-            [playphraseme.common.util :as util]
-            [playphraseme.common.common-phrases :as common-phrases]
-            [playphraseme.api.queries.common-phrases :as common-phrases-db]
-            [clj-time.core :as t]
+  (:require [clj-time.core :as t]
             [clj-time.format :as f]
-            [sitemap.core :as sitemap]
             [clojure.java.io :as io]
-            [playphraseme.app.config :refer [env]]
-            [etaoin.api :as etaoin]
-            [mount.core :as mount]
-            [clojure.tools.logging :as log]
+            [clojure.string :as string]
+            [playphraseme.api.queries.phrases :as phrases]
+            [playphraseme.api.queries.prerenders :as prerenders]
+            [playphraseme.api.queries.search-strings :as search-strings]
             [playphraseme.api.route-functions.search.phrases-search :as phrases-search]
-            [playphraseme.api.queries.prerenders :as prerenders]))
+            [playphraseme.common.nlp :as nlp]
+            [playphraseme.common.util :as util]
+            [sitemap.core :as sitemap]))
 
 (def default-title "PlayPhrase.me: Largest collection of video quotes from movies on the web")
 (def default-description "Improve your pronunciation: search phrases in movies and watch and listen videos with them.")
