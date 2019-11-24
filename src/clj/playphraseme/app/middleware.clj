@@ -1,18 +1,16 @@
-(ns playphraseme.middleware
+(ns playphraseme.app.middleware
   (:require
     [playphraseme.env :refer [defaults]]
     [cheshire.generate :as cheshire]
     [cognitect.transit :as transit]
     [clojure.tools.logging :as log]
-    [playphraseme.layout :refer [error-page]]
+    [playphraseme.app.layout :refer [error-page]]
     [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
     [playphraseme.middleware.formats :as formats]
     [muuntaja.middleware :refer [wrap-format wrap-params]]
-    [playphraseme.config :refer [env]]
+    [playphraseme.app.config :refer [env]]
     [ring-ttl-session.core :refer [ttl-memory-store]]
-    [ring.middleware.defaults :refer [site-defaults wrap-defaults]])
-  (:import 
-           ))
+    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
 
 (defn wrap-internal-error [handler]
   (fn [req]
