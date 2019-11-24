@@ -1,9 +1,9 @@
 (ns playphraseme.core
   (:require
-    [playphraseme.handler :as handler]
-    [playphraseme.nrepl :as nrepl]
+    [playphraseme.app.handler :as handler]
+    [playphraseme.app.nrepl :as nrepl]
     [luminus.http-server :as http]
-    [playphraseme.config :refer [env]]
+    [playphraseme.app.config :refer [env]]
     [clojure.tools.cli :refer [parse-opts]]
     [clojure.tools.logging :as log]
     [mount.core :as mount])

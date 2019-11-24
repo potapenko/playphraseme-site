@@ -58,6 +58,7 @@
                  [malcontent "0.1.0-SNAPSHOT"]
                  [sitemap "0.4.0"]
                  [etaoin "0.3.6"]
+                 [camel-snake-kebab "0.4.0"]
 
                  ;; custom cljs
 
