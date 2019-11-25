@@ -31,6 +31,7 @@
     <logger name="io.undertow.session" level="warn" />
     <logger name="io.undertow.request" level="warn" />
     <logger name="org.mongodb.driver" level="warn" />
+    <logger name="org.eclipse.jetty" level="warn" />
     <root level="DEBUG">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
