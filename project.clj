@@ -1,5 +1,4 @@
 (defproject playphraseme "0.1.0-SNAPSHOT"
-
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
 
@@ -58,7 +57,6 @@
                  [malcontent "0.1.0-SNAPSHOT"]
                  [sitemap "0.4.0"]
                  [etaoin "0.3.6"]
-                 [camel-snake-kebab "0.4.0"]
 
                  ;; custom cljs
 
@@ -132,7 +130,8 @@
                   :plugins      [[com.jakemccrary/lein-test-refresh "0.24.1"]
                                  [lein-doo "0.1.11"]
                                  [lein-figwheel "0.5.19"]]
-                  :cljsbuild{:builds
+                  :cljsbuild
+                  {:builds
                    {:app
                     {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
                      :figwheel {:on-jsload "playphraseme.core/mount-components"
