@@ -1,4 +1,6 @@
 -*.log
+-*.js
+-*.jar
 -/target
 -/figwheel_server.log
 -/log

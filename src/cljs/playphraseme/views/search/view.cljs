@@ -13,7 +13,8 @@
             [playphraseme.common.video-player :as player]
             [playphraseme.common.phrases :as phrases]
             [playphraseme.common.ga :as ga]
-            [playphraseme.common.nlp :as nlp])
+            [playphraseme.common.nlp :as nlp]
+            [cljs.pprint :as pp])
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]
    [re-frame-macros.core :as mcr :refer [let-sub]]))
@@ -135,7 +136,14 @@
   (some-> current-word :index (->> (str "word-")) util/id->elem (util/add-class "s-word-played")))
 
 (defn update-current-word [pos]
-  (let [current-word (some->> (get-current-phrase) :words (filter #(-> % :start (< pos))) last)]
+  (let [current-word (some->> (get-current-phrase)
+                              :words
+                              (filter
+                               (fn [{:keys [start left-padding]
+                                     :or   {left-padding 150}}]
+                                 (println start left-padding  pos)
+                                 (-> start (- left-padding) (< pos))))
+                              last)]
     (when current-word
       (highlite-word current-word))))
 

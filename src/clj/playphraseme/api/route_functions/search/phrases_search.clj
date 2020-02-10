@@ -30,14 +30,6 @@
       drop-last
       (->> (string/join " "))))
 
-(defn- remove-punctuation [s]
-  (-> s
-      string/lower-case
-      (string/replace #"[.,\/#!$%\^&\*;:{}=\-_`~()—]" "")
-      (string/replace #"\s+" " ")
-      string/lower-case
-      string/trim))
-
 (defn- get-video-file [id]
   (let [phrase (db/get-phrase-by-id id)]
     (str (:id phrase) ".mp4")))
@@ -60,7 +52,8 @@
   (some-> phrase
           (util/remove-keys [:random :have-video :__v :state :search-strings])
           (util/remove-keys :words [:id])
-          (assoc :video-info (update (get-video-info (:movie phrase)) :info str " [" (date-util/timestamp start) "]") )
+          (assoc :video-info
+                 (update (get-video-info (:movie phrase)) :info str " [" (date-util/timestamp start) "]") )
           (assoc :video-url (get-video-url id))))
 
 (defn get-phrase-data [id]
