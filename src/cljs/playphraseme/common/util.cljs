@@ -256,6 +256,13 @@
                string/trim string/lower-case (string/replace #" +" "_") encode-url)
        "/"))
 
+(defn first? [idx & [coll]]
+  (= idx 0))
+
+(defn last? [idx coll]
+  (= idx (dec (count coll))))
+
+
 (comment
 
   (make-phrase-url "hello world")

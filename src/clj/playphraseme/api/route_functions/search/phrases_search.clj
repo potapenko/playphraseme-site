@@ -178,12 +178,13 @@
 
 (comment
 
-  (add-search-string-pred "55da1457c6384911f4a22bbe")
-  (search-next-word-search-string "are you")
-  (search-next-word-search-string "are you s" true)
-  (add-search-string-search-pred "55bf95c5d18e85856832e9d0")
-  (add-search-string-pred "55bf95c5d18e85856832e9d0")
-  (time (count-response "hello"))
-  (time (search-response "hello" 0 10))
-  (-> (search-response "hello" 0 1) :body)
-  (get-phrase-data "543bd8c8d0430558da9bfeb1"))
+
+  (-> (search-response "fuck" 0 1) :body)
+
+  (phrases/find-phrases {;; :search-strings "fuck"
+                         :have-video     true}
+                        0 10)
+
+
+
+  )

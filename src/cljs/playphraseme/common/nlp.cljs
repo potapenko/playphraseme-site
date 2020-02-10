@@ -15,6 +15,26 @@
 (def escape_qustion "#escape_question#")
 (def escape_exclamation "#escape_exclamation#")
 
+(defn remove-punctuation [s]
+  (-> s
+      string/lower-case
+      (string/replace #"[.,\/#!%\^&\*\?+\[\]\+\";:{}=\-_`~()—>]" " ")
+      (string/replace #"\s+" " ")
+      string/trim))
+
+(defn remove-numbers [s]
+  (-> s
+      string/lower-case
+      (string/replace #"\d+" " ")
+      (string/replace #"\s+" " ")
+      string/trim))
+
+(defn clean-text [s]
+  (->> s
+       string/lower-case
+       remove-punctuation
+       string/trim))
+
 (defn create-words [s]
   (-> s
       (->
@@ -36,13 +56,6 @@
       (if v
         (recur t (string/replace s (str v ".") (str v one-dot-mark)))
         s))))
-
-(defn remove-punctuation [s]
-  (-> s
-      string/lower-case
-      (string/replace #"[.,\/#!$%\^&\*;:{}=\-_`~()—]" "")
-      (string/replace #"\s+" " ")
-      string/trim))
 
 (defn create-sentences [s]
   (-> s

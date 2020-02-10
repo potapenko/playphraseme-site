@@ -2,7 +2,7 @@
  :prerender-host         "http://localhost"
  :port                   3033
  :nrepl-port             7040
- :cdn-url                "https://playphraseme8video.blob.core.windows.net/media"
+ :cdn-url                "https://playphraseme-video.sfo2.digitaloceanspaces.com"
  :users-database-url     "<env variable>"
  :phrases-database-url   "<env variable>"
  :facebook-client-id     "<env variable>"
