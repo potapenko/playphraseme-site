@@ -216,7 +216,7 @@ form h1 {
   height: 100%;
   text-align: center;
   overflow: hidden;
-	transition: opacity 0.4s ease-in-out;
+	transition: opacity 0.2s ease-in-out;
 }
 
 .video-player {

@@ -82,7 +82,8 @@
          next-current  (inc current)]
      (assoc db
             :current-phrase-index (if (> next-current (dec count-phrases))
-                                    0 next-current)))))
+                                    0
+                                    next-current)))))
 
 (reg-event-db
  ::prev-phrase

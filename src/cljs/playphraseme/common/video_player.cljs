@@ -119,8 +119,7 @@
                  on-end on-pos-changed on-play-click]}]
       (let [{:keys [index video-info]} phrase]
         [:div.video-player-box
-         {:style    (merge {:opacity (if hide? 0 1)}
-                           (when hide? {:display :none}))
+         {:style    {:opacity (if hide? 0 1)}
           :on-click on-play-click}
          [:video.video-player
           {:src          (:video-url phrase)

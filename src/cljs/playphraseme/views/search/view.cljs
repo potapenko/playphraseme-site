@@ -112,18 +112,19 @@
             (rf/dispatch [::model/favorite-phrase id (-> favorited)])))))))
 
 (defn next-phrase []
-  (rf/dispatch-sync [::model/next-phrase])
-  (load-favorited)
-  (let [current @(rf/subscribe [:current-phrase-index])
-        loaded  (count @(rf/subscribe [::model/phrases]))
-        text @(rf/subscribe [:search-text])]
-    (scroll-to-phrase current)
-    (util/set-url! "search" {:q text #_:p #_(:id (get-current-phrase))})
-    (when (-> current (+ 5) (> loaded))
-      (scroll-end)))
-  (when (-> @(rf/subscribe [::model/phrases]) count (= 1))
-    (player/jump 0 0)
-    (player/play 0)))
+  (let-sub [::model/phrases
+            :current-phrase-index
+            :search-text]
+   (load-favorited)
+   (util/set-url! "search" {:q @search-text #_:p #_(:id (get-current-phrase))})
+   (let [loaded  (count @phrases)
+         current (if (-> @current-phrase-index inc (= loaded))
+                   0 (inc @current-phrase-index))]
+     (scroll-to-phrase current)
+     (when (-> current (+ 5) (> loaded))
+       (scroll-end))
+     (player/jump-and-play current 0))
+   (rf/dispatch [::model/next-phrase])))
 
 (defn prev-phrase []
   (rf/dispatch-sync [::model/prev-phrase])
@@ -538,30 +539,30 @@
           (search-phrase q true)
           (fn []
             [:div.d-flex.flex-column.grow
-             ^{:key (str "video-list- " @current-phrase-index)}
              [:div.video-player-container
-              (doall
-               (for [x     @phrases
-                     :let  [{:keys [index id]} x]
-                     :when (<= @current-phrase-index index (inc @current-phrase-index))]
-                 ^{:key (str "phrase-" index "-" id "-" @replay-counter)}
-                 [player/video-player {:phrase         x
-                                       :hide?          (not= @current-phrase-index index)
-                                       :on-play        (fn []
-                                                         (scroll-to-phrase index))
-                                       :on-pause       (fn []
-                                                         (rf/dispatch [:stopped true]))
-                                       :on-play-click  toggle-play
-                                       :on-end         (fn []
-                                                         (rf/dispatch [:playing false])
-                                                         (if (-> @phrases count (= 1))
-                                                           (do
-                                                             (swap! replay-counter inc)
-                                                             (player/jump-and-play 0 index)
-                                                             #_(rf/dispatch [:stopped true]))
-                                                           (next-phrase)))
-                                       :on-pos-changed update-current-word
-                                       :stopped?       @stopped}]))
+              (->> @phrases
+                   (map-indexed
+                    (fn [idx {:keys [index id] :as x}]
+                      ^{:key (str "phrase-" idx "-" @replay-counter)}
+                      (when (<= @current-phrase-index idx (inc @current-phrase-index))
+                        [:div
+                         [player/video-player
+                          {:phrase         x
+                           :hide?          (not= @current-phrase-index index)
+                           :on-play        (fn []
+                                             (scroll-to-phrase index))
+                           :on-pause       (fn []
+                                             (rf/dispatch [:stopped true]))
+                           :on-play-click  toggle-play
+                           :on-end         (fn []
+                                             (if (-> @phrases count (= 1))
+                                               (do
+                                                 (swap! replay-counter inc)
+                                                 (player/jump-and-play 0 index))
+                                               (next-phrase)))
+                           :on-pos-changed update-current-word
+                           :stopped?       @stopped}]])))
+                   doall)
               [:div.video-overlay {:class (util/class->str (when @stopped :stopped))}
                [:ul.video-overlay-menu
                 [:li
