@@ -345,19 +345,8 @@
          [:div.search-result-count @(rf/subscribe [::model/search-count])]]
         (when-not resp/mobile?
           [:li
-           [play-button]])
-        (when-not util/mobile?
-          (let-sub [:audio-muted
-                    :audio-volume
-                    :stopped]
-            [:li
-             ;; ^{:key [@audio-muted @audio-volume @stopped]}
-             ;; [audio-volume-control @audio-muted @audio-volume]
-             (when-not @(rf/subscribe [:audio-muted])
-               [:audio {:id       "music-player"
-                        :src      "http://uk7.internet-radio.com:8000/stream"
-                        :controls false}])]))]
-       (let [common-phrases @(rf/subscribe [::model/common-phrases])]
+           [play-button]])]
+       #_(let [common-phrases @(rf/subscribe [::model/common-phrases])]
          (if-not (empty? common-phrases)
            [:div.common-phrases
             (doall
@@ -465,32 +454,34 @@
             [karaoke-words-current index words text]
             [karaoke-words index words text]))])))
 
-(defn phrase-text [x]
+(defn phrase-text [idx x]
   (r/create-class
    {:reagent-render
-    (fn []
-      (let [lang                    (util/locale-name)
-            {:keys [index text id]} x]
+    (fn [idx {:keys [text id] :as x}]
+      (let [lang (util/locale-name)
+            {:keys [text id]} x]
         (fn []
-          [:tr {:id       (str "phrase-text-" index)
+          [:tr {:id       (str "phrase-text-" idx)
                 :on-click #(rf/dispatch [:current-phrase-index (:index x)])}
-           [:td [:div.phrase-number (-> x :index inc)]]
+           [:td [:div.phrase-number (inc idx)]]
            [:td.phrase-text [karaoke x]]])))}))
 
 (defn suggestions-list [list]
   (let-sub [::model/current-suggestion-index]
-           (fn []
-             [:div.suggestions-container
-              (doall
-               (for [{:keys [text count index]} list]
-                 ^{:key (str "suggestion-" index)}
-                 [:a.suggestion
-                  {:id    (str "suggestion-" index)
-                   :class (when (= index @current-suggestion-index) "higlited")
-                   :href  (str "/#/search?q=" text)}
-                  [:div.text text]
-                  [:div.grow]
-                  [:div.counter (str count)]]))])))
+    (fn []
+      [:div.suggestions-container
+       (->> list
+            (map-indexed
+             (fn [idx {:keys [text count] :as x}]
+               ^{:key idx}
+               [:a.suggestion
+                {:id    (str "suggestion-" idx)
+                 :class (when (= idx @current-suggestion-index) "higlited")
+                 :href  (str "/#/search?q=" text)}
+                [:div.text text]
+                [:div.grow]
+                [:div.counter (str count)]]))
+            doall)])))
 
 (defn search-results-list [phrases]
   [:div#search-result.search-results-container
@@ -498,10 +489,12 @@
    [:table.table.phrase-table.borderless
     {:class (util/class->str (when-not resp/mobile? "table-hover"))}
     [:tbody
-     (doall
-      (for [x phrases]
-        ^{:key (str "phrase-" x)}
-        [phrase-text x]))]]])
+     (->> phrases
+          (map-indexed
+           (fn [idx {:keys [] :as x}]
+             ^{:key idx}
+             [phrase-text idx x]))
+          doall)]]])
 
 (defn overlay-current-phrase []
   [:div.currrent-pharase-container-landscape
@@ -558,9 +551,7 @@
                                               (scroll-to-phrase index))
                             :on-pause       (fn []
                                               (rf/dispatch [:stopped true]))
-                            :on-error       (fn [e]
-                                              (println ">>> on error" e)
-                                              (next-phrase))
+                            :on-error       next-phrase
                             :on-play-click  toggle-play
                             :on-end         (fn []
                                               (if (-> @phrases count (= 1))
@@ -587,7 +578,7 @@
                  [overlay-current-phrase])]]
              [:div.search-ui-container
               [search-input]]
-             [:div.search-result
+             [:div.search-bottom-container
               (if (show-suggestions-list?)
                 [suggestions-list @suggestions]
                 [search-results-list @phrases])]

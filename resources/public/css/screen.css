@@ -299,15 +299,23 @@ form h1 {
 }
 
 .search-ui-container {
+  position: relative;
   height: 66px;
   display: flex;
+  background-color: rgba(0,0,0,0.2);
+}
+
+.search-bottom-container {
+  background-color: rgba(0,0,0,0.2);
 }
 
 .search-results-container {
+  position: relative;
   overflow-y: auto;
 }
 
 .suggestions-container {
+  position: relative;
   overflow-y: auto;
   padding: 0px 15px;
   border: 1px #ccc solid;
@@ -435,7 +443,7 @@ word, word:active, word:focus{
 .phrase-number{
   padding-top: 4px;
 	text-align:right;
-  color: #ccc;
+  color: rgba(255,255,255,0.8);
 }
 
 .translate-icons{

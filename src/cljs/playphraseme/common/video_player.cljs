@@ -46,17 +46,20 @@
       (aset el "currentTime" (/ position 1000)))))
 
 (defn jump-and-play [index position]
+  (println ">>> jump and play:" index position)
   (let [el (some-> index index->element)]
     (when el
       (aset el "currentTime" (/ position 1000))
       (-> el .play (.catch #())))))
 
 (defn stop [index]
+  (println ">>> stop:" index)
   (some-> index index->element .pause))
 
 (def play-count (atom 0))
 
 (defn play [index]
+  (println ">>> play:" index)
   (let [success (r/atom false)
         c       (swap! play-count inc)]
     (when-let [el (some-> index index->element)]
@@ -89,7 +92,7 @@
       (let [{:keys [hide? stopped? phrase]} (r/props this)
             {:keys [index]}                 phrase
             playing?                        (and (not hide?) (not stopped?))]
-        (add-video-listener index "canplaythrough"
+        #_(add-video-listener index "canplaythrough"
                             (if playing?
                               #(play index)
                               #(stop index)))))
