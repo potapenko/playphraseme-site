@@ -315,6 +315,8 @@
 (defn search-input []
   (let-sub [::model/next-word-suggestion
             ::model/input-focused?
+            :current-phrase-index
+            ::model/search-count
             :search-text]
     (fn []
       [:div.filters-container.grow
@@ -342,28 +344,11 @@
             (string/lower-case @search-text) "")]])
        [:ul.filter-input-icons
         [:li
-         [:div.search-result-count @(rf/subscribe [::model/search-count])]]
+         [:div.search-result-count (str (inc @current-phrase-index) "/" @search-count)]]
         (when-not resp/mobile?
           [:li
            {:style {:opacity 0.5}}
-           [play-button]])]
-       #_(let [common-phrases @(rf/subscribe [::model/common-phrases])]
-         (if-not (empty? common-phrases)
-           [:div.common-phrases
-            (doall
-             (for [{:keys [text count]} common-phrases]
-               ^{:key text}
-               [:a.one-common-phrase {:href (str "/#/search?q=" text)} text]))]
-           [:div.shortcuts-info
-            [:div "Next word completion:"] [:i.material-icons "keyboard_tab"]
-            [spacer 4]
-            [:div "Next word select:"] [:i.material-icons "keyboard_arrow_right"]
-            [spacer 4]
-            [:div "Navigate result/suggestions list:"]
-            [:i.material-icons "keyboard_arrow_up"]
-            [:i.material-icons "keyboard_arrow_down"]
-            [spacer 4]
-            [:div "Pause/Stop/Select suggestion:"] [:i.material-icons "keyboard_return"]]))])))
+           [play-button]])]])))
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
@@ -483,7 +468,7 @@
             doall)])))
 
 (defn search-results-list [phrases]
-  [:div#search-result.search-results-container
+  #_[:div#search-result.search-results-container
    {:on-scroll #(util/on-scroll-end % scroll-end)}
    [:table.table.phrase-table.borderless
     {:class (util/class->str (when-not resp/mobile? "table-hover"))}
@@ -535,52 +520,51 @@
           (search-phrase q true)
           (fn []
             [:div.d-flex.flex-column.grow
-             [:div.video-player-container
-              (->> @phrases
-                   (map-indexed
-                    (fn [idx {:keys [index id] :as x}]
-                      ^{:key (str "phrase-" idx "-" @replay-counter)}
-                      [:div
-                       (when (<= @current-phrase-index idx (inc @current-phrase-index))
-                         [:div
-                          [player/video-player
-                           {:phrase         x
-                            :hide?          (not= @current-phrase-index index)
-                            :on-play        (fn []
-                                              (scroll-to-phrase index))
-                            :on-pause       (fn []
-                                              (rf/dispatch [:stopped true]))
-                            :on-error       next-phrase
-                            :on-play-click  toggle-play
-                            :on-end         (fn []
-                                              (if (-> @phrases count (= 1))
-                                                (do
-                                                  (swap! replay-counter inc)
-                                                  (player/jump-and-play 0 index))
-                                                (next-phrase)))
-                            :on-pos-changed update-current-word
-                            :stopped?       @stopped}]])]))
-                   doall)
-              [:div.video-overlay
-               {:class (util/class->str (when @stopped :stopped))}
-               [:ul.video-overlay-menu
-                [:li
-                 {:on-click #(util/go-url!
-                              (str "/api/v1/phrases/video-download?id="
-                                   (:id (get-current-phrase)))
-                              true)}
-                 [:i.material-icons "file_download"]
-                 [:div.info-text "Download"]
-                 [:div.info-text "Video"]]]
-               (when (resp/landscape?)
-                 ^{:key [@(rf/subscribe [:layout])]}
-                 [overlay-current-phrase])]]
+             (if (show-suggestions-list?)
+              [:div.search-bottom-container.grow
+               [suggestions-list @suggestions]]
+              [:div.video-player-container.grow
+               (->> @phrases
+                    (map-indexed
+                     (fn [idx {:keys [index id] :as x}]
+                       ^{:key (str "phrase-" idx "-" @replay-counter)}
+                       [:div
+                        (when (<= @current-phrase-index idx (inc @current-phrase-index))
+                          [:div
+                           [player/video-player
+                            {:phrase         x
+                             :hide?          (not= @current-phrase-index index)
+                             :on-play        (fn []
+                                               (scroll-to-phrase index))
+                             :on-pause       (fn []
+                                               (rf/dispatch [:stopped true]))
+                             :on-error       next-phrase
+                             :on-play-click  toggle-play
+                             :on-end         (fn []
+                                               (if (-> @phrases count (= 1))
+                                                 (do
+                                                   (swap! replay-counter inc)
+                                                   (player/jump-and-play 0 index))
+                                                 (next-phrase)))
+                             :on-pos-changed update-current-word
+                             :stopped?       @stopped}]])]))
+                    doall)
+               [:div.video-overlay
+                {:class (util/class->str (when @stopped :stopped))}
+                [:ul.video-overlay-menu
+                 [:li
+                  {:on-click #(util/go-url!
+                               (str "/api/v1/phrases/video-download?id="
+                                    (:id (get-current-phrase)))
+                               true)}
+                  [:i.material-icons "file_download"]
+                  [:div.info-text "Download"]
+                  [:div.info-text "Video"]]]
+                (when (resp/landscape?)
+                  ^{:key [@(rf/subscribe [:layout])]}
+                  [overlay-current-phrase])]])
              [:div.search-ui-container
               [search-input]]
-             [:div.search-bottom-container.grow
-              (if (show-suggestions-list?)
-                [suggestions-list @suggestions]
-                [search-results-list @phrases])]
              (when-not (or
                         (not resp/mobile?)
                         (and util/ios?
