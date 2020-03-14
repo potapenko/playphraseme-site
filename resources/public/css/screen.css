@@ -152,12 +152,13 @@ form h1 {
 .header .logo .gray {color: gray}
 
 .header .statistic {
+  padding-top: 5px;
   overflow: hidden;
 }
 
 .header .statistic .count{
   color: gray;
-  font-size: 40px;
+  font-size: 33px;
 }
 
 .header .statistic .info{

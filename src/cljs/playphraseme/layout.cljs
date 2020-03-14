@@ -66,16 +66,14 @@
                "/#/logout" "fas fa-user-circle"]
               [header-button (ls :navigation.login.register) "/#/login" "fas fa-user-circle"]))
         (when-not @mobile?
-          [header-button (ls :navigation.support) "/#/support" "far fa-envelope"])
-        (when-not @mobile?
+         [:<>
+          [header-button (ls :navigation.support) "/#/support" "far fa-envelope"]
           [header-button "Github"
-           "https://github.com/potapenko/playphraseme-site" "fab fa-github-square"])
-        (when-not @mobile?
+           "https://github.com/potapenko/playphraseme-site" "fab fa-github-square"]
           [header-button "Youtube"
-           "https://www.youtube.com/channel/UCD_uvkY4IcFDEkZ3fgYhFWA" "fab fa-youtube"])
-        (when-not @mobile?
+           "https://www.youtube.com/channel/UCD_uvkY4IcFDEkZ3fgYhFWA" "fab fa-youtube"]
           [header-button  "Facebook"
-           "https://www.facebook.com/playphrase/" "fab fa-facebook"])]
+           "https://www.facebook.com/playphrase/" "fab fa-facebook"]])]
        ^{:key "fixed-key"}
        [facebook-like-button]
        (when @mobile?
