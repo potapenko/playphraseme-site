@@ -111,26 +111,30 @@
           (let [favorited (-> (<! (rest-api/get-favorite id)) nil? not)]
             (rf/dispatch [::model/favorite-phrase id (-> favorited)])))))))
 
-(defn next-phrase []
+(defn play-phrase [change-fn]
   (let-sub [::model/phrases
             :current-phrase-index
             :search-text]
-   (load-favorited)
-   (util/set-url! "search" {:q @search-text #_:p #_(:id (get-current-phrase))})
    (let [loaded  (count @phrases)
-         current (if (-> @current-phrase-index inc (= loaded))
-                   0 (inc @current-phrase-index))]
+         current (max
+                  0
+                  (if (-> @current-phrase-index change-fn (= loaded))
+                    0 (change-fn @current-phrase-index)))]
+     (load-favorited)
+     (util/set-url! "search" {:q @search-text #_:p #_(:id (get-current-phrase))})
      (scroll-to-phrase current)
      (when (-> current (+ 5) (> loaded))
        (scroll-end))
-     (player/jump-and-play current 0))
+     (player/jump-and-play current 0))))
+
+(defn next-phrase []
+  (let-sub [:search-text]
+   (play-phrase inc)
    (rf/dispatch [::model/next-phrase])))
 
 (defn prev-phrase []
   (rf/dispatch-sync [::model/prev-phrase])
-  (load-favorited)
-  (let [current @(rf/subscribe [:current-phrase-index])]
-    (scroll-to-phrase current)))
+  (play-phrase dec))
 
 (defn highlite-word [current-word]
   (doseq [x (:words (get-current-phrase))]
