@@ -113,18 +113,13 @@
          (util/add-class (util/selector "body") "ios")))
       :reagent-render
       (fn [current-page]
-        [:div
-         {:style (merge
-                  #_(resp/zoom-css @scale))
-          :class (util/class->str
+        [:div.layout-container.d-flex.flex-column
+         #_{:class (util/class->str
                   (when resp/ios? :ios)
                   (when resp/android? :android)
                   (when resp/safari? :safari)
                   (when resp/chrome? :chrome))}
          [:div.mobile-query]
-         [:div
-          ;; {:style (resp/container-height-css @scale)}
-          [header]
-          [:div.d-flex.grow.position-relative
-           current-page]]])})))
+         [header]
+         current-page])})))
 

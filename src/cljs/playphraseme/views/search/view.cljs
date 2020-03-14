@@ -345,6 +345,7 @@
          [:div.search-result-count @(rf/subscribe [::model/search-count])]]
         (when-not resp/mobile?
           [:li
+           {:style {:opacity 0.5}}
            [play-button]])]
        #_(let [common-phrases @(rf/subscribe [::model/common-phrases])]
          (if-not (empty? common-phrases)
@@ -435,24 +436,22 @@
 (defn karaoke [{:keys [words text id index]}]
   (let-sub [:current-phrase-index]
    (fn []
-     #_[shared/component-base
-      (let [nlp-words      (nlp/create-words text)
-            words          (if (empty? words)
-                             (->> nlp-words
-                                  (map
-                                   (fn [x]
-                                     {:text x})))
-                             words)
-            searched-words (set (get-searched-words words))
-            words          (map (fn [w1 w2]
-                                  (assoc w1
-                                         :formated-text w2
-                                         :searched (-> w1 searched-words nil? not)))
-                                words nlp-words)]
-        ;; [shared/test-data words]
-        #_(if (= @current-index index)
-            [karaoke-words-current index words text]
-            [karaoke-words index words text]))])))
+     (let [nlp-words      (nlp/create-words text)
+           words          (if (empty? words)
+                            (->> nlp-words
+                                 (map
+                                  (fn [x]
+                                    {:text x})))
+                            words)
+           searched-words (set (get-searched-words words))
+           words          (map (fn [w1 w2]
+                                 (assoc w1
+                                        :formated-text w2
+                                        :searched (-> w1 searched-words nil? not)))
+                               words nlp-words)]
+       (if (= @current-phrase-index index)
+           [karaoke-words-current index words text]
+           [karaoke-words index words text])))))
 
 (defn phrase-text [idx x]
   (r/create-class
@@ -578,18 +577,17 @@
                  [overlay-current-phrase])]]
              [:div.search-ui-container
               [search-input]]
-             [:div.search-bottom-container
+             [:div.search-bottom-container.grow
               (if (show-suggestions-list?)
                 [suggestions-list @suggestions]
                 [search-results-list @phrases])]
-             (when-not
-                 (or
-                  (not resp/mobile?)
-                  (and util/ios?
-                       @(rf/subscribe [:playing])))
-               [:div.overlay-play-icon-bottom
-                [:div.grow]
-                [:div.grow
-                 [play-button]]
-                [:div.grow]])])))})))
+             (when-not (or
+                        (not resp/mobile?)
+                        (and util/ios?
+                             @(rf/subscribe [:playing])))
+               #_[:div.overlay-play-icon-bottom
+                  [:div.grow]
+                  [:div.grow
+                   [play-button]]
+                  [:div.grow]])])))})))
 

@@ -10,7 +10,8 @@
             [playphraseme.common.ui :as ui :refer [flexer spacer]]
             [playphraseme.views.search.model :as model]
             [playphraseme.common.rest-api :as rest-api]
-            [playphraseme.common.phrases :as phrases])
+            [playphraseme.common.phrases :as phrases]
+            [cljs.pprint :as pp])
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]
    [re-frame-macros.core :as mcr :refer [let-sub]]))
