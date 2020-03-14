@@ -317,12 +317,12 @@
             ::model/input-focused?
             :search-text]
     (fn []
-      [:div.filters-container
+      [:div.filters-container.grow
        [:input#search-input.filter-input.form-control.input-lg
         {:type           "text" :placeholder "Search Phrase"
          :value          @search-text
-         ;; :auto-correct    "off"
-         ;; :auto-capitalize "off"
+         :auto-correct    "off"
+         :auto-capitalize "off"
          :on-focus       (fn []
                            (rf/dispatch [::model/input-focused? true])
                            (set-input-cursor))
@@ -351,7 +351,7 @@
                     :audio-volume
                     :stopped]
             [:li
-             ;; ^{:keys [@audio-muted @audio-volume @stopped]}
+             ;; ^{:key [@audio-muted @audio-volume @stopped]}
              ;; [audio-volume-control @audio-muted @audio-volume]
              (when-not @(rf/subscribe [:audio-muted])
                [:audio {:id       "music-player"
@@ -548,26 +548,31 @@
                    (map-indexed
                     (fn [idx {:keys [index id] :as x}]
                       ^{:key (str "phrase-" idx "-" @replay-counter)}
-                      (when (<= @current-phrase-index idx (inc @current-phrase-index))
-                        [:div
-                         [player/video-player
-                          {:phrase         x
-                           :hide?          (not= @current-phrase-index index)
-                           :on-play        (fn []
-                                             (scroll-to-phrase index))
-                           :on-pause       (fn []
-                                             (rf/dispatch [:stopped true]))
-                           :on-play-click  toggle-play
-                           :on-end         (fn []
-                                             (if (-> @phrases count (= 1))
-                                               (do
-                                                 (swap! replay-counter inc)
-                                                 (player/jump-and-play 0 index))
-                                               (next-phrase)))
-                           :on-pos-changed update-current-word
-                           :stopped?       @stopped}]])))
+                      [:div
+                       (when (<= @current-phrase-index idx (inc @current-phrase-index))
+                         [:div
+                          [player/video-player
+                           {:phrase         x
+                            :hide?          (not= @current-phrase-index index)
+                            :on-play        (fn []
+                                              (scroll-to-phrase index))
+                            :on-pause       (fn []
+                                              (rf/dispatch [:stopped true]))
+                            :on-error       (fn [e]
+                                              (println ">>> on error" e)
+                                              (next-phrase))
+                            :on-play-click  toggle-play
+                            :on-end         (fn []
+                                              (if (-> @phrases count (= 1))
+                                                (do
+                                                  (swap! replay-counter inc)
+                                                  (player/jump-and-play 0 index))
+                                                (next-phrase)))
+                            :on-pos-changed update-current-word
+                            :stopped?       @stopped}]])]))
                    doall)
-              [:div.video-overlay {:class (util/class->str (when @stopped :stopped))}
+              [:div.video-overlay
+               {:class (util/class->str (when @stopped :stopped))}
                [:ul.video-overlay-menu
                 [:li
                  {:on-click #(util/go-url!
@@ -577,10 +582,6 @@
                  [:i.material-icons "file_download"]
                  [:div.info-text "Download"]
                  [:div.info-text "Video"]]]
-               [:div.overlay-logo
-                [:span.red "Play"]
-                [:span.black "Phrase"]
-                [:span.gray ".me"]]
                (when (resp/landscape?)
                  ^{:key [@(rf/subscribe [:layout])]}
                  [overlay-current-phrase])]]
@@ -593,7 +594,11 @@
              (when-not
                  (or
                   (not resp/mobile?)
-                  (and util/ios? @(rf/subscribe [:playing])))
+                  (and util/ios?
+                       @(rf/subscribe [:playing])))
                [:div.overlay-play-icon-bottom
-                [play-button]])])))})))
+                [:div.grow]
+                [:div.grow
+                 [play-button]]
+                [:div.grow]])])))})))
 

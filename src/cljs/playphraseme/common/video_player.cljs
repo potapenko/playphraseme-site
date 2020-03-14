@@ -5,6 +5,7 @@
             [cljs.pprint :refer [pprint]]
             [reagent.core :as r :refer [atom]]
             [re-frame.core :as rf]
+            [playphraseme.common.ui :as ui :refer [flexer spacer]]
             [playphraseme.common.util :as util]
             [clojure.data :refer [diff]])
   (:require-macros
@@ -64,6 +65,7 @@
           (jump index 0))
         (-> el .play
             (.then (fn []
+                     (println ">>>> autoplay works!")
                      (reset! success true)
                      (rf/dispatch [:playing true])
                      (rf/dispatch [:autoplay-enabled true])))
@@ -95,13 +97,22 @@
     (fn [this]
       (let [{:keys [hide? stopped? phrase
                     on-load on-pause on-play on-load-start
-                    on-end on-pos-changed]} (r/props this)
-            {:keys [index]}                 phrase
-            autoplay                        (not (or stopped? hide?))]
+                    on-end on-pos-changed on-error]} (r/props this)
+            {:keys [index]}                          phrase
+            autoplay                                 (not (or stopped? hide?))]
 
         (enable-inline-video index)
         (add-video-listener index "loadstart" on-load-start)
         (add-video-listener index "play" on-play)
+        (add-video-listener index "error" (fn [e]
+                                            (println ">>>> errorr!")
+                                            (on-error e)))
+        (add-video-listener index "stalled" (fn [e]
+                                              (println ">>> stalled!")
+                                              (on-error e)))
+        (add-video-listener index "abort" (fn [e]
+                                              (println ">>> abort!")
+                                              (on-error e)))
         (add-video-listener index "pause" #(when (playing? index) on-pause))
         (add-video-listener index "ended" on-end)
         (add-video-listener index "timeupdate"
@@ -118,19 +129,23 @@
                  on-load on-pause on-play on-load-start
                  on-end on-pos-changed on-play-click]}]
       (let [{:keys [index video-info]} phrase]
-        [:div.video-player-box
+        [:div.video-player-box.d-flex
          {:style    {:opacity (if hide? 0 1)}
           :on-click on-play-click}
-         [:video.video-player
+         [:video.video-player.grow
           {:src          (:video-url phrase)
+           :auto-play    (and (not stopped?) (not hide?))
            :plays-inline true
            :controls     false
            :id           (index->id index)}]
          (when (and stopped? (not util/ios?))
-           [:div.overlay-play-icon
-            [:span.fa-stack.fa-1x
-             [:i.fa.fa-circle.fa-stack-2x.fa-inverse]
-             [:i.fa.fa-play.fa-stack-1x.play-icon2]]])
+           [:div.overlay-play-icon.d-flex.flex-column
+            [:div.grow]
+            [:div
+             [:span.fa-stack.fa-1x
+              [:i.fa.fa-circle.fa-stack-2x.fa-inverse]
+              [:i.fa.fa-play.fa-stack-1x.play-icon2]]]
+            [:div.grow]])
          (let [{:keys [imdb info]} video-info]
            [:a.overlay-video-info
             {:href (str "https://www.imdb.com/title/" imdb) :target "_blank"}

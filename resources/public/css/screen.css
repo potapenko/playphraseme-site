@@ -212,15 +212,14 @@ form h1 {
 .video-player-box {
   background-color: black;
   position: absolute;
-  left: 0px; right: 0px; top: 0px;
-  height: 100%;
+  display: flex;
+  left: 0px; right: 0px; top: 0px; bottom: 0px;
   text-align: center;
   overflow: hidden;
 	transition: opacity 0.2s ease-in-out;
 }
 
 .video-player {
-  margin: 0px auto;
 	transition: opacity 0.4s ease-in-out;
 }
 
@@ -246,8 +245,7 @@ form h1 {
 .overlay-play-icon {
   position: absolute;
   font-size: 75px;
-  left: 220px;
-  top: 100px;
+  left: 0px; right: 0px; bottom: 0px; top: 0px;
   color: black;
   opacity: 0.3;
 }
@@ -282,7 +280,6 @@ form h1 {
   font-size: 10px;
   color: rgba(255,255,255,1);
 }
-
 
 .overlay-video-info {
   position: absolute;
@@ -481,7 +478,6 @@ word, word:active, word:focus{
 }
 
 .filters-container {
-  width: 600px;
   position: relative;
   padding: 10px;
 }
