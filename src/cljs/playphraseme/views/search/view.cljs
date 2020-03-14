@@ -14,7 +14,8 @@
             [playphraseme.common.phrases :as phrases]
             [playphraseme.common.ga :as ga]
             [playphraseme.common.nlp :as nlp]
-            [cljs.pprint :as pp])
+            [cljs.pprint :as pp]
+            [playphraseme.common.shared :as shared])
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]
    [re-frame-macros.core :as mcr :refer [let-sub]]))
@@ -139,10 +140,11 @@
   (let [current-word (some->> (get-current-phrase)
                               :words
                               (filter
-                               (fn [{:keys [start left-padding]
+                               (fn [{:keys [start end left-padding]
                                      :or   {left-padding 150}}]
-                                 (println start left-padding  pos)
-                                 (-> start (- left-padding) (< pos))))
+                                 (let [start (-> start (- left-padding))
+                                       end   (-> end (- left-padding))]
+                                   (< start pos end))))
                               last)]
     (when current-word
       (highlite-word current-word))))
@@ -314,8 +316,8 @@
        [:input#search-input.filter-input.form-control.input-lg
         {:type           "text" :placeholder "Search Phrase"
          :value          @search-text
-         ;; :autocorrect    "off"
-         ;; :autocapitalize "off"
+         ;; :auto-correct    "off"
+         ;; :auto-capitalize "off"
          :on-focus       (fn []
                            (rf/dispatch [::model/input-focused? true])
                            (set-input-cursor))
@@ -436,20 +438,27 @@
    [flexer]
    [copy-icon text]])
 
-(defn karaoke [phrase]
-  (let [{:keys [words text id index]} phrase
-        nlp-words                     (nlp/create-words text)
-        searched-words                (set (get-searched-words words))
-        words                         (map (fn [w1 w2]
-                                             (assoc w1
-                                                    :formated-text w2
-                                                    :searched (-> w1 searched-words nil? not)))
-                                           words nlp-words)
-        current-index                 (rf/subscribe [:current-phrase-index])]
-    (fn []
-      (if (= @current-index index)
-        [karaoke-words-current index words text]
-        [karaoke-words index words text]))))
+(defn karaoke [{:keys [words text id index]}]
+  (let-sub [:current-phrase-index]
+   (fn []
+     #_[shared/component-base
+      (let [nlp-words      (nlp/create-words text)
+            words          (if (empty? words)
+                             (->> nlp-words
+                                  (map
+                                   (fn [x]
+                                     {:text x})))
+                             words)
+            searched-words (set (get-searched-words words))
+            words          (map (fn [w1 w2]
+                                  (assoc w1
+                                         :formated-text w2
+                                         :searched (-> w1 searched-words nil? not)))
+                                words nlp-words)]
+        ;; [shared/test-data words]
+        #_(if (= @current-index index)
+            [karaoke-words-current index words text]
+            [karaoke-words index words text]))])))
 
 (defn phrase-text [x]
   (r/create-class
@@ -528,7 +537,7 @@
         (let [lang (util/locale-name)]
           (search-phrase q true)
           (fn []
-            [:div.search-container
+            [:div.d-flex.flex-column.grow
              ^{:key (str "video-list- " @current-phrase-index)}
              [:div.video-player-container
               (doall
@@ -572,9 +581,10 @@
                  [overlay-current-phrase])]]
              [:div.search-ui-container
               [search-input]]
-             (if (show-suggestions-list?)
-               [suggestions-list @suggestions]
-               [search-results-list @phrases])
+             [:div.search-result
+              (if (show-suggestions-list?)
+                [suggestions-list @suggestions]
+                [search-results-list @phrases])]
              (when-not
                  (or
                   (not resp/mobile?)

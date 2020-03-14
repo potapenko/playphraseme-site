@@ -70,6 +70,7 @@
                  [re-frame-macros "0.1.14-SNAPSHOT"]
                  [cljs-await "1.0.1-SNAPSHOT"]
                  [secretary "1.2.3"]
+                 [re-catch "0.1.3"]
 
                  ]
 

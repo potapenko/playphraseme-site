@@ -107,9 +107,7 @@
 
 (defn root []
   (let-sub [scale :responsive-scale
-            :page
-            :responsive-show-left-column?
-            :responsive-show-right-column?]
+            :page]
     (r/create-class
      {:component-did-mount
       (fn []
@@ -117,24 +115,18 @@
          (util/add-class (util/selector "body") "ios")))
       :reagent-render
       (fn [current-page]
-       [:div.layout-container
-        {:style (merge
-                 (resp/zoom-css @scale)
-                 #_(when-not (-> @page (= :search))
-                     {:overflow-y "auto"}))
-         :class (util/class->str
-                 (when resp/ios? :ios)
-                 (when resp/android? :android)
-                 (when resp/safari? :safari)
-                 (when resp/chrome? :chrome))}
-        (when @responsive-show-left-column?
-          [left-column])
-        [:div.mobile-query]
-        [:div.layout-main
-         {:style (resp/container-height-css @scale)}
-         [header]
-         [:div.current-page-container
-          current-page]]
-        (when @responsive-show-right-column?
-          [right-column])])})))
+        [:div
+         {:style (merge
+                  #_(resp/zoom-css @scale))
+          :class (util/class->str
+                  (when resp/ios? :ios)
+                  (when resp/android? :android)
+                  (when resp/safari? :safari)
+                  (when resp/chrome? :chrome))}
+         [:div.mobile-query]
+         [:div
+          ;; {:style (resp/container-height-css @scale)}
+          [header]
+          [:div.d-flex.grow.position-relative.border
+           current-page]]])})))
 

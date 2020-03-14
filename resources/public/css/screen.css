@@ -97,26 +97,6 @@ form h1 {
   text-align: center;
 }
 
-.layout-container {
-  position: fixed; left: 0px; right: 0px; bottom: 0px; top: 0px;
-  padding: 22px 0;
-  margin: 0px;
-  padding: 0px;
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  background-color: rgba(0,0,0,0.3);
-}
-
-.layout-main {
-  width: 600px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
-  background-color: white;
-}
-
 .header {
   height: 81px;
   display: flex;
@@ -214,12 +194,6 @@ form h1 {
   padding: 0 8px;
 }
 
-.current-page-container {
-  display: flex;
-  flex-grow: 1;
-  position: relative;
-}
-
 .article-container {
   overflow-y: auto;
   padding: 16px;
@@ -237,8 +211,7 @@ form h1 {
 .video-player-container {
   position: relative;
   background-color: black;
-  height: 340px;
-  width: 600px;
+  height: 600px;
   overflow: hidden;
 }
 
@@ -246,7 +219,7 @@ form h1 {
   background-color: black;
   position: absolute;
   left: 0px; right: 0px; top: 0px;
-  height: 340px;
+  height: 100%;
   text-align: center;
   overflow: hidden;
 	transition: opacity 0.4s ease-in-out;
@@ -335,27 +308,16 @@ form h1 {
   color: rgba(255,255,255,0.6);
 }
 
-.search-container {
-  width: 600px;
-  display: flex;
-  flex-direction: column;
-}
-
 .search-ui-container {
-  width: 600px;
   height: 66px;
   display: flex;
 }
 
 .search-results-container {
-  position: absolute;
-  left: 0px; right: 0px; bottom: 0px; top: 420px;
   overflow-y: auto;
 }
 
 .suggestions-container {
-  position: absolute;
-  left: 0px; right: 0px; bottom: 0px; top: 420px;
   overflow-y: auto;
   padding: 0px 15px;
   border: 1px #ccc solid;
@@ -458,8 +420,8 @@ word, word:active, word:focus{
 
 }
 .s-word-played {
-	background-color: rgba(0,0,0,1);
-	color: white;
+	background-color: rgba(0,0,0,0.1);
+	color: black;
 }
 .w-invalid {
 	background-color: yellow;
@@ -474,7 +436,8 @@ word, word:active, word:focus{
 }
 
 .current-phrase .s-word-played {
-  color: white;
+  /* color: white; */
+	color: black;
 }
 
 /* -------------- */
@@ -515,7 +478,6 @@ word, word:active, word:focus{
   font-size: 12px;
 }
 
-
 .lang-in-circle:hover{
 	background:rgba(0,0,0,0.2);
 	color: white;
@@ -527,7 +489,7 @@ word, word:active, word:focus{
 
 .filters-container {
   width: 600px;
-  position: relative;;
+  position: relative;
   padding: 10px;
 }
 
@@ -946,8 +908,6 @@ img.app-button {
     color: rgba(0,0,0,0.7) !important;
   }
   .ios .s-word-played {
-    color: rgba(255,255,255,0.7) !important;
-    background-color: rgba(0,0,0,0.8) !important;
   }
   .ios .overlay-logo {
     display: block;

@@ -5,6 +5,7 @@
             [cljs.pprint :refer [pprint]]
             [reagent.core :as r]
             [re-frame.core :as rf]
+            [re-catch.core :as rc]
             [playphraseme.common.util :as util]
             [playphraseme.common.ui :as ui :refer [flexer spacer]]
             [playphraseme.views.search.model :as model]
@@ -32,3 +33,36 @@
    "Page Under Construction."
    [ui/spacer 16]
    [:div {:style {:display "flex" :flex-direction "row"}}]])
+
+(defn test-data [data]
+  [:pre (with-out-str (cljs.pprint/pprint data))])
+
+(defn component-base [& body]
+  (into [rc/catch] body))
+
+(defn repeat-tag [n tag]
+  [:<>
+   (->> (range n)
+        (map
+         (fn [x]
+           ^{:key [(hash tag) x]}
+           tag))
+        doall)])
+
+(defn html-div [html-content]
+  [:div {"dangerouslySetInnerHTML"
+         #js{:__html html-content}}])
+
+(defn html-span [html-content]
+  [:span {"dangerouslySetInnerHTML"
+          #js{:__html html-content}}])
+
+(defn highlite-search [text search-text-rx]
+  (if (and text search-text-rx)
+    (if (re-find search-text-rx text)
+      [html-span
+       (string/replace
+        text search-text-rx
+        "<span class=\"d-inline-block bg-gray-300\">$1</span>")]
+      text)
+    text))

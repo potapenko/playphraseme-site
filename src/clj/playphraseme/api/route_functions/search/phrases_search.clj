@@ -174,10 +174,25 @@
 
   (-> (search-response "fuck" 0 1) :body)
 
-  (phrases/find-phrases {;; :search-strings "fuck"
-                         :have-video     true}
-                        0 10)
+  (->>
+   (phrases/find-phrases {:search-strings "talking about"
+                          :have-video     true}
+                         0 10)
+   (map :text)
+   #_(map :random)
+   pprint)
 
+  (->>
+   (search-response "shut the fuck up" 0 10)
+   :body
+   :phrases
+   (map :text)
+   count
+   ;; pprint
+   )
 
+  (search-strings/find-search-strings {:text "shut the fuck up"})
+
+  (search-strings/count-all)
 
   )

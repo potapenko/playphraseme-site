@@ -1,6 +1,7 @@
 {:production true
  :port       3033
- :cdn-url    "https://playphraseme-video.sfo2.digitaloceanspaces.com"
+ ;; :cdn-url    "https://playphraseme-video.sfo2.digitaloceanspaces.com"
+ :cdn-url    "https://playphraseme8video.blob.core.windows.net/media-v3"
 
  ;; :facebook-client-id     "<env variable>"
  ;; :facebook-client-secret "<env variable>"

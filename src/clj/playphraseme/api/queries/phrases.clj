@@ -8,9 +8,7 @@
 (def coll "phrases")
 
 (defn migrate []
-  ;; (mc/ensure-index db coll {:search-strings 1 :have-video 1 :random 1})
-  (mc/ensure-index db coll {:search-strings 1 :have-video 1 :confidence-words 1})
-  (mc/ensure-index db coll {:random 1}))
+  (mc/ensure-index db coll {:search-strings 1 :have-video 1 :random 1}))
 
 (mount/defstate migrations-phrases
   :start (migrate))
@@ -24,7 +22,7 @@
   ([pred limit] (find-phrases pred 0 limit))
   ([pred skip limit]
    (stringify-id
-    (find-docs coll {:pred pred :skip skip :limit limit :sort {:confidence-words -1}}))))
+    (find-docs coll {:pred pred :skip skip :limit limit :sort {:random -1}}))))
 
 (def get-phrases-count
   (memoize
