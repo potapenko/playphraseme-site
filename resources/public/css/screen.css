@@ -98,11 +98,10 @@ form h1 {
 }
 
 .header {
-  height: 81px;
-  display: flex;
-  flex-direction: column;
+  height: 58px;
+  overflow: hidden;
   background-color: rgba(0,0,0,0.05);
-  border-bottom: 4px solid rgba(0,0,0,0.2);
+  /* border-bottom: 4px solid rgba(0,0,0,0.2); */
 	transition: filter 0.4s ease-in-out;
 }
 
@@ -110,16 +109,9 @@ form h1 {
   background-color: rgba(255,255,255,0.9) !important;
 }
 
-.header .top {
-  display: flex;
-  justify-content: space-between;
-}
-
 .header-button {
-  padding: 8px 12px;
   color: gray;
   text-decoration: none;
-  font-size: 11px;
 }
 
 .fb-like {
@@ -147,7 +139,7 @@ form h1 {
 }
 
 .header .logo {
-  font-size: 35px;
+  font-size: 38px;
   font-family: 'Gloria Hallelujah';
   overflow: hidden;
   user-select: none;
@@ -164,7 +156,8 @@ form h1 {
 }
 
 .header .statistic .count{
-  font-size: 28px;
+  color: gray;
+  font-size: 40px;
 }
 
 .header .statistic .info{
@@ -211,7 +204,7 @@ form h1 {
 .video-player-container {
   position: relative;
   background-color: black;
-  height: 600px;
+  height: 700px;
   overflow: hidden;
 }
 
@@ -226,8 +219,7 @@ form h1 {
 }
 
 .video-player {
-  height: 97%;
-  margin: 5px auto;
+  margin: 0px auto;
 	transition: opacity 0.4s ease-in-out;
 }
 
@@ -748,10 +740,17 @@ h2 {
 }
 
 img.app-button {
+  opacity: 0.6;
+  margin-top: 9px;
+  margin-right: 21px;
   height: 24px;
   width: 66px;
+  transform: scale(1.5);
 }
 
+img.app-button:hover {
+  opacity: 1;
+}
 
 @media only screen and (max-device-width: 800px) and (orientation : portrait){
   .search-ui-container {

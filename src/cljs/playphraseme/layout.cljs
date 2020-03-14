@@ -15,11 +15,15 @@
    [re-frame-macros.core :as mcr :refer [let-sub]]
    [cljs.core.async.macros :refer [go go-loop]]))
 
-(defn header-button
-  ([label href icon-class]
-   [:a.header-button {:href href} [:i {:class icon-class}] " " label])
-  ([label href]
-   [:a.header-button {:href href} label]))
+(defn header-button [label href & [icon-class]]
+  [:div.d-flex.flex-column.grow.px-4.text-center
+   [:div.grow]
+   [:a.d-inline-block.header-button
+    {:href href}
+    (when icon-class
+      [:i {:class icon-class}])
+    " " label]
+   [:div.grow]])
 
 (defn facebook-like-button []
   #_(let-sub [scale :responsive-scale]
@@ -42,62 +46,58 @@
       (rf/dispatch [:all-phrases-count (<! (rest-api/count-all-phrases))])
       #_(rf/dispatch [:all-movies-count (<! (rest-api/count-all-movies))]))
     (fn []
-      [:div.header
-       {:class (util/class->str (when-not (= @page :search) "invert"))}
-       [:div.top
-        (when @mobile?
-          [ui/spacer 6])
+      [:div.header.d-flex.invert.px-2
+       ;; {:class (util/class->str (when-not (= @page :search) "invert"))}
+       [:div.logo (when-not config/disable-search?
+                    {:on-click (fn [e]
+                                 (if (-> e .-altKey)
+                                   (phrases/search-random-bad-phrase)
+                                   (phrases/search-random-phrase)))})
+        [:span.red "Play"]
+        [:span.black "Phrase"]
+        [:span.gray ".me"]]
+       [:div.d-flex.header-buttons-line.grow.mt-2
         (when-not (= @page :search)
           [header-button "Home" "/#/" "fas fa-home"])
         #_(when-not (= @page :login)
-          (if (rest-api/authorized?)
-            [header-button
-             (str (ls :navigation.logout) " (" (:name @(rf/subscribe [:auth-data])) ")")
-             "/#/logout" "fas fa-user-circle"]
-            [header-button (ls :navigation.login.register) "/#/login" "fas fa-user-circle"]))
+            (if (rest-api/authorized?)
+              [header-button
+               (str (ls :navigation.logout) " (" (:name @(rf/subscribe [:auth-data])) ")")
+               "/#/logout" "fas fa-user-circle"]
+              [header-button (ls :navigation.login.register) "/#/login" "fas fa-user-circle"]))
         (when-not @mobile?
           [header-button (ls :navigation.support) "/#/support" "far fa-envelope"])
-        [ui/flexer]
         (when-not @mobile?
-          [header-button "Github" "https://github.com/potapenko/playphraseme-site" "fab fa-github-square"])
+          [header-button "Github"
+           "https://github.com/potapenko/playphraseme-site" "fab fa-github-square"])
         (when-not @mobile?
-          [header-button "Youtube" "https://www.youtube.com/channel/UCD_uvkY4IcFDEkZ3fgYhFWA" "fab fa-youtube"])
+          [header-button "Youtube"
+           "https://www.youtube.com/channel/UCD_uvkY4IcFDEkZ3fgYhFWA" "fab fa-youtube"])
         (when-not @mobile?
-          [header-button  "Facebook" "https://www.facebook.com/playphrase/" "fab fa-facebook"])
-        ^{:key "fixed-key"}
-        [facebook-like-button]]
-       [:div.bottom
-        (when @mobile?
-          [ui/spacer 6])
-        [:div.logo (when-not config/disable-search?
-                     {:on-click (fn [e]
-                                  (if (-> e .-altKey)
-                                    (phrases/search-random-bad-phrase)
-                                    (phrases/search-random-phrase)))})
-         [:span.red "Play"]
-         [:span.black "Phrase"]
-         [:span.gray ".me"]]
-        [ui/flexer]
-        [:div.mobile-apps
-         [:a (if (-> @page (= :mobile-app))
-               {:href "https://itunes.apple.com/app/playphraseme/id1441967668" :target "_blank"}
-               {:href "/#/mobile-app"})
-          [:img.app-button {:src    "/img/apple-store-button@1x.png"
-                            :height 24
-                            :width  66}]]
-         [ui/spacer 12]
-         [:a (if (-> @page (= :mobile-app))
-               {:href "https://play.google.com/store/apps/details?id=com.playphrasemewalk" :target "_blank"}
-               {:href "/#/mobile-app"})
-          [:img.app-button {:src    "/img/google-play-button@1x.png"
-                            :height 24
-                            :width  66}]]]
-        (when-not @mobile?
-          [ui/flexer])
-        (when-not @mobile?
-          [:div.statistic
-           [:span.count @all-phrases-count]
-           [:span.info (ls :statistic.phrases)]])]])))
+          [header-button  "Facebook"
+           "https://www.facebook.com/playphrase/" "fab fa-facebook"])]
+       ^{:key "fixed-key"}
+       [facebook-like-button]
+       (when @mobile?
+         [ui/spacer 6])
+       [:div.mobile-apps.ml-3
+        [:a.pr-2
+         (if (-> @page (= :mobile-app))
+           {:href "https://itunes.apple.com/app/playphraseme/id1441967668"
+            :target "_blank"}
+           {:href "/#/mobile-app"})
+         [:img.app-button {:src    "/img/apple-store-button@1x.png"}]]
+        [ui/spacer 12]
+        [:a
+         (if (-> @page (= :mobile-app))
+           {:href "https://play.google.com/store/apps/details?id=com.playphrasemewalk"
+            :target "_blank"}
+           {:href "/#/mobile-app"})
+         [:img.app-button {:src    "/img/google-play-button@1x.png"}]]]
+       (when-not @mobile?
+         [:div.statistic.ml-3
+          [:span.count @all-phrases-count]
+          [:span.info (ls :statistic.phrases)]])])))
 
 (defn left-column []
   [:div.left-column ""])
@@ -127,6 +127,6 @@
          [:div
           ;; {:style (resp/container-height-css @scale)}
           [header]
-          [:div.d-flex.grow.position-relative.border
+          [:div.d-flex.grow.position-relative
            current-page]]])})))
 
