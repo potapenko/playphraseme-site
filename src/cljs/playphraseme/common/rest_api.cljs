@@ -2,7 +2,7 @@
   (:require [cljs-http.client :as http]
             [re-frame.core :as rf]
             [cljs.core.async :refer [<! put! chan] :as async]
-            [re-frame.core :refer [subscribe dispatch dispatch-sync]]
+            [re-frame.core :refer [subscribe dispatch]]
             [clojure.string :as string]
             [playphraseme.common.util :as util]
             [playphraseme.common.localstorage :as localstorage])
@@ -55,7 +55,7 @@
       (if (success? res)
         (do
           (localstorage/set-item! "auth-token" (-> res :body :token))
-          (dispatch-sync [:set-auth-data (->> res :body)])))
+          (dispatch [:set-auth-data (->> res :body)])))
       res)))
 
 (defn auth

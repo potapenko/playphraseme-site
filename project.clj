@@ -141,7 +141,7 @@
                      {:output-dir "target/cljsbuild/public/js/out"
                       :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}
                       :optimizations :none
-                      :preloads [re-frisk.preload]
+                      ;; :preloads [re-frisk.preload]
                       :output-to "target/cljsbuild/public/js/app.js"
                       :asset-path "/js/out"
                       :source-map true

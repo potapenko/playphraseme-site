@@ -16,9 +16,11 @@
             [playphraseme.common.nlp :as nlp]
             [cljs.pprint :as pp]
             [playphraseme.common.shared :as shared])
+  (:import goog.async.Debouncer)
   (:require-macros
    [cljs.core.async.macros :refer [go go-loop]]
    [re-frame-macros.core :as mcr :refer [let-sub]]))
+
 
 (declare load-favorited)
 
@@ -47,6 +49,7 @@
 (defn search-phrase
   ([text] (search-phrase text nil))
   ([text first-phrase]
+   (println ">>> search:" text)
    (when-let [text (some-> text
                       (string/replace #"\s+" " ")
                       (string/replace #"^\s+" ""))]
@@ -75,10 +78,16 @@
                    #(util/set-history-url!
                      "search" (merge {:q text}
                                      #_(when first-phrase {:p first-phrase}))))))
-              (rf/dispatch-sync [::model/search-result res])
+              (rf/dispatch [::model/search-result res])
               (load-favorited)
               (load-common-phrases text))))))
     (rf/dispatch [:search-text text]))))
+
+(def search-debouncer
+  (new Debouncer
+       (fn [text]
+         (search-phrase text)) 300))
+
 
 (defn scroll-end []
   (let [count-all @(rf/subscribe [::model/search-count])
@@ -133,7 +142,7 @@
    (rf/dispatch [::model/next-phrase])))
 
 (defn prev-phrase []
-  (rf/dispatch-sync [::model/prev-phrase])
+  (rf/dispatch [::model/prev-phrase])
   (play-phrase dec))
 
 (defn highlite-word [current-word]
@@ -159,13 +168,13 @@
     (-> elem (.scrollIntoView #js{:behavior "smooth" :block "start"}))))
 
 (defn next-suggestion []
-  (rf/dispatch-sync [::model/next-suggestion])
+  (rf/dispatch [::model/next-suggestion])
   (let [index @(rf/subscribe [::model/current-suggestion-index])]
     (when-not (nil? index)
       (scroll-to-suggestion index))))
 
 (defn prev-suggestion []
-  (rf/dispatch-sync [::model/prev-suggestion])
+  (rf/dispatch [::model/prev-suggestion])
   (let [index @(rf/subscribe [::model/current-suggestion-index])]
     (when-not (nil? index)
       (scroll-to-suggestion index))))
@@ -271,7 +280,7 @@
         (favorites-page/reload)))))
 
 (defn play-button []
-  [:div
+  [:div.play-icon
    {:on-click toggle-play}
    (if (or
         resp/ios?
@@ -287,31 +296,6 @@
              (some-> (util/selector "#music-player")
                      (aset "volume" (if audio-muted 0 @audio-volume))))))
 
-(defn audio-volume-control [muted volume]
-  (update-music-volume)
-  (let [muted (or muted @(rf/subscribe [:stopped]))]
-    [:div.d-flex.d-row
-     [:div
-      {:on-click (fn []
-                   (when-not @(rf/subscribe [:stopped])
-                     (rf/dispatch [:audio-muted (not muted)])))
-       :style {:opacity .3}}
-      [:i.material-icons "audiotrack"]]
-     (when-not muted
-       [:div
-        {:on-click (fn []
-                     (rf/dispatch-sync [:audio-volume (max 0 (- volume .1))])
-                     (update-music-volume))}
-        [:i.material-icons.audio-control "volume_down"]])
-     (when-not muted
-       [:div.music-volume (util/format "%10.1f" volume)])
-     (when-not muted
-       [:div
-        {:on-click (fn []
-                     (rf/dispatch-sync [:audio-volume (min 1 (+ volume .1))])
-                     (update-music-volume))}
-        [:i.material-icons.audio-control "volume_up"]])]))
-
 (defn search-input []
   (let-sub [::model/next-word-suggestion
             ::model/input-focused?
@@ -319,43 +303,44 @@
             ::model/search-count
             :search-text]
     (fn []
-      [:div.filters-container.grow
-       [:input#search-input.filter-input.form-control.input-lg
-        {:type           "text" :placeholder "Search Phrase"
-         :value          @search-text
-         :auto-correct    "off"
-         :auto-capitalize "off"
-         :on-focus       (fn []
-                           (rf/dispatch [::model/input-focused? true])
-                           (set-input-cursor))
-         :on-blur        #(rf/dispatch [::model/input-focused? false])
-         :on-change      #(search-phrase (-> % .-target .-value))}]
-       (when
-           (and
-            @next-word-suggestion
-            @input-focused?)
-         [:div.next-word-suggestion.no-select
-          {:on-click focus-input}
-          [:span {:style {:color :tranparent}}
-           @search-text]
-          [:span
-           (string/replace-first
-            (string/lower-case @next-word-suggestion)
-            (string/lower-case @search-text) "")]])
-       [:ul.filter-input-icons
-        [:li
-         [:div.search-result-count (str (inc @current-phrase-index) "/" @search-count)]]
-        (when-not resp/mobile?
-          [:li
-           {:style {:opacity 0.5}}
-           [play-button]])]])))
+      (let [show-suggestion? (and
+                              @next-word-suggestion
+                              @input-focused?)]
+       [:div.filters-container.grow
+        [:input#search-input.filter-input.form-control.input-lg
+         {:type            "text"
+          :placeholder     "Search Phrase"
+          ;; :style           (when-not show-suggestion? {:color :transparent})
+          :value           @search-text
+          :auto-correct    "off"
+          :auto-complete   "off"
+          :auto-capitalize "off"
+          :on-focus        (fn []
+                             (rf/dispatch [::model/input-focused? true])
+                             (set-input-cursor))
+          :on-blur         #(rf/dispatch [::model/input-focused? false])
+          :on-change       #(search-phrase (-> % .-target .-value))}]
+        (when show-suggestion?
+          [:div.next-word-suggestion.no-select
+           {:on-click focus-input}
+           [:span {:style {:color :tranparent}}
+            @search-text]
+           [:span
+            (string/replace-first
+             (string/lower-case @next-word-suggestion)
+             (string/lower-case @search-text) "")]])
+        [:ul.filter-input-icons
+         [:li
+          [:div.search-result-count (str (inc @current-phrase-index) "/" @search-count)]]
+         [:li
+          [play-button]]]]))))
 
 (defn goto-word [e phrase-index word-index]
   (-> e .preventDefault)
   (let [{:keys [index] :as phrase} (nth @(rf/subscribe [::model/phrases]) phrase-index)
         word (-> phrase :words (nth word-index))]
     (rf/dispatch [:stopped false])
-    (rf/dispatch-sync [::model/current-word-index] (:index phrase))
+    (rf/dispatch [::model/current-word-index] (:index phrase))
     (player/jump index (:start word))
     (highlite-word word)
     (player/play index)))
