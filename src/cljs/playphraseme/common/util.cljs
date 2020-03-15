@@ -262,6 +262,22 @@
 (defn last? [idx coll]
   (= idx (dec (count coll))))
 
+(defn build-all-sequences [seq]
+  (->>
+   (loop [[v & t]     seq
+          current-seq seq
+          result      []]
+     (if v
+       (recur t current-seq (conj result [v] (vec t)))
+       (if (empty? current-seq)
+         (->> result (remove nil?) vec)
+         (let [next-seq (drop-last current-seq)]
+           (recur next-seq
+                  next-seq
+                  (conj result current-seq))))))
+   (map vec)
+   (distinct)
+   (remove empty?)))
 
 (comment
 

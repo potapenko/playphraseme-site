@@ -218,15 +218,19 @@ form h1 {
 .video-player-box {
   background-color: black;
   position: absolute;
-  display: flex;
   left: 0px; right: 0px; top: 0px; bottom: 0px;
   text-align: center;
   overflow: hidden;
 	transition: opacity 0.2s ease-in-out;
+  overflow: hidden;
 }
 
 .video-player {
+  overflow: hidden;
+  height: 100%;
+  margin: 0px auto;
 	transition: opacity 0.4s ease-in-out;
+  object-fit: cover;
 }
 
 .overlay-logo {
@@ -383,13 +387,16 @@ form h1 {
 .search-results-results .results .one-result{}
 
 .phrase-text {
-  width: 100%;
+  position: absolute;
+  bottom: 10px; left: 20px; right: 20px;
 }
 
 .karaoke {
-  display: flex;
-  flex-wrap: wrap;
   text-decoration: none !important;
+  background-color: rgba(255,255,255,0.1);
+  padding-left: 12px;
+  padding-right: 12px;
+  text-align: center;
 }
 
 .karaoke:hover {
@@ -400,12 +407,21 @@ form h1 {
 
 .s-word{
 	background-color: rgba(0,0,0,0);
-	color: #333;
-	font-size: 16px;
+	color: rgba(255,255,255,0.7);
+	font-size: 30px;
 	cursor: pointer;
 	padding: 3px;
 	outline: none;
-  display: inline;
+  display: inline-block;
+}
+
+.s-word-searched {
+	text-decoration: underline;
+	background-color: rgba(255,255,255,0.2);
+}
+.s-word-played {
+	background-color: rgba(0,0,0,0.1);
+	color: black;
 }
 
 word, word:active, word:focus{
@@ -423,14 +439,6 @@ word, word:active, word:focus{
   display: flex;
 }
 
-.s-word-searched {
-	text-decoration: underline;
-
-}
-.s-word-played {
-	background-color: rgba(0,0,0,0.1);
-	color: black;
-}
 .w-invalid {
 	background-color: yellow;
 }
@@ -626,9 +634,6 @@ word, word:active, word:focus{
 }
 .play-icon2{
   padding-left: 10px;
-}
-.currrent-pharase-container-landscape {
-  display: none;
 }
 .video-overlay-menu {
   position: absolute;

@@ -46,7 +46,7 @@
       (rf/dispatch [:all-phrases-count (<! (rest-api/count-all-phrases))])
       #_(rf/dispatch [:all-movies-count (<! (rest-api/count-all-movies))]))
     (fn []
-      [:div.header.d-flex.invert.px-2
+      [:div.header.d-flex.invert.px-3
        ;; {:class (util/class->str (when-not (= @page :search) "invert"))}
        [:div.logo (when-not config/disable-search?
                     {:on-click (fn [e]

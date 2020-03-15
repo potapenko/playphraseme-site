@@ -13,6 +13,7 @@
             [playphraseme.common.video-player :as player]
             [playphraseme.common.phrases :as phrases]
             [playphraseme.common.ga :as ga]
+            [playphraseme.views.search.ctrl :as ctlr]
             [playphraseme.common.nlp :as nlp]
             [cljs.pprint :as pp]
             [playphraseme.common.shared :as shared])
@@ -109,11 +110,13 @@
                     first)))
 
 (defn scroll-to-phrase [index]
-  (when-let [elem (js/document.getElementById (str "phrase-text-" index))]
+  ;; legacy
+  #_(when-let [elem (js/document.getElementById (str "phrase-text-" index))]
     (-> elem (.scrollIntoView #js{:behavior "smooth" :block "start"}))))
 
 (defn load-favorited []
-  (when (rest-api/authorized?)
+  ;; legacy
+  #_(when (rest-api/authorized?)
     (when-let [{:keys [id] :as phrase} (get-current-phrase)]
       (when-not (contains? phrase :favorited)
         (go
@@ -129,9 +132,7 @@
                   0
                   (if (-> @current-phrase-index change-fn (= loaded))
                     0 (change-fn @current-phrase-index)))]
-     (load-favorited)
      (util/set-url! "search" {:q @search-text #_:p #_(:id (get-current-phrase))})
-     (scroll-to-phrase current)
      (when (-> current (+ 5) (> loaded))
        (scroll-end))
      (player/jump-and-play current 0))))
@@ -279,15 +280,20 @@
           (<! (rest-api/delete-favorite id)))
         (favorites-page/reload)))))
 
-(defn play-button []
+(defn- input-button [icon on-click]
   [:div.play-icon
    {:on-click toggle-play}
+   [:i.material-icons icon]])
+
+(defn- play-button []
+  [input-button
    (if (or
         resp/ios?
         @(rf/subscribe [:stopped])
         (false? @(rf/subscribe [:autoplay-enabled])))
-     [:i.material-icons "play_circle_filled"]
-     [:i.material-icons "pause_circle_filled"])])
+     "play_circle_filled"
+     "pause_circle_filled")
+   toggle-play])
 
 (defn- update-music-volume []
   (let-sub [:audio-volume
@@ -331,7 +337,11 @@
              (string/lower-case @search-text) "")]])
         [:ul.filter-input-icons
          [:li
+          [input-button "skip_previous" prev-phrase]]
+         [:li
           [:div.search-result-count (str (inc @current-phrase-index) "/" @search-count)]]
+         [:li
+          [input-button "skip_next" next-phrase]]
          [:li
           [play-button]]]]))))
 
@@ -344,21 +354,6 @@
     (player/jump index (:start word))
     (highlite-word word)
     (player/play index)))
-
-(defn get-searched-words [current-words]
-  (let [text             @(rf/subscribe [:search-text])
-        all-search-words (-> text string/lower-case nlp/create-words)]
-    (loop [[v & t]      current-words
-           search-words all-search-words
-           result       []]
-      (let [star?          (= "*" (first search-words))
-            current-search (->> search-words (drop-while #{"*"}) first)]
-        (if (and v current-search)
-          (cond
-            (= (:text v) current-search) (recur t (->> search-words (drop-while #{"*"}) rest) (conj result v))
-            star?                        (recur t search-words (conj result v))
-            :else                        (recur t all-search-words []))
-          result)))))
 
 (defn copy-icon [text]
   [:div.copy-icon
@@ -375,65 +370,43 @@
              :padding   0}}
     "content_copy"]])
 
-(defn karaoke-words-current [phrase-index words text]
+(defn karaoke-words-current []
   (let-sub [::model/current-word-index]
-    (fn []
+    (fn [phrase-index words text]
       [:a.karaoke
        ;; {:href (util/make-phrase-url text)}
-       (for [w    words
-             :let [{:keys [formated-text text index searched]} w]]
-         ^{:key (str "word-" index)}
-         [:span.s-word {:on-click #(goto-word % phrase-index index)
-                         :id       (str "word-" index)
-                         :class    (util/class->str
-                                    (when searched "s-word-searched")
-                                    (when (= index current-word-index) "s-word-played"))}
-          formated-text])
-       [flexer]
-       [copy-icon text]])))
+       (->> words
+            (map-indexed
+             (fn [idx {:keys [formated-text text index searched?]}]
+               ^{:key idx}
+               [:span.s-word
+                {:on-click #(goto-word % phrase-index index)
+                 :id       (str "word-" index)
+                 :class    (util/class->str
+                            (when searched? "s-word-searched")
+                            (when (= index current-word-index) "s-word-played"))}
+                formated-text]))
+            doall)])))
 
-(defn karaoke-words [phrase-index words text]
-  [:a.karaoke
-   ;; {:href (util/make-phrase-url text)}
-   (for [w    words
-         :let [{:keys [formated-text index searched]} w]]
-     ^{:key (str "word-" index)}
-     [:span.s-word {:class (when searched "s-word-searched")
-                    :on-click #(goto-word % phrase-index index)} formated-text])
-   [flexer]
-   [copy-icon text]])
-
-(defn karaoke [{:keys [words text id index]}]
-  (let-sub [:current-phrase-index]
-   (fn []
-     (let [nlp-words      (nlp/create-words text)
-           words          (if (empty? words)
-                            (->> nlp-words
-                                 (map
-                                  (fn [x]
-                                    {:text x})))
-                            words)
-           searched-words (set (get-searched-words words))
-           words          (map (fn [w1 w2]
-                                 (assoc w1
-                                        :formated-text w2
-                                        :searched (-> w1 searched-words nil? not)))
-                               words nlp-words)]
-       (if (= @current-phrase-index index)
-           [karaoke-words-current index words text]
-           [karaoke-words index words text])))))
-
-(defn phrase-text [idx x]
-  (r/create-class
-   {:reagent-render
-    (fn [idx {:keys [text id] :as x}]
-      (let [lang (util/locale-name)
-            {:keys [text id]} x]
-        (fn []
-          [:tr {:id       (str "phrase-text-" idx)
-                :on-click #(rf/dispatch [:current-phrase-index (:index x)])}
-           [:td [:div.phrase-number (inc idx)]]
-           [:td.phrase-text [karaoke x]]])))}))
+(defn karaoke []
+  (let-sub [:current-phrase-index
+            :search-text]
+    (fn [{:keys [words text id index]}]
+      (let [nlp-words      (nlp/create-words text)
+            words          (if (empty? words)
+                             (->> nlp-words
+                                  (map-indexed
+                                   (fn [idx x]
+                                     {:text  x
+                                      :index idx})))
+                             words)
+            searched-words (set (ctlr/get-searched-words words @search-text))
+            words          (map (fn [w1 w2]
+                                  (assoc w1
+                                         :formated-text w2
+                                         :searched? (-> w1 searched-words nil? not)))
+                                words nlp-words)]
+       [karaoke-words-current index words text]))))
 
 (defn suggestions-list [list]
   (let-sub [::model/current-suggestion-index]
@@ -452,24 +425,17 @@
                 [:div.counter (str count)]]))
             doall)])))
 
-(defn search-results-list [phrases]
-  #_[:div#search-result.search-results-container
-   {:on-scroll #(util/on-scroll-end % scroll-end)}
-   [:table.table.phrase-table.borderless
-    {:class (util/class->str (when-not resp/mobile? "table-hover"))}
-    [:tbody
-     (->> phrases
-          (map-indexed
-           (fn [idx {:keys [] :as x}]
-             ^{:key idx}
-             [phrase-text idx x]))
-          doall)]]])
-
 (defn overlay-current-phrase []
-  [:div.currrent-pharase-container-landscape
-   [:div.phrase-text
-    (when-let [phrase (get-current-phrase)]
-      [karaoke phrase])]])
+  (let-sub [::model/phrases
+            :current-phrase-index]
+    (fn []
+      (when-let [phrase (some->> @phrases
+                                 (drop-while #(-> % :index (not= @current-phrase-index)))
+                                 first)]
+       [:div.phrase-text.d-flex
+        [:div.grow]
+        [karaoke phrase]
+        [:div.grow]]))))
 
 (defn page [{:keys [q p]}]
   (let-sub [:current-phrase-index
@@ -514,15 +480,15 @@
                      (fn [idx {:keys [index id] :as x}]
                        ^{:key (str "phrase-" idx "-" @replay-counter)}
                        [:div
-                        (when (<= @current-phrase-index idx (inc @current-phrase-index))
+                        (when (or
+                               (<= @current-phrase-index idx (inc @current-phrase-index))
+                               (= @current-phrase-index (dec (count @phrases))))
                           [:div
                            [player/video-player
                             {:phrase         x
                              :hide?          (not= @current-phrase-index index)
-                             :on-play        (fn []
-                                               (scroll-to-phrase index))
-                             :on-pause       (fn []
-                                               (rf/dispatch [:stopped true]))
+                             :on-play        #(scroll-to-phrase index)
+                             :on-pause       #(rf/dispatch [:stopped true])
                              :on-error       next-phrase
                              :on-play-click  toggle-play
                              :on-end         (fn []
@@ -545,18 +511,7 @@
                   [:i.material-icons "file_download"]
                   [:div.info-text "Download"]
                   [:div.info-text "Video"]]]
-                (when (resp/landscape?)
-                  ^{:key [@(rf/subscribe [:layout])]}
-                  [overlay-current-phrase])]])
+                [overlay-current-phrase]]])
              [:div.search-ui-container
-              [search-input]]
-             (when-not (or
-                        (not resp/mobile?)
-                        (and util/ios?
-                             @(rf/subscribe [:playing])))
-               #_[:div.overlay-play-icon-bottom
-                  [:div.grow]
-                  [:div.grow
-                   [play-button]]
-                  [:div.grow]])])))})))
+              [search-input]]])))})))
 
