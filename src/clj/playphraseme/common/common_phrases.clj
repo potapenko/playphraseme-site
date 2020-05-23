@@ -137,7 +137,7 @@
 
 (defn generate-common-phrases []
   (let [index (atom 0)]
-   (->> (range 45 301)
+   (->> (range 301 1000)
         (map (fn [pos]
                (println "\n")
                (println "pos:" pos)
@@ -147,7 +147,7 @@
                  (->> phrases
                       (map-indexed
                        (fn [i {:keys [count text]}]
-                         (println ">>>" text)
+                         ;; (println ">>>" text)
                          (if-let [exists (common-phrases-db/find-one-common-phrase {:text text})]
                            (common-phrases-db/update-common-phrase!
                             (assoc exists :index (swap! index inc) :count count))
